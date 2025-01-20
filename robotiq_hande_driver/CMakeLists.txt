@@ -6,6 +6,16 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(serial REQUIRED)
+
+add_library(
+  include/application.hpp
+  include/protocol_logic.hpp
+  include/communication.hpp
+  src/application.cpp
+  src/protocol_logic.cpp
+  src/communication.cpp
+)
 
 add_executable(hande_driver src/hande_driver.cpp)
 target_include_directories(hande_driver PUBLIC

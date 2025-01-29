@@ -2,8 +2,6 @@
 
 #include <cmath>
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 #include "hardware_interface/loaned_command_interface.hpp"
 #include "hardware_interface/loaned_state_interface.hpp"
@@ -26,29 +24,24 @@ class TestHWInterface : public ::testing::Test
 protected:
   void SetUp() override
   {
-    hardware_system_2dof_ =
-      R"(
-  <ros2_control name="GenericSystem2dof" type="system">
-    <hardware>
-      <plugin>mock_components/GenericSystem</plugin>
-    </hardware>
-    <joint name="joint1">
-      <command_interface name="position"/>
-      <state_interface name="position">
-        <param name="initial_value">1.57</param>
-      </state_interface>
-    </joint>
-    <joint name="joint2">
-      <command_interface name="position"/>
-      <state_interface name="position">
-        <param name="initial_value">0.7854</param>
-      </state_interface>
-    </joint>
-  </ros2_control>
-)";
+    hw_system_gripper_1dof_ =
+        R"(
+            <ros2_control name="HandeGripperExample" type="system">
+                <hardware>
+                    <plugin>robotiq_hande_driver/RobotiqHandeHardwareInterface</plugin>
+                    <param name="tty">/tmp/ttyX</param>
+                </hardware>
+                <joint name="joint1">
+                    <command_interface name="position"/>
+                    <state_interface name="position">
+                        <param name="initial_value">0.025</param>
+                    </state_interface>
+                </joint>
+            </ros2_control>
+        )";
   }
 
-  std::string hardware_system_2dof_;
+  std::string hw_system_gripper_1dof_;
 };
 
 // Forward declaration
@@ -71,9 +64,9 @@ public:
   }
 };
 
-TEST_F(TestHWInterface, load_generic_system_2dof)
+TEST_F(TestHWInterface, load_robotiq_hande_hardware_interface)
 {
-  auto urdf = ros2_control_test_assets::urdf_head + hardware_system_2dof_ +
+  auto urdf = ros2_control_test_assets::urdf_head + hw_system_gripper_1dof_ +
               ros2_control_test_assets::urdf_tail;
   ASSERT_NO_THROW(TestableResourceManager rm(urdf));
 }

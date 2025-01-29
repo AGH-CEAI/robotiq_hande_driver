@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
@@ -19,15 +19,13 @@ foreach(Dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
-add_library(
-    ${PROJECT_NAME}
+add_library(${PROJECT_NAME}
     SHARED
     hardware/src/hande_hardware_interface.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-target_include_directories(
-  robotiq_hande_driver PUBLIC
+target_include_directories(robotiq_hande_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hardware/include>
   $<INSTALL_INTERFACE:include>
 )

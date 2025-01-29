@@ -10,7 +10,7 @@ namespace robotiq_hande_driver {
 namespace HWI = hardware_interface;
 namespace rlccp_lc = rclcpp_lifecycle;
 
-constexpr int HANDE_LEFT_FINGER_JOINT_ID = 0;
+constexpr int LEFT_FINGER_JOINT_ID = 0;
 
 class RobotiqHandeHardwareInterface : public HWI::SystemInterface
 {
@@ -32,25 +32,15 @@ public:
     HWI::return_type read(const rclcpp::Time& time, const rclcpp::Duration& period) override;
     HWI::return_type write(const rclcpp::Time& time, const rclcpp::Duration& period) override;
 
-    /// Get the logger of the SystemInterface.
-    /**
-     * \return logger of the SystemInterface.
-     */
     rclcpp::Logger get_logger() const { return *logger_; }
-
-    /// Get the clock of the SystemInterface.
-    /**
-     * \return clock of the SystemInterface.
-     */
-    rclcpp::Clock::SharedPtr get_clock() const { return clock_; }
 
 private:
     //TODO: composition of the modbus communication
     std::shared_ptr<rclcpp::Logger> logger_;
-    rclcpp::Clock::SharedPtr clock_; //TODO: Remove after tests
 
     std::string tty_port_;
     double state_position_;
+    double state_velocity_;
     double cmd_position_;
 };
 

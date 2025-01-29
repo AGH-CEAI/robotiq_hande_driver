@@ -1,0 +1,20 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 10 # Hz
+
+      gripper_action_controller:
+        type: position_controllers/GripperActionController
+
+  gripper_action_controller:
+    action_monitor_rate: 20.0 # Hz
+    # TODO: include prefix:
+    # joint: $(var tf_prefix)hande_left_finger_joint
+    joint: hande_left_finger_joint
+    max_effort: 10.0 # N
+    goal_tolerance: 0.01 # m
+    allow_stalling: false
+    stall_velocity_threshold: 0.001 #m/s
+    stall_timeout: 1.0 # s
+    state_interfaces:
+      - position

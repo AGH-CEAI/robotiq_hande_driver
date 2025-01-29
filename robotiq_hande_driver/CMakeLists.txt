@@ -41,7 +41,7 @@ install(
   DESTINATION include/
 )
 install(
-  DIRECTORY config
+  DIRECTORY bringup
   DESTINATION share/${PROJECT_NAME}
 )
 

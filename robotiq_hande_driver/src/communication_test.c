@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <modbus.h>
+#include <modbus/modbus.h>
 
 #define SERVER_ID 0x09
 

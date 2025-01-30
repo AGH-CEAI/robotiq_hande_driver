@@ -8,23 +8,24 @@
 
 namespace hande_driver
 {
-struct {
-    bool isReset;
-    bool isReady;
-    bool isMoving;
-    bool isStopped;
-    bool isOpened;
-    bool isClosed;
-    bool objectDetected;
-} Status;
-
-struct {             // Structure declaration
-    int myNum;         // Member (int variable)
-    string myString;   // Member (string variable)
-} FaultStatus;
 
 class ApplicationLayer{
-    public:
+public:
+
+    struct Status{
+        bool isReset;
+        bool isReady;
+        bool isMoving;
+        bool isStopped;
+        bool isOpened;
+        bool isClosed;
+        bool objectDetected;
+    };
+
+    struct FaultStatus{
+        bool isError;
+    };
+
     ApplicationLayer();
 
     ~ApplicationLayer();
@@ -90,7 +91,7 @@ class ApplicationLayer{
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void update_status()
+    void update_status();
 
     /**
      * @brief Returns the gripper status
@@ -135,7 +136,7 @@ class ApplicationLayer{
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void ApplicationLayer::set_position(uint8_t position)
+    void set_position(uint8_t position);
 
     /**
      * @brief Returns the gripper current
@@ -145,6 +146,11 @@ class ApplicationLayer{
      * @note see status on success, exception thrown if communicatoin issues
      */
     uint16_t current();
+
+
+    void read();
+
+    void write();
 
 private:
     /**

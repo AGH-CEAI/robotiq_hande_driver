@@ -10,6 +10,7 @@ namespace hande_driver
 {
 
 // Action Request
+constexpr uint8_t actionRequestByte = 0;
 constexpr uint8_t activatePositionByte = 0;             // rACT
 enum Activate{
     DEACTIVATE_GRIPPER,
@@ -35,26 +36,30 @@ enum AutoReleaseDirection{
 };
 
 //Position Request
+constexpr uint8_t positionRequestByte = 3;
 // 0x00 - Open position, with 50 mm opening
 // 0xFF - Closed
 // Opening / count: ≈0.2 mm for 50 mm stroke
 
 //Speed Request
+constexpr uint8_t speedRequestByte = 4;
 // 0x00 - Minimum speed
 // 0xFF - Maximum speed
 
 //Force Request
+constexpr uint8_t forceRequestByte = 5;
 // 0x00 - Minimum force
 // 0xFF - Maximum force
 
 // Gripper Status
+constexpr uint8_t statusByte = 0;
 constexpr uint8_t activationStatusPositionByte = 0;         // gACT
 enum ActivationStatus{
     GRIPPER_RESET,
     GRIPPER_ACTIVATION
 };
 
-constexpr uint8_t goToStatusPositionByte = 3;               // gGTO
+constexpr uint8_t actionStatusPositionByte = 3;               // gGTO
 enum ActionStatus{
     STOPPED,
     GO_TO_POSITION_REQUEST
@@ -77,10 +82,13 @@ enum ObjectDetectionStatus{
 };
 
 // Fault Status
+constexpr uint8_t faultStatusByte = 2;
 // Position Request Echo
+constexpr uint8_t positionRequestEchoByte = 3;
 // Position (current)
+constexpr uint8_t positionByte = 4;
 // Current
-
+constexpr uint8_t currentByte = 5;
 
 class ProtocolLogic{
 public:
@@ -89,13 +97,22 @@ public:
     ~ProtocolLogic();
 
     /**
-     *  @brief Resets the gripper: deactivate and activate again
+     *  @brief Resets the gripper
      * 
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
     void reset();
+
+    /**
+     *  @brief Sets the gripper
+     * 
+     * @param none
+     * @return none
+     * @note see status on success, exception thrown if communicatoin issues
+     */
+    void set();
 
     /**
      * @brief Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -124,7 +141,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void go_to(uint8_t position, uint8_t velocity, uint8_t force, bool arm_callback=true);
+    void go_to(uint8_t position, uint8_t velocity, uint8_t force);
 
     /**
      * @brief Stops the gripper
@@ -205,35 +222,48 @@ public:
     uint8_t get_current();
 
     /**
-     * @brief Arm a callback to be triggered when gripper starts moving
+     * @brief Decode modbus registers and refresh apropriate data
      * 
      * @return none
      */
-    void wait_until_moving();
+    void refresh_registers();
 
     /**
-     * @brief Arm a callback to be triggered when gripper stops moving
+     * @brief Read 8bit registers from 16bit words
      * 
+     * @param reg pointer to 8bit register
+     * @param byte 8bit register position in 16bit modbus frame
      * @return none
      */
-    void wait_until_stopped();
+    void read_register(uint8_t &reg, uint8_t byte);
+
+    /**
+     * @brief Set n-th bit to x value
+     * 
+     * @param number
+     * @param n n-th bit in number
+     * @param x bool value 
+     * @return uint number with n-th bit set to x
+     */
+    uint bit_set_to(uint number, uint n, bool x);
 
 private:
 // Gripper
+    uint8_t status_;
     ActivationStatus activation_status_;
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
 //Fault
-
+    uint8_t fault_status;
 
     /**
-     * @brief Requested position in normalized 0-225 value
+     * @brief Requested position in normalized 0-255 value
      */
-    uint8_t position_request;
+    uint8_t position_request_echo;
 
     /**
-     * @brief Position in normalized 0-225 value
+     * @brief Position in normalized 0-255 value
      */
     uint8_t position;
 

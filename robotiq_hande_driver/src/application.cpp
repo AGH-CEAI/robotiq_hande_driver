@@ -3,43 +3,46 @@
 
 namespace hande_driver
 {
-ApplicationLayer::ApplicationLayer(){}
+
+ApplicationLayer::ApplicationLayer(){
+    protocol_logic_ = ProtocolLogic();
+}
 
 ApplicationLayer::~ApplicationLayer(){}
 
 void ApplicationLayer::stop(){
-    protocol_logic.stop();
+    protocol_logic_.stop();
 }
 
 void ApplicationLayer::reset(){
-    protocol_logic.reset();
+    protocol_logic_.reset();
 }
 
 
 void ApplicationLayer::auto_release(){
-    protocol_logic.auto_release();
+    protocol_logic_.auto_release();
 }
 
 
 void ApplicationLayer::activate(){
-    protocol_logic.activate();
+    protocol_logic_.activate();
 }
 
 
 void ApplicationLayer::open(){
-    protocol_logic.go_to(255, 255, 255);
+    protocol_logic_.go_to(255, 255, 255);
 }
 
 
 void ApplicationLayer::close(){
-    protocol_logic.go_to(0, 255, 255);
+    protocol_logic_.go_to(0, 255, 255);
 }
 
-Status ApplicationLayer::status(){
+ApplicationLayer::Status ApplicationLayer::status(){
     return status_;
 }
 
-FaultStatus ApplicationLayer::fault_status(){
+ApplicationLayer::FaultStatus ApplicationLayer::fault_status(){
     return fault_status_;
 }
 
@@ -52,14 +55,16 @@ uint8_t ApplicationLayer::position(){
 }
 
 void ApplicationLayer::set_position(uint8_t position){
-    protocol_logic.go_to(position, 255, 255);
+    protocol_logic_.go_to(position, 255, 255);
 }
 
 uint16_t ApplicationLayer::current(){
     return current_;
 }
 
-void ApplicationLayer::update(){
+void ApplicationLayer::read(){
+    protocol_logic_.refresh_registers();
+
     status_.isReset = protocol_logic_.is_reset();
     status_.isReady = protocol_logic_.is_ready();
     status_.isMoving = protocol_logic_.is_moving();
@@ -71,8 +76,12 @@ void ApplicationLayer::update(){
     //fault_status
 
     requested_position_ = protocol_logic_.get_reg_pos();//TODO: add scaling
-    position_ = protocol_logic.get_pos();   //TODO: add scaling
-    current_ = (uint16_t)protocol_logic.get_current() * 10;
+    position_ = protocol_logic_.get_pos();   //TODO: add scaling
+    current_ = (uint16_t)protocol_logic_.get_current() * 10;
+}
+
+void ApplicationLayer::write(){
+    protocol_logic_.refresh_registers();
 }
 
 }   // namespace hande_driver

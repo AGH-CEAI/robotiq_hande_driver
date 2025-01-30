@@ -1,15 +1,26 @@
+#include <cstdio>
 #include "protocol_logic.hpp"
 
 
 namespace hande_driver
 {
 
-ProtocolLogic::ProtocolLogic(){
-    communication_ = Communication();
+ProtocolLogic::ProtocolLogic()
+:   status_(0)
+,   activation_status_(GRIPPER_RESET)
+,   action_status_(STOPPED)
+,   gripper_status_(NOT_USED)
+,   object_detection_status_(REQ_POS_NO_OBJECT)
+,   fault_status(0)
+,   position_request_echo(0)
+,   position(0)
+,   current(0)
+{
+    printf("ProtocolLogic constructor\n");
 }
 
 ProtocolLogic::~ProtocolLogic(){
-    communication_.~Communication();
+    printf("ProtocolLogic destructor\n");
 }
 
 void ProtocolLogic::reset(){

@@ -1,14 +1,21 @@
+#include <cstdio>
 #include "application.hpp"
 
 
 namespace hande_driver
 {
 
-ApplicationLayer::ApplicationLayer(){
-    protocol_logic_ = ProtocolLogic();
+ApplicationLayer::ApplicationLayer()
+:   requested_position_(0)
+,   position_(0)
+,   current_(0)
+{
+    printf("ApplicationLayer constructor\n");
 }
 
-ApplicationLayer::~ApplicationLayer(){}
+ApplicationLayer::~ApplicationLayer(){
+    printf("ApplicationLayer destructor\n");
+}
 
 void ApplicationLayer::stop(){
     protocol_logic_.stop();

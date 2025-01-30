@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <stdint.h>
 
 #include "communication.hpp"
@@ -17,7 +18,11 @@ constexpr uint8_t slaveID = 0x09;
 constexpr uint16_t gripperOutputFirstReg = 0x07D0;
 constexpr uint16_t gripperInputFirstReg = 0x03E8;
 
-Communication::Communication(){
+Communication::Communication()
+:    input_registers(0, 0, 0)
+,    output_registers(0, 0, 0)
+{
+    printf("Communication constructor\n");
     mb = modbus_new_rtu(deviceName, baudrate, parity, dataBits, stopBit);
     modbus_set_slave(mb, slaveID);
     modbus_set_debug(mb, debugModbus);
@@ -25,6 +30,7 @@ Communication::Communication(){
 }
 
 Communication::~Communication(){
+    printf("Communication destructor\n");
     disconnect();
     modbus_free(mb);
 }

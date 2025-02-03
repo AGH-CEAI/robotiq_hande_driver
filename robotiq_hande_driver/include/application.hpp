@@ -85,15 +85,6 @@ public:
     void Close();
 
     /**
-     * @brief Updates gripper status
-     * 
-     * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
-     */
-    void UpdateStatus();
-
-    /**
      * @brief Returns the gripper status
      * 
      * @param none
@@ -118,34 +109,34 @@ public:
      * @return Gripper requested position 
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint8_t RequestedPosition();
+    double RequestedPosition();
 
     /**
      * @brief Returns the gripper position
      * 
      * @param none
-     * @return Gripper position in 
+     * @return Gripper position in [m]
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint8_t Position();
+    double Position();
 
     /**
      * @brief Moves the gripper to requested position
      * 
-     * @param position to which the gripper has to move
+     * @param position to which the gripper has to move, in [m]
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void SetPosition(uint8_t position);
+    void SetPosition(double position);
 
     /**
      * @brief Returns the gripper current
      * 
      * @param none
-     * @return Gripper current in mA (range: 0-2550mA) 
+     * @return Gripper current in [A] (range: 0-2.55A) 
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint16_t Current();
+    double Current();
 
 
     void Read();
@@ -171,17 +162,17 @@ private:
     /**
      * Requested position of the gripper, in [m]
      */
-    uint8_t requested_position_;
+    double requested_position_;
 
     /**
      * POsition of the gripper, in [m]
      */
-    uint8_t position_;
+    double position_;
     
     /**
-     * Current flowin through the gripper, in [mA]
+     * Current flowin through the gripper, in [A]
      */
-    uint16_t current_;
+    double current_;
     
 };
 }   // namespace hande_driver

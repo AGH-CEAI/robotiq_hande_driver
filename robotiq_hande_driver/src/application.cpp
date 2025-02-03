@@ -5,6 +5,11 @@
 
 namespace hande_driver  {
 
+constexpr auto kGripperPositionMin = 0.0;
+constexpr auto kGripperPositionMax = 0.05;
+constexpr auto kGripperPositionStep = (kGripperPositionMax - kGripperPositionMin) / 255.0;
+constexpr auto kGripperCurrentScale = 0.01;
+
 ApplicationLayer::ApplicationLayer()
 :   requested_position_(0)
 ,   position_(0)
@@ -53,19 +58,21 @@ ApplicationLayer::FaultStatus ApplicationLayer::GetFaultStatus(){
     return fault_status_;
 }
 
-uint8_t ApplicationLayer::RequestedPosition(){
+double ApplicationLayer::RequestedPosition(){
     return  requested_position_;
 }
 
-uint8_t ApplicationLayer::Position(){
+double ApplicationLayer::Position(){
     return position_;
 }
 
-void ApplicationLayer::SetPosition(uint8_t position){
-    protocol_logic_.GoTo(position, 255, 255);
+void ApplicationLayer::SetPosition(double position){
+    uint8_t raw_position = uint8_t(position / kGripperPositionStep - kGripperPositionMin);
+
+    protocol_logic_.GoTo(raw_position, 255, 255);
 }
 
-uint16_t ApplicationLayer::Current(){
+double ApplicationLayer::Current(){
     return current_;
 }
 
@@ -82,9 +89,9 @@ void ApplicationLayer::Read(){
     
     //fault_status
 
-    requested_position_ = protocol_logic_.GetRegPos();//TODO: add scaling
-    position_ = protocol_logic_.GetPos();   //TODO: add scaling
-    current_ = (uint16_t)protocol_logic_.GetCurrent() * 10;
+    requested_position_ = (double)protocol_logic_.GetRegPos() * kGripperPositionStep + kGripperPositionMin;
+    position_ = (double)protocol_logic_.GetPos() * kGripperPositionStep + kGripperPositionMin;
+    current_ = (double)protocol_logic_.GetCurrent() * kGripperCurrentScale;
 }
 
 void ApplicationLayer::Write(){

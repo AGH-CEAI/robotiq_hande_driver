@@ -1,9 +1,9 @@
-#include <cstdio>
 #include "application.hpp"
 
+#include <cstdio>
 
-namespace hande_driver
-{
+
+namespace hande_driver  {
 
 ApplicationLayer::ApplicationLayer()
 :   requested_position_(0)
@@ -17,78 +17,78 @@ ApplicationLayer::~ApplicationLayer(){
     printf("ApplicationLayer destructor\n");
 }
 
-void ApplicationLayer::stop(){
-    protocol_logic_.stop();
+void ApplicationLayer::Stop(){
+    protocol_logic_.Stop();
 }
 
-void ApplicationLayer::reset(){
-    protocol_logic_.reset();
-}
-
-
-void ApplicationLayer::auto_release(){
-    protocol_logic_.auto_release();
+void ApplicationLayer::Reset(){
+    protocol_logic_.Reset();
 }
 
 
-void ApplicationLayer::activate(){
-    protocol_logic_.activate();
+void ApplicationLayer::AutoRelease(){
+    protocol_logic_.AutoRelease();
 }
 
 
-void ApplicationLayer::open(){
-    protocol_logic_.go_to(255, 255, 255);
+void ApplicationLayer::Activate(){
+    protocol_logic_.Activate();
 }
 
 
-void ApplicationLayer::close(){
-    protocol_logic_.go_to(0, 255, 255);
+void ApplicationLayer::Open(){
+    protocol_logic_.GoTo(255, 255, 255);
 }
 
-ApplicationLayer::Status ApplicationLayer::status(){
+
+void ApplicationLayer::Close(){
+    protocol_logic_.GoTo(0, 255, 255);
+}
+
+ApplicationLayer::Status ApplicationLayer::GetStatus(){
     return status_;
 }
 
-ApplicationLayer::FaultStatus ApplicationLayer::fault_status(){
+ApplicationLayer::FaultStatus ApplicationLayer::GetFaultStatus(){
     return fault_status_;
 }
 
-uint8_t ApplicationLayer::requested_position(){
+uint8_t ApplicationLayer::RequestedPosition(){
     return  requested_position_;
 }
 
-uint8_t ApplicationLayer::position(){
+uint8_t ApplicationLayer::Position(){
     return position_;
 }
 
-void ApplicationLayer::set_position(uint8_t position){
-    protocol_logic_.go_to(position, 255, 255);
+void ApplicationLayer::SetPosition(uint8_t position){
+    protocol_logic_.GoTo(position, 255, 255);
 }
 
-uint16_t ApplicationLayer::current(){
+uint16_t ApplicationLayer::Current(){
     return current_;
 }
 
-void ApplicationLayer::read(){
-    protocol_logic_.refresh_registers();
+void ApplicationLayer::Read(){
+    protocol_logic_.RefreshRegisters();
 
-    status_.isReset = protocol_logic_.is_reset();
-    status_.isReady = protocol_logic_.is_ready();
-    status_.isMoving = protocol_logic_.is_moving();
-    status_.isStopped = protocol_logic_.is_stopped();
-    status_.isOpened = protocol_logic_.is_opened();
-    status_.isClosed = protocol_logic_.is_closed();
-    status_.objectDetected = protocol_logic_.obj_detected();
+    status_.is_reset = protocol_logic_.IsReset();
+    status_.is_ready = protocol_logic_.IsReady();
+    status_.is_moving = protocol_logic_.IsMoving();
+    status_.is_stopped = protocol_logic_.IsStopped();
+    status_.is_opened = protocol_logic_.IsOpened();
+    status_.is_closed = protocol_logic_.IsClosed();
+    status_.object_detected = protocol_logic_.ObjDetected();
     
     //fault_status
 
-    requested_position_ = protocol_logic_.get_reg_pos();//TODO: add scaling
-    position_ = protocol_logic_.get_pos();   //TODO: add scaling
-    current_ = (uint16_t)protocol_logic_.get_current() * 10;
+    requested_position_ = protocol_logic_.GetRegPos();//TODO: add scaling
+    position_ = protocol_logic_.GetPos();   //TODO: add scaling
+    current_ = (uint16_t)protocol_logic_.GetCurrent() * 10;
 }
 
-void ApplicationLayer::write(){
-    protocol_logic_.refresh_registers();
+void ApplicationLayer::Write(){
+    protocol_logic_.RefreshRegisters();
 }
 
 }   // namespace hande_driver

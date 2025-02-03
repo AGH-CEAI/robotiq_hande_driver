@@ -1,55 +1,54 @@
+#include "communication.hpp"
+
 #include <cstdio>
 #include <stdint.h>
 
-#include "communication.hpp"
 
+namespace hande_driver  {
 
-namespace hande_driver
-{
+constexpr auto kDeviceName = "/tmp/ttyUR";
+constexpr auto kBaudrate = 115200;
+constexpr auto kParity = 'N';
+constexpr auto kDataBits = 8;
+constexpr auto kStopBit = 1;
+constexpr auto kDebugModbus = true;
+constexpr uint8_t kSlaveID = 0x09;
 
-constexpr auto deviceName = "/tmp/ttyUR";
-constexpr auto baudrate = 115200;
-constexpr auto parity = 'N';
-constexpr auto dataBits = 8;
-constexpr auto stopBit = 1;
-constexpr auto debugModbus = false;
-constexpr uint8_t slaveID = 0x09;
-
-constexpr uint16_t gripperOutputFirstReg = 0x07D0;
-constexpr uint16_t gripperInputFirstReg = 0x03E8;
+constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
+constexpr uint16_t kGripperInputFirstReg = 0x03E8;
 
 Communication::Communication()
-:    input_registers(0, 0, 0)
-,    output_registers(0, 0, 0)
+:    input_registers_{0, 0, 0}
+,    output_registers_{0, 0, 0}
 {
     printf("Communication constructor\n");
-    mb = modbus_new_rtu(deviceName, baudrate, parity, dataBits, stopBit);
-    modbus_set_slave(mb, slaveID);
-    modbus_set_debug(mb, debugModbus);
-    connect();
+    mb_ = modbus_new_rtu(kDeviceName, kBaudrate, kParity, kDataBits, kStopBit);
+    modbus_set_slave(mb_, kSlaveID);
+    modbus_set_debug(mb_, kDebugModbus);
+    Connect();
 }
 
 Communication::~Communication(){
     printf("Communication destructor\n");
-    disconnect();
-    modbus_free(mb);
+    Disconnect();
+    modbus_free(mb_);
 }
 
-void Communication::connect(){
-    modbus_connect(mb);
+void Communication::Connect(){
+    modbus_connect(mb_);
 }
 
-void Communication::disconnect(){
-    modbus_close(mb);
+void Communication::Disconnect(){
+    modbus_close(mb_);
 }
 
-void Communication::read_write_registers(){
-    modbus_write_and_read_registers(mb,
-                                    gripperOutputFirstReg,
-                                    registerWordLength,
-                                    output_registers,
-                                    gripperInputFirstReg,
-                                    registerWordLength,
-                                    input_registers);
+void Communication::ReadWiteRegisters(){
+    modbus_write_and_read_registers(mb_,
+                                    kGripperOutputFirstReg,
+                                    kRegisterWordLength,
+                                    output_registers_,
+                                    kGripperInputFirstReg,
+                                    kRegisterWordLength,
+                                    input_registers_);
 }
 }   // namespace hande_driver

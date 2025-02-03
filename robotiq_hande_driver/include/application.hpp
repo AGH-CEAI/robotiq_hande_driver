@@ -13,17 +13,17 @@ class ApplicationLayer{
 public:
 
     struct Status{
-        bool isReset;
-        bool isReady;
-        bool isMoving;
-        bool isStopped;
-        bool isOpened;
-        bool isClosed;
-        bool objectDetected;
+        bool is_reset;
+        bool is_ready;
+        bool is_moving;
+        bool is_stopped;
+        bool is_opened;
+        bool is_closed;
+        bool object_detected;
     };
 
     struct FaultStatus{
-        bool isError;
+        bool is_error;
     };
 
     ApplicationLayer();
@@ -37,7 +37,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void stop();
+    void Stop();
 
     /**
      * @brief Resets the gripper: deactivate and activate again
@@ -46,7 +46,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void reset();
+    void Reset();
 
     /**
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -55,7 +55,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void auto_release();
+    void AutoRelease();
 
     /**
      * @brief Activates the gripper, after that it can be used 
@@ -64,7 +64,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void activate();
+    void Activate();
 
     /**
      * @brief Opens the gripper
@@ -73,7 +73,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void open();
+    void Open();
 
     /**
      * @brief Closes the gripper
@@ -82,7 +82,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void close();
+    void Close();
 
     /**
      * @brief Updates gripper status
@@ -91,7 +91,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void update_status();
+    void UpdateStatus();
 
     /**
      * @brief Returns the gripper status
@@ -100,7 +100,7 @@ public:
      * @return Gripper status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    Status status(); 
+    Status GetStatus(); 
 
     /**
      * @brief Returns the gripper fault status
@@ -109,7 +109,7 @@ public:
      * @return Fault Status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    FaultStatus fault_status(); 
+    FaultStatus GetFaultStatus(); 
 
     /**
      * @brief Returns the gripper requsted position
@@ -118,7 +118,7 @@ public:
      * @return Gripper requested position 
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint8_t requested_position();
+    uint8_t RequestedPosition();
 
     /**
      * @brief Returns the gripper position
@@ -127,7 +127,7 @@ public:
      * @return Gripper position in 
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint8_t position();
+    uint8_t Position();
 
     /**
      * @brief Moves the gripper to requested position
@@ -136,7 +136,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void set_position(uint8_t position);
+    void SetPosition(uint8_t position);
 
     /**
      * @brief Returns the gripper current
@@ -145,12 +145,12 @@ public:
      * @return Gripper current in mA (range: 0-2550mA) 
      * @note see status on success, exception thrown if communicatoin issues
      */
-    uint16_t current();
+    uint16_t Current();
 
 
-    void read();
+    void Read();
 
-    void write();
+    void Write();
 
 private:
     /**

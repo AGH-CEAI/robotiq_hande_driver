@@ -9,7 +9,7 @@
 
 namespace hande_driver
 {
-constexpr auto registerWordLength = 3;
+constexpr auto kRegisterWordLength = 3;
 
 class Communication{
 public:
@@ -24,7 +24,7 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void connect();
+    void Connect();
 
     /**
      * @brief Disconnect from gripper using modbus rtu and virtual socket
@@ -33,7 +33,7 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void disconnect();
+    void Disconnect();
 
     /**
      * @brief Read and write input.output registers at once
@@ -42,13 +42,13 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void read_write_registers();
+    void ReadWiteRegisters();
 
-    uint16_t input_registers[registerWordLength];
-    uint16_t output_registers[registerWordLength];
+    uint16_t input_registers_[kRegisterWordLength];
+    uint16_t output_registers_[kRegisterWordLength];
 
 private:
-    modbus_t *mb;
+    modbus_t *mb_;
 
 };
 }   // namespace hande_driver

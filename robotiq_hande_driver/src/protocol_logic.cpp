@@ -69,9 +69,9 @@ void ProtocolLogic::Activate(){
 }
 
 void ProtocolLogic::GoTo(uint8_t position, uint8_t velocity, uint8_t force){
-    communication_.output_registers_[kGoToPositionByte / 2] = BitSetTo(
-        communication_.output_registers_[kGoToPositionByte / 2],
-        (kGoToPositionByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
+    communication_.output_registers_[kActionRequestByte / 2] = BitSetTo(
+        communication_.output_registers_[kActionRequestByte / 2],
+        (kActionRequestByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
         GO_TO_REQ_POS);
 
     communication_.output_registers_[1] = uint16_t(0x00 << 8 | position);
@@ -81,9 +81,9 @@ void ProtocolLogic::GoTo(uint8_t position, uint8_t velocity, uint8_t force){
 }
 
 void ProtocolLogic::Stop(){
-    communication_.output_registers_[kGoToPositionByte / 2] = BitSetTo(
-        communication_.output_registers_[kGoToPositionByte / 2],
-        (kGoToPositionByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
+    communication_.output_registers_[kActionRequestByte / 2] = BitSetTo(
+        communication_.output_registers_[kActionRequestByte / 2],
+        (kActionRequestByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
         STOP);
 
     communication_.ReadWiteRegisters();

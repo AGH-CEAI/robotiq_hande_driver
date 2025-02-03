@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
 
   printf("Activation robotiq_hande_driver\n");
   app_test.Activate();
-  sleep(2);
+  sleep(4);
 
   printf("Open-Close loop x2\n");
 

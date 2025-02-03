@@ -1,5 +1,5 @@
-#ifndef PROTOCOL_LOGIC_H_
-#define PROTOCOL_LOGIC_H_
+#ifndef PROTOCOL_LOGIC_HPP_
+#define PROTOCOL_LOGIC_HPP_
 
 #include <stdint.h>
 
@@ -127,7 +127,7 @@ public:
     void AutoRelease();
 
     /**
-     * @brief Activates the gripper, after that it can be used 
+     * @brief Activates the gripper, after that it can be used
      *
      * @param none
      * @return none
@@ -191,14 +191,14 @@ public:
 
     /**
      * @brief Logic for opened state
-     * 
+     *
      * @return True if gripper is opened
      */
     bool IsOpened();
 
     /**
      * @brief Logic for detecting the object
-     * 
+     *
      * @return True if gripper has detected the object
      */
     bool ObjDetected();
@@ -212,20 +212,20 @@ public:
 
     /**
      * @brief Getter of current gripper position
-     * 
+     *
      * @return Current gripper position
      */
     uint8_t GetPos();
 
     /**
      * @brief Getter of current
-     * 
+     *
      * @return Current gripper
      */
     uint8_t GetCurrent();
 
     /**
-     * @brief Decode modbus registers and refresh apropriate data
+     * @brief Decode modbus registers and refresh appropriate data
      *
      * @return none
      */
@@ -278,4 +278,4 @@ private:
     Communication communication_;
 };
 }   // namespace hande_driver
-#endif  // PROTOCOL_LOGIC_H_
+#endif  // PROTOCOL_LOGIC_HPP_

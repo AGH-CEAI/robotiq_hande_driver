@@ -1,5 +1,5 @@
-#ifndef APPLICATION_H_
-#define APPLICATION_H_
+#ifndef APPLICATION_HPP_
+#define APPLICATION_HPP_
 
 #include <stdint.h>
 
@@ -106,10 +106,10 @@ public:
     FaultStatus GetFaultStatus();
 
     /**
-     * @brief Returns the gripper requsted position
+     * @brief Returns the gripper requested position
      *
      * @param none
-     * @return Gripper requested position 
+     * @return Gripper requested position
      * @note see status on success, exception thrown if communicatoin issues
      */
     double RequestedPosition();
@@ -125,7 +125,7 @@ public:
 
     /**
      * @brief Moves the gripper to requested position
-     * 
+     *
      * @param position to which the gripper has to move, in [m]
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -171,7 +171,7 @@ private:
      * POsition of the gripper, in [m]
      */
     double position_;
-    
+
     /**
      * Current flowin through the gripper, in [A]
      */
@@ -179,4 +179,4 @@ private:
 
 };
 }   // namespace hande_driver
-#endif // APPLICATION_H_
+#endif // APPLICATION_HPP_

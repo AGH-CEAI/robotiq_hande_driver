@@ -1,5 +1,5 @@
-#ifndef COMMUNICATION_H_
-#define COMMUNICATION_H_
+#ifndef COMMUNICATION_HPP_
+#define COMMUNICATION_HPP_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -55,4 +55,4 @@ private:
 
 };
 }   // namespace hande_driver
-#endif // COMMUNICATION_H_
+#endif // COMMUNICATION_HPP_

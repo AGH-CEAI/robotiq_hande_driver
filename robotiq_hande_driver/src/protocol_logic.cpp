@@ -78,7 +78,6 @@ void ProtocolLogic::GoTo(uint8_t position, uint8_t velocity, uint8_t force){
     communication_.output_registers_[2] = uint16_t(velocity << 8 | force);
 
     communication_.ReadWiteRegisters();
-    
 }
 
 void ProtocolLogic::Stop(){
@@ -103,7 +102,6 @@ bool ProtocolLogic::IsReady(){
 bool ProtocolLogic::IsMoving(){
     return (action_status_ == GO_TO_POSITION_REQUEST &&
             object_detection_status_ == MOTION_NO_OBJECT);
-
 }
 
 bool ProtocolLogic::IsStopped(){

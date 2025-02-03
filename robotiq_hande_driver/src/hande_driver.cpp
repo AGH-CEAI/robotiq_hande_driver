@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
   sleep(2);
 
   printf("Open-Close loop x2\n");
-  
+
   printf("Open\n");
   app_test.Open();
   sleep(2);

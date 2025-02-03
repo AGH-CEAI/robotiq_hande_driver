@@ -1,3 +1,6 @@
+#ifndef APPLICATION_H_
+#define APPLICATION_H_
+
 #include <stdint.h>
 
 #include "protocol_logic.hpp"
@@ -32,7 +35,7 @@ public:
 
     /**
      * @brief Stops movement of the gripper
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -41,7 +44,7 @@ public:
 
     /**
      * @brief Resets the gripper: deactivate and activate again
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -50,7 +53,7 @@ public:
 
     /**
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -58,8 +61,8 @@ public:
     void AutoRelease();
 
     /**
-     * @brief Activates the gripper, after that it can be used 
-     * 
+     * @brief Activates the gripper, after that it can be used
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -68,7 +71,7 @@ public:
 
     /**
      * @brief Opens the gripper
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -77,7 +80,7 @@ public:
 
     /**
      * @brief Closes the gripper
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -86,25 +89,25 @@ public:
 
     /**
      * @brief Returns the gripper status
-     * 
+     *
      * @param none
      * @return Gripper status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    Status GetStatus(); 
+    Status GetStatus();
 
     /**
      * @brief Returns the gripper fault status
-     * 
+     *
      * @param none
      * @return Fault Status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    FaultStatus GetFaultStatus(); 
+    FaultStatus GetFaultStatus();
 
     /**
      * @brief Returns the gripper requsted position
-     * 
+     *
      * @param none
      * @return Gripper requested position 
      * @note see status on success, exception thrown if communicatoin issues
@@ -113,7 +116,7 @@ public:
 
     /**
      * @brief Returns the gripper position
-     * 
+     *
      * @param none
      * @return Gripper position in [m]
      * @note see status on success, exception thrown if communicatoin issues
@@ -131,9 +134,9 @@ public:
 
     /**
      * @brief Returns the gripper current
-     * 
+     *
      * @param none
-     * @return Gripper current in [A] (range: 0-2.55A) 
+     * @return Gripper current in [A] (range: 0-2.55A)
      * @note see status on success, exception thrown if communicatoin issues
      */
     double Current();
@@ -173,6 +176,7 @@ private:
      * Current flowin through the gripper, in [A]
      */
     double current_;
-    
+
 };
 }   // namespace hande_driver
+#endif // APPLICATION_H_

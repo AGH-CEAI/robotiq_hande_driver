@@ -1,3 +1,6 @@
+#ifndef PROTOCOL_LOGIC_H_
+#define PROTOCOL_LOGIC_H_
+
 #include <stdint.h>
 
 #include <communication.hpp>
@@ -98,7 +101,7 @@ public:
 
     /**
      *  @brief Resets the gripper
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -107,7 +110,7 @@ public:
 
     /**
      *  @brief Sets the gripper
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -116,7 +119,7 @@ public:
 
     /**
      * @brief Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -125,7 +128,7 @@ public:
 
     /**
      * @brief Activates the gripper, after that it can be used 
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
@@ -134,7 +137,7 @@ public:
 
     /**
      * @brief Moves the gripper
-     * 
+     *
      * @param position requested position
      * @param velocity requested position
      * @param force requested position
@@ -145,7 +148,7 @@ public:
 
     /**
      * @brief Stops the gripper
-     * 
+     *
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
@@ -153,35 +156,35 @@ public:
 
     /**
      * @brief Logic for reset state
-     * 
+     *
      * @return True if gripper is in reset state
      */
     bool IsReset();
 
     /**
      * @brief Logic for ready state
-     * 
+     *
      * @return True if gripper is ready
      */
     bool IsReady();
 
     /**
      * @brief Logic for moving state
-     * 
+     *
      * @return True if gripper is moving
      */
     bool IsMoving();
 
     /**
      * @brief Logic for stopped state
-     * 
+     *
      * @return True if gripper is stopped
      */
     bool IsStopped();
 
     /**
      * @brief Logic for closed state
-     * 
+     *
      * @return True if gripper is closed
      */
     bool IsClosed();
@@ -223,14 +226,14 @@ public:
 
     /**
      * @brief Decode modbus registers and refresh apropriate data
-     * 
+     *
      * @return none
      */
     void RefreshRegisters();
 
     /**
      * @brief Read 8bit registers from 16bit words
-     * 
+     *
      * @param reg pointer to 8bit register
      * @param byte 8bit register position in 16bit modbus frame
      * @return none
@@ -239,10 +242,10 @@ public:
 
     /**
      * @brief Set n-th bit to x value
-     * 
+     *
      * @param number
      * @param n n-th bit in number
-     * @param x bool value 
+     * @param x bool value
      * @return uint number with n-th bit set to x
      */
     uint BitSetTo(uint number, uint n, bool x);
@@ -275,3 +278,4 @@ private:
     Communication communication_;
 };
 }   // namespace hande_driver
+#endif  // PROTOCOL_LOGIC_H_

@@ -1,3 +1,6 @@
+#ifndef COMMUNICATION_H_
+#define COMMUNICATION_H_
+
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>
@@ -19,7 +22,7 @@ public:
 
     /**
      * @brief Connect to gripper using modbus rtu and virtual socket
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown in case of communication issues
@@ -28,7 +31,7 @@ public:
 
     /**
      * @brief Disconnect from gripper using modbus rtu and virtual socket
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown in case of communication issues
@@ -37,7 +40,7 @@ public:
 
     /**
      * @brief Read and write input.output registers at once
-     * 
+     *
      * @param none
      * @return none
      * @note see status on success, exception thrown in case of communication issues
@@ -52,3 +55,4 @@ private:
 
 };
 }   // namespace hande_driver
+#endif // COMMUNICATION_H_

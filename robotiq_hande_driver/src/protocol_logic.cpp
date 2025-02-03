@@ -91,12 +91,12 @@ void ProtocolLogic::Stop(){
 }
 
 bool ProtocolLogic::IsReset(){
-    return (gripper_status_ == GRIPPER_IN_RESET && 
+    return (gripper_status_ == GRIPPER_IN_RESET &&
             activation_status_ == GRIPPER_RESET);
 }
 
 bool ProtocolLogic::IsReady(){
-    return (gripper_status_ == ACTIVATION_COMPLETE && 
+    return (gripper_status_ == ACTIVATION_COMPLETE &&
             activation_status_ == GRIPPER_ACTIVATION);
 }
 
@@ -147,14 +147,14 @@ void ProtocolLogic::RefreshRegisters(){
 
     ReadRegister(fault_status_, kFaultStatusByte);
     //To bo specified
-    
+
     ReadRegister(position_request_echo_, kPositionRequestEchoByte);
     ReadRegister(position_, kPositionByte);
     ReadRegister(current_, kCurrentByte);
 }
 
 void ProtocolLogic::ReadRegister(uint8_t &reg, uint8_t byte){
-    reg = byte % 2 == 1 ? 
+    reg = byte % 2 == 1 ?
         communication_.input_registers_[byte / 2] & 255u :
         communication_.input_registers_[byte / 2] >> 8u;
 }

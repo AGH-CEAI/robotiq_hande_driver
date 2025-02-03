@@ -97,5 +97,4 @@ void ApplicationLayer::Read(){
 void ApplicationLayer::Write(){
     protocol_logic_.RefreshRegisters();
 }
-
 }   // namespace hande_driver

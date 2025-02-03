@@ -86,7 +86,7 @@ void ApplicationLayer::Read(){
     status_.is_opened = protocol_logic_.IsOpened();
     status_.is_closed = protocol_logic_.IsClosed();
     status_.object_detected = protocol_logic_.ObjDetected();
-    
+
     //fault_status
 
     requested_position_ = (double)protocol_logic_.GetRegPos() * kGripperPositionStep + kGripperPositionMin;

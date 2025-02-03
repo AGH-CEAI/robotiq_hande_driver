@@ -205,7 +205,7 @@ public:
 
     /**
      * @brief Getter of requested gripper position
-     * 
+     *
      * @return Requested gripper position
      */
     uint8_t GetRegPos();

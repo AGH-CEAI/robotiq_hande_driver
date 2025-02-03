@@ -55,4 +55,4 @@ private:
 
 };
 }   // namespace hande_driver
-#endif // COMMUNICATION_HPP_
+#endif  // COMMUNICATION_HPP_

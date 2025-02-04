@@ -25,24 +25,27 @@ Communication::Communication()
     mb_ = modbus_new_rtu(kDeviceName, kBaudrate, kParity, kDataBits, kStopBit);
     modbus_set_slave(mb_, kSlaveID);
     modbus_set_debug(mb_, kDebugModbus);
-    Connect();
+    connect();
 }
 
 Communication::~Communication(){
     printf("Communication destructor\n");
-    Disconnect();
+    disconnect();
     modbus_free(mb_);
 }
 
-void Communication::Connect(){
+void Communication::connect(){
     modbus_connect(mb_);
+
+    //TODO: send read/write and verify gripper is responding
 }
 
-void Communication::Disconnect(){
+void Communication::disconnect(){
     modbus_close(mb_);
 }
 
-void Communication::ReadWiteRegisters(){
+void Communication::read_write_registers(){
+    // TODO: add description
     modbus_write_and_read_registers(mb_,
                                     kGripperInputFirstReg,
                                     kRegisterWordLength,

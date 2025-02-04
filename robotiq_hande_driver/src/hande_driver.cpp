@@ -13,23 +13,23 @@ int main(int argc, char ** argv)
   hande_driver::ApplicationLayer app_test;
 
   printf("Activation robotiq_hande_driver\n");
-  app_test.Activate();
+  app_test.activate();
   sleep(4);
 
   printf("Open-Close loop x2\n");
 
   printf("Open\n");
-  app_test.Open();
+  app_test.open();
   sleep(2);
   printf("Close\n");
-  app_test.Close();
+  app_test.close();
   sleep(2);
 
   printf("Open\n");
-  app_test.Open();
+  app_test.open();
   sleep(2);
   printf("Close\n");
-  app_test.Close();
+  app_test.close();
 
   printf("Finished\n");
 

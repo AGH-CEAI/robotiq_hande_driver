@@ -27,7 +27,7 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void Connect();
+    void connect();
 
     /**
      * @brief Disconnect from gripper using modbus rtu and virtual socket
@@ -36,7 +36,7 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void Disconnect();
+    void disconnect();
 
     /**
      * @brief Read and write input.output registers at once
@@ -45,7 +45,7 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void ReadWiteRegisters();
+    void read_write_registers();
 
     uint16_t input_registers_[kRegisterWordLength];
     uint16_t output_registers_[kRegisterWordLength];

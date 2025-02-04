@@ -106,7 +106,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Reset();
+    void reset();
 
     /**
      *  @brief Sets the gripper
@@ -115,7 +115,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Set();
+    void set();
 
     /**
      * @brief Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -124,7 +124,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void AutoRelease();
+    void auto_release();
 
     /**
      * @brief Activates the gripper, after that it can be used
@@ -133,7 +133,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Activate();
+    void activate();
 
     /**
      * @brief Moves the gripper
@@ -144,7 +144,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void GoTo(uint8_t position, uint8_t velocity, uint8_t force);
+    void go_to(uint8_t position, uint8_t velocity, uint8_t force);
 
     /**
      * @brief Stops the gripper
@@ -152,84 +152,84 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Stop();
+    void stop();
 
     /**
      * @brief Logic for reset state
      *
      * @return True if gripper is in reset state
      */
-    bool IsReset();
+    bool is_reset();
 
     /**
      * @brief Logic for ready state
      *
      * @return True if gripper is ready
      */
-    bool IsReady();
+    bool is_ready();
 
     /**
      * @brief Logic for moving state
      *
      * @return True if gripper is moving
      */
-    bool IsMoving();
+    bool is_moving();
 
     /**
      * @brief Logic for stopped state
      *
      * @return True if gripper is stopped
      */
-    bool IsStopped();
+    bool is_stopped();
 
     /**
      * @brief Logic for closed state
      *
      * @return True if gripper is closed
      */
-    bool IsClosed();
+    bool is_closed();
 
     /**
      * @brief Logic for opened state
      *
      * @return True if gripper is opened
      */
-    bool IsOpened();
+    bool is_opened();
 
     /**
      * @brief Logic for detecting the object
      *
      * @return True if gripper has detected the object
      */
-    bool ObjDetected();
+    bool obj_detected();
 
     /**
      * @brief Getter of requested gripper position
      *
      * @return Requested gripper position
      */
-    uint8_t GetRegPos();
+    uint8_t get_reg_pos();
 
     /**
      * @brief Getter of current gripper position
      *
      * @return Current gripper position
      */
-    uint8_t GetPos();
+    uint8_t get_pos();
 
     /**
      * @brief Getter of current
      *
      * @return Current gripper
      */
-    uint8_t GetCurrent();
+    uint8_t get_current();
 
     /**
      * @brief Decode modbus registers and refresh appropriate data
      *
      * @return none
      */
-    void RefreshRegisters();
+    void refresh_registers();
 
     /**
      * @brief Read 8bit registers from 16bit words
@@ -238,7 +238,7 @@ public:
      * @param byte 8bit register position in 16bit modbus frame
      * @return none
      */
-    void ReadRegister(uint8_t &reg, uint8_t byte);
+    void read_register(uint8_t &reg, uint8_t byte);
 
     /**
      * @brief Set n-th bit to x value
@@ -248,7 +248,7 @@ public:
      * @param x bool value
      * @return uint number with n-th bit set to x
      */
-    uint BitSetTo(uint number, uint n, bool x);
+    uint bit_set_to(uint number, uint n, bool x);
 
 private:
 // Gripper

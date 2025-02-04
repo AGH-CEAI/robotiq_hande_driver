@@ -24,79 +24,79 @@ ApplicationLayer::~ApplicationLayer(){
     printf("ApplicationLayer destructor\n");
 }
 
-void ApplicationLayer::Stop(){
-    protocol_logic_.Stop();
+void ApplicationLayer::stop(){
+    protocol_logic_.stop();
 }
 
-void ApplicationLayer::Reset(){
-    protocol_logic_.Reset();
-}
-
-
-void ApplicationLayer::AutoRelease(){
-    protocol_logic_.AutoRelease();
+void ApplicationLayer::reset(){
+    protocol_logic_.reset();
 }
 
 
-void ApplicationLayer::Activate(){
-    protocol_logic_.Activate();
+void ApplicationLayer::auto_release(){
+    protocol_logic_.auto_release();
 }
 
 
-void ApplicationLayer::Open(){
-    protocol_logic_.GoTo(0, kMaxSpeed, kMaxForce);
+void ApplicationLayer::activate(){
+    protocol_logic_.activate();
 }
 
 
-void ApplicationLayer::Close(){
-    protocol_logic_.GoTo(255, kMaxSpeed, kMaxForce);
+void ApplicationLayer::open(){
+    protocol_logic_.go_to(0, kMaxSpeed, kMaxForce);
 }
 
-ApplicationLayer::Status ApplicationLayer::GetStatus(){
+
+void ApplicationLayer::close(){
+    protocol_logic_.go_to(255, kMaxSpeed, kMaxForce);
+}
+
+ApplicationLayer::Status ApplicationLayer::get_status(){
     return status_;
 }
 
-ApplicationLayer::FaultStatus ApplicationLayer::GetFaultStatus(){
+ApplicationLayer::FaultStatus ApplicationLayer::get_fault_status(){
     return fault_status_;
 }
 
-double ApplicationLayer::RequestedPosition(){
+double ApplicationLayer::requested_position(){
     return  requested_position_;
 }
 
-double ApplicationLayer::Position(){
+double ApplicationLayer::position(){
     return position_;
 }
 
-void ApplicationLayer::SetPosition(double position){
+void ApplicationLayer::set_position(double position){
     uint8_t raw_position = uint8_t((kGripperPositionMax - position) / kGripperPositionStep);
 
-    protocol_logic_.GoTo(raw_position, kMaxSpeed, kMaxForce);
+    protocol_logic_.go_to(raw_position, kMaxSpeed, kMaxForce);
 }
 
-double ApplicationLayer::Current(){
+double ApplicationLayer::current(){
     return current_;
 }
 
-void ApplicationLayer::Read(){
-    protocol_logic_.RefreshRegisters();
+void ApplicationLayer::read(){
+    protocol_logic_.refresh_registers();
 
-    status_.is_reset = protocol_logic_.IsReset();
-    status_.is_ready = protocol_logic_.IsReady();
-    status_.is_moving = protocol_logic_.IsMoving();
-    status_.is_stopped = protocol_logic_.IsStopped();
-    status_.is_opened = protocol_logic_.IsOpened();
-    status_.is_closed = protocol_logic_.IsClosed();
-    status_.object_detected = protocol_logic_.ObjDetected();
+    status_.is_reset = protocol_logic_.is_reset();
+    status_.is_ready = protocol_logic_.is_ready();
+    status_.is_moving = protocol_logic_.is_moving();
+    status_.is_stopped = protocol_logic_.is_stopped();
+    status_.is_opened = protocol_logic_.is_opened();
+    status_.is_closed = protocol_logic_.is_closed();
+    status_.object_detected = protocol_logic_.obj_detected();
 
     //fault_status
 
-    requested_position_ = (double)protocol_logic_.GetRegPos() * kGripperPositionStep + kGripperPositionMin;
-    position_ = kGripperPositionMax - (double)protocol_logic_.GetPos() * kGripperPositionStep;
-    current_ = (double)protocol_logic_.GetCurrent() * kGripperCurrentScale;
+    requested_position_ = (double)protocol_logic_.get_reg_pos() * kGripperPositionStep + kGripperPositionMin;
+    position_ = kGripperPositionMax - (double)protocol_logic_.get_pos() * kGripperPositionStep;
+    current_ = (double)protocol_logic_.get_current() * kGripperCurrentScale;
 }
 
-void ApplicationLayer::Write(){
-    protocol_logic_.RefreshRegisters();
+void ApplicationLayer::write(){
+    protocol_logic_.refresh_registers();
 }
 }   // namespace hande_driver

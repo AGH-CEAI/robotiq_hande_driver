@@ -40,7 +40,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Stop();
+    void stop();
 
     /**
      * @brief Resets the gripper: deactivate and activate again
@@ -49,7 +49,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Reset();
+    void reset();
 
     /**
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -58,7 +58,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void AutoRelease();
+    void auto_release();
 
     /**
      * @brief Activates the gripper, after that it can be used
@@ -67,7 +67,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Activate();
+    void activate();
 
     /**
      * @brief Opens the gripper
@@ -76,7 +76,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Open();
+    void open();
 
     /**
      * @brief Closes the gripper
@@ -85,7 +85,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void Close();
+    void close();
 
     /**
      * @brief Returns the gripper status
@@ -94,7 +94,7 @@ public:
      * @return Gripper status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    Status GetStatus();
+    Status get_status();
 
     /**
      * @brief Returns the gripper fault status
@@ -103,7 +103,7 @@ public:
      * @return Fault Status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    FaultStatus GetFaultStatus();
+    FaultStatus get_fault_status();
 
     /**
      * @brief Returns the gripper requested position
@@ -112,7 +112,7 @@ public:
      * @return Gripper requested position
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double RequestedPosition();
+    double requested_position();
 
     /**
      * @brief Returns the gripper position
@@ -121,7 +121,7 @@ public:
      * @return Gripper position in [m]
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double Position();
+    double position();
 
     /**
      * @brief Moves the gripper to requested position
@@ -130,7 +130,7 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void SetPosition(double position);
+    void set_position(double position);
 
     /**
      * @brief Returns the gripper current
@@ -139,12 +139,12 @@ public:
      * @return Gripper current in [A] (range: 0-2.55A)
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double Current();
+    double current();
 
 
-    void Read();
+    void read();
 
-    void Write();
+    void write();
 
 private:
     /**

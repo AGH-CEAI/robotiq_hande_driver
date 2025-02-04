@@ -9,6 +9,8 @@ constexpr auto kGripperPositionMin = 0.0;
 constexpr auto kGripperPositionMax = 0.05;
 constexpr auto kGripperPositionStep = (kGripperPositionMax - kGripperPositionMin) / 255.0;
 constexpr auto kGripperCurrentScale = 0.01;
+constexpr auto kMaxSpeed = 255;
+constexpr auto kMaxForce = 255;
 
 ApplicationLayer::ApplicationLayer()
 :   requested_position_(0)
@@ -42,12 +44,12 @@ void ApplicationLayer::Activate(){
 
 
 void ApplicationLayer::Open(){
-    protocol_logic_.GoTo(0, 255, 255);
+    protocol_logic_.GoTo(0, kMaxSpeed, kMaxForce);
 }
 
 
 void ApplicationLayer::Close(){
-    protocol_logic_.GoTo(255, 255, 255);
+    protocol_logic_.GoTo(255, kMaxSpeed, kMaxForce);
 }
 
 ApplicationLayer::Status ApplicationLayer::GetStatus(){
@@ -67,9 +69,9 @@ double ApplicationLayer::Position(){
 }
 
 void ApplicationLayer::SetPosition(double position){
-    uint8_t raw_position = uint8_t(kGripperPositionMax - position / kGripperPositionStep);
+    uint8_t raw_position = uint8_t((kGripperPositionMax - position) / kGripperPositionStep);
 
-    protocol_logic_.GoTo(raw_position, 255, 255);
+    protocol_logic_.GoTo(raw_position, kMaxSpeed, kMaxForce);
 }
 
 double ApplicationLayer::Current(){

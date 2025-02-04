@@ -44,10 +44,10 @@ void Communication::Disconnect(){
 
 void Communication::ReadWiteRegisters(){
     modbus_write_and_read_registers(mb_,
-                                    kGripperOutputFirstReg,
+                                    kGripperInputFirstReg,
                                     kRegisterWordLength,
                                     output_registers_,
-                                    kGripperInputFirstReg,
+                                    kGripperOutputFirstReg,
                                     kRegisterWordLength,
                                     input_registers_);
 }

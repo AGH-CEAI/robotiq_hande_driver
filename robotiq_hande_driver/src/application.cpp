@@ -42,12 +42,12 @@ void ApplicationLayer::Activate(){
 
 
 void ApplicationLayer::Open(){
-    protocol_logic_.GoTo(255, 255, 255);
+    protocol_logic_.GoTo(0, 255, 255);
 }
 
 
 void ApplicationLayer::Close(){
-    protocol_logic_.GoTo(0, 255, 255);
+    protocol_logic_.GoTo(255, 255, 255);
 }
 
 ApplicationLayer::Status ApplicationLayer::GetStatus(){

@@ -67,7 +67,7 @@ double ApplicationLayer::Position(){
 }
 
 void ApplicationLayer::SetPosition(double position){
-    uint8_t raw_position = uint8_t(position / kGripperPositionStep - kGripperPositionMin);
+    uint8_t raw_position = uint8_t(kGripperPositionMax - position / kGripperPositionStep);
 
     protocol_logic_.GoTo(raw_position, 255, 255);
 }
@@ -90,7 +90,7 @@ void ApplicationLayer::Read(){
     //fault_status
 
     requested_position_ = (double)protocol_logic_.GetRegPos() * kGripperPositionStep + kGripperPositionMin;
-    position_ = (double)protocol_logic_.GetPos() * kGripperPositionStep + kGripperPositionMin;
+    position_ = kGripperPositionMax - (double)protocol_logic_.GetPos() * kGripperPositionStep;
     current_ = (double)protocol_logic_.GetCurrent() * kGripperCurrentScale;
 }
 

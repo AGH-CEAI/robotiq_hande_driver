@@ -232,13 +232,13 @@ public:
     void refresh_registers();
 
     /**
-     * @brief Read 8bit registers from 16bit words
+     * @brief Set n-th bit to action request byte
      *
-     * @param reg pointer to 8bit register
-     * @param byte 8bit register position in 16bit modbus frame
+     * @param position_bit n-th bit in byte
+     * @param value bool value
      * @return none
      */
-    void read_register(uint8_t &reg, uint8_t byte);
+    void write_action_bit(uint8_t position_bit, bool value);
 
     /**
      * @brief Set n-th bit to x value

@@ -44,12 +44,12 @@ void ApplicationLayer::activate(){
 
 
 void ApplicationLayer::open(){
-    protocol_logic_.go_to(0, kMaxSpeed, kMaxForce);
+    set_position(kGripperPositionMax);
 }
 
 
 void ApplicationLayer::close(){
-    protocol_logic_.go_to(255, kMaxSpeed, kMaxForce);
+    set_position(kGripperPositionMin);
 }
 
 ApplicationLayer::Status ApplicationLayer::get_status(){
@@ -91,7 +91,7 @@ void ApplicationLayer::read(){
 
     //fault_status
 
-    requested_position_ = (double)protocol_logic_.get_reg_pos() * kGripperPositionStep + kGripperPositionMin;
+    requested_position_ = kGripperPositionMax - (double)protocol_logic_.get_reg_pos() * kGripperPositionStep;
     position_ = kGripperPositionMax - (double)protocol_logic_.get_pos() * kGripperPositionStep;
     current_ = (double)protocol_logic_.get_current() * kGripperCurrentScale;
 }

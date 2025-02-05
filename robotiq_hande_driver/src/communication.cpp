@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <stdint.h>
+#include <string.h>
 
 
 namespace hande_driver  {
@@ -18,8 +19,10 @@ constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
 constexpr uint16_t kGripperInputFirstReg = 0x03E8;
 
 Communication::Communication()
-:    input_registers_{0, 0, 0}
-,    output_registers_{0, 0, 0}
+// :    input_registers_{0, 0, 0}
+// ,    output_registers_{0, 0, 0}
+:    input_bytes_{0, 0, 0, 0, 0, 0}
+,    output_bytes_{0, 0, 0, 0, 0, 0}
 {
     printf("Communication constructor\n");
     mb_ = modbus_new_rtu(kDeviceName, kBaudrate, kParity, kDataBits, kStopBit);
@@ -49,9 +52,21 @@ void Communication::read_write_registers(){
     modbus_write_and_read_registers(mb_,
                                     kGripperInputFirstReg,
                                     kRegisterWordLength,
-                                    output_registers_,
+                                    (uint16_t *)output_bytes_,
                                     kGripperOutputFirstReg,
                                     kRegisterWordLength,
-                                    input_registers_);
+                                    (uint16_t *)input_bytes_);
+}
+
+void Communication::clear_output_bytes(){
+    memset(output_bytes_, 0, sizeof(output_bytes_));
+}
+
+uint8_t Communication::get_input_byte(InputBytes index){
+    return input_bytes_[index];
+}
+
+void Communication::set_output_byte(OutputBytes index, uint8_t value){
+    output_bytes_[index] = value;
 }
 }   // namespace hande_driver

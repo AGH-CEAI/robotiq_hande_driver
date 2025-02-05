@@ -5,6 +5,9 @@
 
 namespace hande_driver  {
 
+constexpr auto kGripperPositionOpenedThreshold = 230;
+constexpr auto kGripperPositionClosedThreshold = 13;
+
 ProtocolLogic::ProtocolLogic()
 :   status_(0)
 ,   activation_status_(GRIPPER_RESET)
@@ -24,41 +27,24 @@ ProtocolLogic::~ProtocolLogic(){
 }
 
 void ProtocolLogic::reset(){
-    communication_.output_registers_[0] = 0x0000;
-    communication_.output_registers_[1] = 0x0000;
-    communication_.output_registers_[2] = 0x0000;
+    communication_.clear_output_bytes();
 
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kActivatePositionByte,
-        DEACTIVATE_GRIPPER);
+    write_action_bit(kActivatePositionByte, DEACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
 
 void ProtocolLogic::set(){
-    communication_.output_registers_[0] = 0x0000;
-    communication_.output_registers_[1] = 0x0000;
-    communication_.output_registers_[2] = 0x0000;
+    communication_.clear_output_bytes();
 
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kActivatePositionByte,
-        ACTIVATE_GRIPPER);
+    write_action_bit(kActivatePositionByte, ACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
 
 void ProtocolLogic::auto_release(){
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kAutomaticReleasePositionByte,
-        EMERGENCY_AUTO_RELEASE);
-
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kAutomaticReleasePositionByte,
-        OPENING);
+    write_action_bit(kAutomaticReleasePositionByte, EMERGENCY_AUTO_RELEASE);
+    write_action_bit(kAutoReleaseDirectionPositionByte, OPENING);
 
     communication_.read_write_registers();
 }
@@ -69,22 +55,17 @@ void ProtocolLogic::activate(){
 }
 
 void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force){
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
-        GO_TO_REQ_POS);
+    write_action_bit(kGoToPositionByte, GO_TO_REQ_POS);
 
-    communication_.output_registers_[1] = uint16_t(0x00 << 8 | position);
-    communication_.output_registers_[2] = uint16_t(velocity << 8 | force);
+    communication_.set_output_byte(OUTPUT_BYTES_POSITION_REQUEST, position);
+    communication_.set_output_byte(OUTPUT_BYTES_SPEED, velocity);
+    communication_.set_output_byte(OUTPUT_BYTES_FORCE, force);
 
     communication_.read_write_registers();
 }
 
 void ProtocolLogic::stop(){
-    communication_.output_registers_[kActionRequestByte / 2] = bit_set_to(
-        communication_.output_registers_[kActionRequestByte / 2],
-        (kActionRequestByte % 2 == 0 ? 8 : 0) + kGoToPositionByte,
-        STOP);
+    write_action_bit(kGoToPositionByte, STOP);
 
     communication_.read_write_registers();
 }
@@ -109,11 +90,12 @@ bool ProtocolLogic::is_stopped(){
 }
 
 bool ProtocolLogic::is_closed(){
-    return position_ <= 13;
+    return position_ >= kGripperPositionOpenedThreshold;
+    
 }
 
 bool ProtocolLogic::is_opened(){
-    return position_ >= 230;
+    return position_ <= kGripperPositionClosedThreshold;
 }
 
 bool ProtocolLogic::obj_detected(){
@@ -136,30 +118,29 @@ uint8_t ProtocolLogic::get_current(){
 void ProtocolLogic::refresh_registers(){
     communication_.read_write_registers();
 
-    read_register(status_, kStatusByte);
+    status_ = communication_.get_input_byte(INPUT_BYTES_GRIPPER_STATUS);
 
     activation_status_ = (ActivationStatus)((status_>>kActivationStatusPositionByte) & 1u);
     action_status_ = (ActionStatus)((status_>>kActionStatusPositionByte) & 1u);
     gripper_status_ = (GripperStatus)((status_>>kGripperStatusPositionByte) & 3u);
     object_detection_status_ = (ObjectDetectionStatus)((status_>>kObjectDetectionStatusPositionByte) & 3u);
 
-    read_register(fault_status_, kFaultStatusByte);
+    fault_status_ = communication_.get_input_byte(INPUT_BYTES_FAULT_STATUS);
     //To bo specified
 
-    read_register(position_request_echo_, kPositionRequestEchoByte);
-    read_register(position_, kPositionByte);
-    read_register(current_, kCurrentByte);
+    position_request_echo_ = communication_.get_input_byte(INPUT_BYTES_POSITION_REQUEST_ECHO);
+    position_ = communication_.get_input_byte(INPUT_BYTES_POSITION);
+    current_ = communication_.get_input_byte(INPUT_BYTES_CURRENT);
 }
 
-void ProtocolLogic::read_register(uint8_t &reg, uint8_t byte){
-    // TODO: add byte references in constructor
-    reg = byte % 2 == 1 ?
-        communication_.input_registers_[byte / 2] & 255u :
-        communication_.input_registers_[byte / 2] >> 8u;
+void ProtocolLogic::write_action_bit(uint8_t position_bit, bool value){
+    // TODO: change byte from uint to &uint
+    // byte = bit_set_to(byte, position, value)
+    communication_.output_registers_[0] = bit_set_to(
+        communication_.output_registers_[0], 8 + position_bit, value);
 }
 
 inline uint ProtocolLogic::bit_set_to(uint number, uint n, bool x) {
-    //TODO: include byte/bit logic
     return (number & ~((uint)1 << n)) | ((uint)x << n);
 }
 }   // namespace hande_driver

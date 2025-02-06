@@ -37,13 +37,16 @@ Communication::~Communication(){
 
 void Communication::connect(){
     uint16_t activation_status[1] = {0x0000};
+    int result;
 
     modbus_connect(mb_);
 
-    if (modbus_read_registers(mb_, kGripperOutputFirstReg, 1, activation_status) > 0) {
-        printf("Connected successfully");
+    modbus_read_registers(mb_, kGripperOutputFirstReg, 1, activation_status);
+
+    if (result > 0) {
+        printf("Connected successfully: %d\n", result);
     } else {
-        printf("Couldn't connect");
+        printf("Couldn't connect: %d\n", result);
     }
 }
 

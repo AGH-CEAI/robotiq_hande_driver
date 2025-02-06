@@ -57,18 +57,21 @@ constexpr uint8_t kForceRequestByte = 5;
 // Gripper Status
 constexpr uint8_t kStatusByte = 0;
 constexpr uint8_t kActivationStatusPositionByte = 0;         // gACT
+constexpr auto kActivationStatusBits = 0b1;
 enum ActivationStatus{
     GRIPPER_RESET,
     GRIPPER_ACTIVATION
 };
 
 constexpr uint8_t kActionStatusPositionByte = 3;               // gGTO
+constexpr auto kActionStatusBits = 0b1;
 enum ActionStatus{
     STOPPED,
     GO_TO_POSITION_REQUEST
 };
 
 constexpr uint8_t kGripperStatusPositionByte = 4;            // gSTA
+constexpr auto kGripperStatusBits = 0b11;
 enum GripperStatus{
     GRIPPER_IN_RESET,
     ACTIVATION_IN_PROGRESS,
@@ -77,6 +80,7 @@ enum GripperStatus{
 };
 
 constexpr uint8_t kObjectDetectionStatusPositionByte = 6;    // gObj
+constexpr auto kObjectDetectionStatusBits = 0b11;
 enum ObjectDetectionStatus{
     MOTION_NO_OBJECT,
     STOPPED_OPENING_DETECTED,

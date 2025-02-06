@@ -119,10 +119,17 @@ void ProtocolLogic::refresh_registers(){
 
     status_ = communication_.get_input_byte(INPUT_BYTES_GRIPPER_STATUS);
 
-    activation_status_ = (ActivationStatus)((status_>>kActivationStatusPositionByte) & 1u);
-    action_status_ = (ActionStatus)((status_>>kActionStatusPositionByte) & 1u);
-    gripper_status_ = (GripperStatus)((status_>>kGripperStatusPositionByte) & 3u);
-    object_detection_status_ = (ObjectDetectionStatus)((status_>>kObjectDetectionStatusPositionByte) & 3u);
+    activation_status_ = (ActivationStatus)(
+        (status_>>kActivationStatusPositionByte) & kActivationStatusBits);
+
+    action_status_ = (ActionStatus)(
+        (status_>>kActionStatusPositionByte) & kActionStatusBits);
+
+    gripper_status_ = (GripperStatus)(
+        (status_>>kGripperStatusPositionByte) & kGripperStatusBits);
+
+    object_detection_status_ = (ObjectDetectionStatus)(
+        (status_>>kObjectDetectionStatusPositionByte) & kObjectDetectionStatusBits);
 
     fault_status_ = communication_.get_input_byte(INPUT_BYTES_FAULT_STATUS);
     //To bo specified

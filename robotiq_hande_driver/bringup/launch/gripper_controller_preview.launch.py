@@ -55,21 +55,9 @@ def launch_setup(context: LaunchContext) -> list[IncludeLaunchDescription]:
     control_node = preapre_control_node()
     rviz_node = prepare_rviz_node(enable=LaunchConfiguration("launch_rviz"))
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
+    joint_state_broadcaster_spawner = prepare_controller_spawner("joint_state_broadcaster")
 
-    gripper_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["gripper_action_controller", "-c", "/controller_manager"],
-    )
+    gripper_controller_spawner = prepare_controller_spawner("gripper_action_controller")
 
     return [
         control_node,
@@ -148,5 +136,17 @@ def prepare_robot_state_publisher_node() -> Node:
         output="both",
         parameters=[
             {"robot_description": ParameterValue(robot_description_str, value_type=str)}
+        ],
+    )
+
+
+def prepare_controller_spawner(controller_name: str) -> Node:
+    return Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            controller_name,
+            "--controller-manager",
+            "/controller_manager",
         ],
     )

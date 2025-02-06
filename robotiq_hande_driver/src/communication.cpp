@@ -69,4 +69,13 @@ uint8_t Communication::get_input_byte(InputBytes index){
 void Communication::set_output_byte(OutputBytes index, uint8_t value){
     output_bytes_[index] = value;
 }
+
+void Communication::write_action_bit(uint8_t position_bit, bool value){
+    output_bytes_[OUTPUT_BYTES_ACTION_REQUEST] = bit_set_to(
+        output_bytes_[OUTPUT_BYTES_ACTION_REQUEST], 8 + position_bit, value);
+}
+
+inline uint Communication::bit_set_to(uint number, uint n, bool x) {
+    return (number & ~((uint)1 << n)) | ((uint)x << n);
+}
 }   // namespace hande_driver

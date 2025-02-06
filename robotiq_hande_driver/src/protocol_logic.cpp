@@ -29,7 +29,7 @@ ProtocolLogic::~ProtocolLogic(){
 void ProtocolLogic::reset(){
     communication_.clear_output_bytes();
 
-    write_action_bit(kActivatePositionByte, DEACTIVATE_GRIPPER);
+    communication_.write_action_bit(kActivatePositionByte, DEACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
@@ -37,14 +37,14 @@ void ProtocolLogic::reset(){
 void ProtocolLogic::set(){
     communication_.clear_output_bytes();
 
-    write_action_bit(kActivatePositionByte, ACTIVATE_GRIPPER);
+    communication_.write_action_bit(kActivatePositionByte, ACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
 
 void ProtocolLogic::auto_release(){
-    write_action_bit(kAutomaticReleasePositionByte, EMERGENCY_AUTO_RELEASE);
-    write_action_bit(kAutoReleaseDirectionPositionByte, OPENING);
+    communication_.write_action_bit(kAutomaticReleasePositionByte, EMERGENCY_AUTO_RELEASE);
+    communication_.write_action_bit(kAutoReleaseDirectionPositionByte, OPENING);
 
     communication_.read_write_registers();
 }
@@ -55,7 +55,7 @@ void ProtocolLogic::activate(){
 }
 
 void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force){
-    write_action_bit(kGoToPositionByte, GO_TO_REQ_POS);
+    communication_.write_action_bit(kGoToPositionByte, GO_TO_REQ_POS);
 
     communication_.set_output_byte(OUTPUT_BYTES_POSITION_REQUEST, position);
     communication_.set_output_byte(OUTPUT_BYTES_SPEED, velocity);
@@ -65,7 +65,7 @@ void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force){
 }
 
 void ProtocolLogic::stop(){
-    write_action_bit(kGoToPositionByte, STOP);
+    communication_.write_action_bit(kGoToPositionByte, STOP);
 
     communication_.read_write_registers();
 }
@@ -91,7 +91,6 @@ bool ProtocolLogic::is_stopped(){
 
 bool ProtocolLogic::is_closed(){
     return position_ >= kGripperPositionOpenedThreshold;
-    
 }
 
 bool ProtocolLogic::is_opened(){
@@ -131,16 +130,5 @@ void ProtocolLogic::refresh_registers(){
     position_request_echo_ = communication_.get_input_byte(INPUT_BYTES_POSITION_REQUEST_ECHO);
     position_ = communication_.get_input_byte(INPUT_BYTES_POSITION);
     current_ = communication_.get_input_byte(INPUT_BYTES_CURRENT);
-}
-
-void ProtocolLogic::write_action_bit(uint8_t position_bit, bool value){
-    // TODO: change byte from uint to &uint
-    // byte = bit_set_to(byte, position, value)
-    communication_.output_registers_[0] = bit_set_to(
-        communication_.output_registers_[0], 8 + position_bit, value);
-}
-
-inline uint ProtocolLogic::bit_set_to(uint number, uint n, bool x) {
-    return (number & ~((uint)1 << n)) | ((uint)x << n);
 }
 }   // namespace hande_driver

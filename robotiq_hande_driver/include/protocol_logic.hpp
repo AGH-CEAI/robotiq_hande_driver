@@ -231,25 +231,6 @@ public:
      */
     void refresh_registers();
 
-    /**
-     * @brief Set n-th bit to action request byte
-     *
-     * @param position_bit n-th bit in byte
-     * @param value bool value
-     * @return none
-     */
-    void write_action_bit(uint8_t position_bit, bool value);
-
-    /**
-     * @brief Set n-th bit to x value
-     *
-     * @param number
-     * @param n n-th bit in number
-     * @param x bool value
-     * @return uint number with n-th bit set to x
-     */
-    uint bit_set_to(uint number, uint n, bool x);
-
 private:
 // Gripper
     uint8_t status_;

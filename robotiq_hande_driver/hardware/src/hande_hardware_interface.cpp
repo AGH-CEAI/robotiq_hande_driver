@@ -1,8 +1,7 @@
-#include <fmt/core.h>
+#include "robotiq_hande_driver/hande_hardware_interface.hpp"
+
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <rclcpp/rclcpp.hpp>
-
-#include "robotiq_hande_driver/hande_hardware_interface.hpp"
 
 namespace robotiq_hande_driver {
 
@@ -21,20 +20,20 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     logger_ = std::make_shared<rclcpp::Logger>(
     rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system.RobotiqHandeHardwareInterface"));
 
-    //TODO: Set parameters for the modbus communication
+    //TODO(modbus integration): Set parameters for the modbus communication
 
     RCLCPP_INFO(get_logger(), "Initialized ModbusRTU for %s", tty_port_.c_str());
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Initialize the ModbusRTU communication session
+    //TODO(modbus integration): Initialize the ModbusRTU communication session
     RCLCPP_INFO(get_logger(), "configure()");
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Deinitalize the ModbusRTU session
+    //TODO(modbus integration): Deinitalize the ModbusRTU session
     RCLCPP_INFO(get_logger(), "cleanup()");
     return HWI::CallbackReturn::SUCCESS;
 }
@@ -62,37 +61,37 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Power on the gripper (activation)
+    //TODO(modbus integration): Power on the gripper (activation)
     RCLCPP_INFO(get_logger(), "activate()");
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Deactiavte the gripper (set the reset flag)
+    //TODO(modbus integration): Deactiavte the gripper (set the reset flag)
     RCLCPP_INFO(get_logger(), "deactivate()");
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_shutdown(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Deactivate the gripper, deinitalize the modbus RTU session,
+    //TODO(modbus integration): Deactivate the gripper, deinitalize the modbus RTU session,
     RCLCPP_INFO(get_logger(), "shutdown()");
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_error(const rlccp_lc::State& /*previous_state*/){
-    //TODO: Placeholder for error handling
+    //TODO(modbus integration): Placeholder for error handling
     RCLCPP_INFO(get_logger(), "Handled error");
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::return_type RobotiqHandeHardwareInterface::read(const rclcpp::Time& /*time*/,
                                                      const rclcpp::Duration& /*period*/) {
-    //TODO: data = driver_->receive_data();
+    //TODO(modbus integration): data = driver_->receive_data();
     return hardware_interface::return_type::OK;
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(const rclcpp::Time& /*time*/,
                                                       const rclcpp::Duration& /*period*/) {
-    //TODO: driver_->send_data(cmd_position_);
+    //TODO(modbus integration): driver_->send_data(cmd_position_);
     return hardware_interface::return_type::OK;
 }
 

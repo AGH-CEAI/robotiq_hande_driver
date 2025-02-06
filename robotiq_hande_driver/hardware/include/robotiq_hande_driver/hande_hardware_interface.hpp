@@ -2,8 +2,8 @@
 #define ROBOTIQ_HANDE_DRIVER__HANDE_HARDWARE_INTERFACE_HPP_
 
 #include <string>
-#include "rclcpp/rclcpp.hpp"
-#include "hardware_interface/system_interface.hpp"
+#include <hardware_interface/system_interface.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 namespace robotiq_hande_driver {
 
@@ -35,7 +35,7 @@ public:
     rclcpp::Logger get_logger() const { return *logger_; }
 
 private:
-    //TODO: composition of the modbus communication
+    //TODO(modbus integration): composition of the modbus communication
     std::shared_ptr<rclcpp::Logger> logger_;
 
     std::string tty_port_;

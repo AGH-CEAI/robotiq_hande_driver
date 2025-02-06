@@ -94,9 +94,6 @@ public:
      */
     void set_output_byte(OutputBytes index, uint8_t value);
 
-    // uint16_t input_registers_[kRegisterWordLength];
-    // uint16_t output_registers_[kRegisterWordLength];
-
     /**
      * @brief Set n-th bit to action request byte
      *

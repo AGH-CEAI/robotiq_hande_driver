@@ -19,8 +19,6 @@ constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
 constexpr uint16_t kGripperInputFirstReg = 0x03E8;
 
 Communication::Communication()
-// :    input_registers_{0, 0, 0}
-// ,    output_registers_{0, 0, 0}
 :    input_bytes_{0, 0, 0, 0, 0, 0}
 ,    output_bytes_{0, 0, 0, 0, 0, 0}
 {
@@ -38,9 +36,15 @@ Communication::~Communication(){
 }
 
 void Communication::connect(){
+    uint16_t activation_status[1] = {0x0000};
+
     modbus_connect(mb_);
 
-    //TODO: send read/write and verify gripper is responding
+    if (modbus_read_registers(mb_, kGripperOutputFirstReg, 1, activation_status) > 0) {
+        printf("Connected successfully");
+    } else {
+        printf("Couldn't connect");
+    }
 }
 
 void Communication::disconnect(){
@@ -48,7 +52,19 @@ void Communication::disconnect(){
 }
 
 void Communication::read_write_registers(){
-    // TODO: add description
+    /**
+     * @brief Read and write modbus registers at once
+     *
+     * @param modbus_t *ctx
+     * @param int write_addr
+     * @param int write_nb
+     * @param uint16_t *src
+     * @param int read_addr
+     * @param int read_nb
+     * @param uint16_t *dest
+     * @return int >0 on success
+     * @note see status on success, exception thrown in case of communication issues
+     */
     modbus_write_and_read_registers(mb_,
                                     kGripperInputFirstReg,
                                     kRegisterWordLength,
@@ -72,7 +88,7 @@ void Communication::set_output_byte(OutputBytes index, uint8_t value){
 
 void Communication::write_action_bit(uint8_t position_bit, bool value){
     output_bytes_[OUTPUT_BYTES_ACTION_REQUEST] = bit_set_to(
-        output_bytes_[OUTPUT_BYTES_ACTION_REQUEST], 8 + position_bit, value);
+        output_bytes_[OUTPUT_BYTES_ACTION_REQUEST], position_bit, value);
 }
 
 inline uint Communication::bit_set_to(uint number, uint n, bool x) {

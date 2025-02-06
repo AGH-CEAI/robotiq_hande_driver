@@ -15,26 +15,26 @@ namespace hande_driver
 // Action Request
 constexpr uint8_t kActionRequestByte = 0;
 constexpr uint8_t kActivatePositionByte = 0;             // rACT
-enum Activate{
-    DEACTIVATE_GRIPPER,
+enum class Activate : uint8_t {
+    DEACTIVATE_GRIPPER = 0u,
     ACTIVATE_GRIPPER
 };
 
 constexpr uint8_t kGoToPositionByte = 3;                 // rGTO
-enum GoTo{
-    STOP,
+enum class GoTo : uint8_t {
+    STOP = 0u,
     GO_TO_REQ_POS
 };
 
 constexpr uint8_t kAutomaticReleasePositionByte = 4;     // rATR
-enum AutomaticRelease{
-    NORMAL,
+enum class AutomaticRelease : uint8_t {
+    NORMAL = 0u,
     EMERGENCY_AUTO_RELEASE
 };
 
 constexpr uint8_t kAutoReleaseDirectionPositionByte = 5; // rARD
-enum AutoReleaseDirection{
-    CLOSING,
+enum class AutoReleaseDirection : uint8_t  {
+    CLOSING = 0u,
     OPENING
 };
 
@@ -58,22 +58,22 @@ constexpr uint8_t kForceRequestByte = 5;
 constexpr uint8_t kStatusByte = 0;
 constexpr uint8_t kActivationStatusPositionByte = 0;         // gACT
 constexpr auto kActivationStatusBits = 0b1;
-enum ActivationStatus{
-    GRIPPER_RESET,
+enum class ActivationStatus : uint8_t {
+    GRIPPER_RESET = 0u,
     GRIPPER_ACTIVATION
 };
 
 constexpr uint8_t kActionStatusPositionByte = 3;               // gGTO
 constexpr auto kActionStatusBits = 0b1;
-enum ActionStatus{
-    STOPPED,
+enum class ActionStatus : uint8_t {
+    STOPPED = 0u,
     GO_TO_POSITION_REQUEST
 };
 
 constexpr uint8_t kGripperStatusPositionByte = 4;            // gSTA
 constexpr auto kGripperStatusBits = 0b11;
-enum GripperStatus{
-    GRIPPER_IN_RESET,
+enum class GripperStatus : uint8_t {
+    GRIPPER_IN_RESET = 0u,
     ACTIVATION_IN_PROGRESS,
     NOT_USED,
     ACTIVATION_COMPLETE
@@ -81,8 +81,8 @@ enum GripperStatus{
 
 constexpr uint8_t kObjectDetectionStatusPositionByte = 6;    // gObj
 constexpr auto kObjectDetectionStatusBits = 0b11;
-enum ObjectDetectionStatus{
-    MOTION_NO_OBJECT,
+enum class ObjectDetectionStatus : uint8_t {
+    MOTION_NO_OBJECT = 0u,
     STOPPED_OPENING_DETECTED,
     STOPPED_CLOSING_DETECTED,
     REQ_POS_NO_OBJECT

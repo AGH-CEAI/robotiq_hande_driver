@@ -13,8 +13,8 @@
 namespace hande_driver
 {
 constexpr auto kRegisterWordLength = 3;
-enum OutputBytes{
-    OUTPUT_BYTES_RESERVED_1,
+enum class OutputBytes : uint8_t {
+    OUTPUT_BYTES_RESERVED_1 = 0u,
     OUTPUT_BYTES_ACTION_REQUEST,
     OUTPUT_BYTES_POSITION_REQUEST,
     OUTPUT_BYTES_RESERVED_2,
@@ -23,8 +23,8 @@ enum OutputBytes{
     OUTPUT_BYTES_MAX
 };
 
-enum InputBytes{
-    INPUT_BYTES_RESERVED_1,
+enum class InputBytes : uint8_t {
+    INPUT_BYTES_RESERVED_1 = 0u,
     INPUT_BYTES_GRIPPER_STATUS,
     INPUT_BYTES_POSITION_REQUEST_ECHO,
     INPUT_BYTES_FAULT_STATUS,

@@ -24,9 +24,6 @@ ros2 run robotiq_hande_driver hande_driver
 ```
 
 ### Test Serial Connection
-```bash
-ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=false
-```
 
 Another terminal
 ```bash

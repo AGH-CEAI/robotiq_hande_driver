@@ -49,22 +49,15 @@ def generate_launch_description():
 
 def launch_setup(context: LaunchContext) -> list[IncludeLaunchDescription]:
 
+    # tf_prefix is implicitly used in robot_state_publisher (in URDF substitution)
     tf_prefix = LaunchConfiguration("tf_prefix", default="")
 
-    robot_state_pub_node = prepare_robot_state_publisher_node()
-    control_node = preapre_control_node()
-    rviz_node = prepare_rviz_node(enable=LaunchConfiguration("launch_rviz"))
-
-    joint_state_broadcaster_spawner = prepare_controller_spawner("joint_state_broadcaster")
-
-    gripper_controller_spawner = prepare_controller_spawner("gripper_action_controller")
-
     return [
-        control_node,
-        robot_state_pub_node,
-        rviz_node,
-        joint_state_broadcaster_spawner,
-        gripper_controller_spawner,
+        preapre_control_node(),
+        prepare_robot_state_publisher_node(),
+        prepare_rviz_node(enable=LaunchConfiguration("launch_rviz")),
+        prepare_controller_spawner("joint_state_broadcaster"),
+        prepare_controller_spawner("gripper_action_controller"),
     ]
 
 
@@ -86,14 +79,15 @@ def prepare_rviz_node(enable: LaunchConfiguration):
         condition=IfCondition(enable),
     )
 
+
 def preapre_control_node() -> Node:
     robot_controllers = ParameterFile(
         PathJoinSubstitution(
             [
                 FindPackageShare("robotiq_hande_driver"),
-            "bringup",
-            "config",
-            "hande_controller.yaml",
+                "bringup",
+                "config",
+                "hande_controller.yaml",
             ]
         ),
         allow_substs=True,

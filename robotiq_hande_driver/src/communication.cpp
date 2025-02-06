@@ -41,7 +41,7 @@ void Communication::connect(){
 
     modbus_connect(mb_);
 
-    modbus_read_registers(mb_, kGripperOutputFirstReg, 1, activation_status);
+    result = modbus_read_registers(mb_, kGripperOutputFirstReg, 1, activation_status);
 
     if (result > 0) {
         printf("Connected successfully: %d\n", result);

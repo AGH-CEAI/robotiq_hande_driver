@@ -1,0 +1,24 @@
+# This is an example configuration file for the controller_manager node.
+# YOU CAN NOT USE IT IN YOUR APPLICATION WITHOUT CHANGES
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 10 # Hz
+
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+
+      gripper_action_controller:
+        type: position_controllers/GripperActionController
+
+  gripper_action_controller:
+    ros__parameters:
+      action_monitor_rate: 20.0 # Hz
+      joint: $(var tf_prefix)robotiq_hande_left_finger_joint
+      max_effort: 10.0 # N
+      goal_tolerance: 0.01 # m
+      allow_stalling: false
+      stall_velocity_threshold: 0.001 #m/s
+      stall_timeout: 1.0 # s
+      state_interfaces:
+        - position

@@ -12,18 +12,16 @@
 #include "ros2_control_test_assets/components_urdfs.hpp"
 #include "ros2_control_test_assets/descriptions.hpp"
 
-namespace
-{
+namespace {
 const auto TIME = rclcpp::Time(0);
-const auto PERIOD = rclcpp::Duration::from_seconds(0.1);  // 0.1 seconds for easier math
+const auto PERIOD =
+    rclcpp::Duration::from_seconds(0.1);  // 0.1 seconds for easier math
 const auto COMPARE_DELTA = 0.0001;
 }  // namespace
 
-class TestHWInterface : public ::testing::Test
-{
-protected:
-  void SetUp() override
-  {
+class TestHWInterface : public ::testing::Test {
+ protected:
+  void SetUp() override {
     hw_system_gripper_1dof_ =
         R"(
             <ros2_control name="HandeGripperExample" type="system">
@@ -45,27 +43,24 @@ protected:
 };
 
 // Forward declaration
-namespace hardware_interface
-{
+namespace hardware_interface {
 class ResourceStorage;
 }
 
-class TestableResourceManager : public hardware_interface::ResourceManager
-{
-public:
+class TestableResourceManager : public hardware_interface::ResourceManager {
+ public:
   friend TestHWInterface;
 
   TestableResourceManager() : hardware_interface::ResourceManager() {}
 
-  TestableResourceManager(
-    const std::string & urdf, bool validate_interfaces = true, bool activate_all = false)
-  : hardware_interface::ResourceManager(urdf, validate_interfaces, activate_all)
-  {
-  }
+  TestableResourceManager(const std::string& urdf,
+                          bool validate_interfaces = true,
+                          bool activate_all = false)
+      : hardware_interface::ResourceManager(urdf, validate_interfaces,
+                                            activate_all) {}
 };
 
-TEST_F(TestHWInterface, load_robotiq_hande_hardware_interface)
-{
+TEST_F(TestHWInterface, load_robotiq_hande_hardware_interface) {
   auto urdf = ros2_control_test_assets::urdf_head + hw_system_gripper_1dof_ +
               ros2_control_test_assets::urdf_tail;
   ASSERT_NO_THROW(TestableResourceManager rm(urdf));

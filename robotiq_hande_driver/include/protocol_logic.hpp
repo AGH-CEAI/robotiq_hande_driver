@@ -37,7 +37,7 @@ enum class AutoReleaseDirection : uint8_t  {
     OPENING
 };
 
-// Gripper Status
+/* Gripper Status */
 enum class ResponseByte : uint8_t {
     STATUS = 0u,
     FAULT_STATUS = 2u,
@@ -52,19 +52,19 @@ enum class StatusPositionBit : uint8_t {
     OBJECT_DETECTION_STATUS = 6u,   /* gObj */
 };
 
-constexpr auto kActivationStatusBits = 0b1;
+constexpr auto ACTIVATION_STATUS_BITS = 0b1;
 enum class ActivationStatus : uint8_t {
     GRIPPER_RESET = 0u,
     GRIPPER_ACTIVATION
 };
 
-constexpr auto kActionStatusBits = 0b1;
+constexpr auto ACTION_STATUS_BITS = 0b1;
 enum class ActionStatus : uint8_t {
     STOPPED = 0u,
     GO_TO_POSITION_REQUEST
 };
 
-constexpr auto kGripperStatusBits = 0b11;
+constexpr auto GRIPPER_STATUS_BITS = 0b11;
 enum class GripperStatus : uint8_t {
     GRIPPER_IN_RESET = 0u,
     ACTIVATION_IN_PROGRESS,
@@ -72,7 +72,7 @@ enum class GripperStatus : uint8_t {
     ACTIVATION_COMPLETE
 };
 
-constexpr auto kObjectDetectionStatusBits = 0b11;
+constexpr auto OBJECT_DETECTION_STATUS_BITS = 0b11;
 enum class ObjectDetectionStatus : uint8_t {
     MOTION_NO_OBJECT = 0u,
     STOPPED_OPENING_DETECTED,
@@ -114,7 +114,7 @@ public:
      */
     void set() {
         communication_.clear_output_bytes();
-        communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::ACTIVATE_GRIPPER);
+        communication_.write_action_bit(static_cast<uint>(ActionRequestPositionBit::ACTIVATE), static_cast<bool>(Activate::ACTIVATE_GRIPPER));
         communication_.read_write_registers();
     };
 
@@ -126,8 +126,10 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void auto_release() {
-        communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE, (bool)AutomaticRelease::EMERGENCY_AUTO_RELEASE);
-        communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION, (bool)AutoReleaseDirection::OPENING);
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE), static_cast<bool>(AutomaticRelease::EMERGENCY_AUTO_RELEASE));
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION), static_cast<bool>(AutoReleaseDirection::OPENING));
         communication_.read_write_registers();
     };
 
@@ -153,7 +155,8 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void go_to(uint8_t position, uint8_t velocity, uint8_t force) {
-        communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::GO_TO_REQ_POS);
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::GO_TO_REQ_POS));
         communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
         communication_.set_output_byte(OutputBytes::SPEED, velocity);
         communication_.set_output_byte(OutputBytes::FORCE, force);
@@ -167,7 +170,8 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void stop() {
-        communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::STOP);
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::STOP));
         communication_.read_write_registers();
     };
 

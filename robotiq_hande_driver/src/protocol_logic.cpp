@@ -25,16 +25,16 @@ void ProtocolLogic::refresh_registers(){
     status_ = communication_.get_input_byte(InputBytes::GRIPPER_STATUS);
 
     activation_status_ = (ActivationStatus)(
-        (status_>>(uint)StatusPositionBit::ACTIVATION_STATUS) & kActivationStatusBits);
+        (status_>>static_cast<uint>(StatusPositionBit::ACTIVATION_STATUS)) & ACTIVATION_STATUS_BITS);
 
     action_status_ = (ActionStatus)(
-        (status_>>(uint)StatusPositionBit::ACTION_STATUS) & kActionStatusBits);
+        (status_>>static_cast<uint>(StatusPositionBit::ACTION_STATUS)) & ACTION_STATUS_BITS);
 
     gripper_status_ = (GripperStatus)(
-        (status_>>(uint)StatusPositionBit::GRIPPER_STATUS) & kGripperStatusBits);
+        (status_>>static_cast<uint>(StatusPositionBit::GRIPPER_STATUS)) & GRIPPER_STATUS_BITS);
 
     object_detection_status_ = (ObjectDetectionStatus)(
-        (status_>>(uint)StatusPositionBit::OBJECT_DETECTION_STATUS) & kObjectDetectionStatusBits);
+        (status_>>static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS)) & OBJECT_DETECTION_STATUS_BITS);
 
     fault_status_ = communication_.get_input_byte(InputBytes::FAULT_STATUS);
     //To bo specified

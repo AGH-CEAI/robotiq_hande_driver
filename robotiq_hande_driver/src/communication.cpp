@@ -23,10 +23,9 @@ void Communication::connect(){
 
     result = modbus_read_registers(mb_, GRIPPER_OUTPUT_FIRST_REG, 1, activation_status);
 
-    if (result > 0) {
+    if (result > 0)
         printf("Connected successfully: %d\n", result);
-    } else {
+    else
         printf("Couldn't connect: %d\n", result);
-    }
 }
 }   // namespace hande_driver

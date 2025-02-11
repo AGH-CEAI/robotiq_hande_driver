@@ -59,7 +59,7 @@ void wait_activation_complete(modbus_t *ctx){
   while (activation_status[0] != GRIPPER_FLAGS_ACTIVATED){
     printf("Gripper not yet activated: %.4X vs. %.4X\n", activation_status[0], GRIPPER_FLAGS_ACTIVATED);
     modbus_read_registers(ctx, GRIPPER_OUTPUT_FIRST_REG, 1, activation_status);
-    
+
   }
 }
 

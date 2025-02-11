@@ -2,7 +2,7 @@
 #define COMMUNICATION_HPP_
 
 #include <modbus/modbus.h>
-#include <string.h>
+#include <cstring>
 
 
 namespace hande_driver
@@ -112,7 +112,7 @@ public:
      */
     void clear_output_bytes() {
         memset(output_bytes_, 0, sizeof(output_bytes_));
-    };
+    }; 
 
     /**
      * @brief Retrieves the input byte value at the specified index.
@@ -122,7 +122,7 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     uint8_t get_input_byte(InputBytes index) {
-        return input_bytes_[(uint)index];
+        return input_bytes_[static_cast<uint>(index)];
     };
 
     /**
@@ -134,7 +134,7 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void set_output_byte(OutputBytes index, uint8_t value) {
-        output_bytes_[(uint)index] = value;
+        output_bytes_[static_cast<uint>(index)] = value;
     };
 
     /**
@@ -145,8 +145,8 @@ public:
      * @return None.
      */
     void write_action_bit(uint8_t position_bit, bool value) {
-        output_bytes_[(uint)OutputBytes::ACTION_REQUEST] = bit_set_to(
-            output_bytes_[(uint)OutputBytes::ACTION_REQUEST], position_bit, value);
+        output_bytes_[static_cast<uint>(OutputBytes::ACTION_REQUEST)] = bit_set_to(
+            output_bytes_[static_cast<uint>(OutputBytes::ACTION_REQUEST)], position_bit, value);
     };
 
     /**
@@ -157,8 +157,10 @@ public:
      * @param x The boolean value to set the bit to.
      * @return The modified number with the n-th bit set to the specified value.
      */
-    uint bit_set_to(uint number, uint n, bool x) {
-        return (number & ~((uint)1 << n)) | ((uint)x << n);
+    uint bit_set_to(uint value, uint n, bool x) {
+        uint reset_n_bit = ~(1u << n);
+        uint set_n_bit = static_cast<uint>(x) << n;
+        return (value & reset_n_bit) | set_n_bit;
     };
 
 private:

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 set(HW_IF_INCLUDE_DEPENDS fmt hardware_interface pluginlib rclcpp

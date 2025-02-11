@@ -16,7 +16,7 @@ add_executable(hande_driver src/hande_driver.cpp src/application.cpp src/protoco
 target_link_libraries(hande_driver ${catkin_LIBRARIES})
 target_link_libraries(hande_driver /lib/x86_64-linux-gnu/libmodbus.so)
 
-add_executable(communication_test src/communication_test.c)
+add_executable(communication_test src/communication_test.cpp)
 target_link_libraries(communication_test ${catkin_LIBRARIES})
 target_link_libraries(communication_test /lib/x86_64-linux-gnu/libmodbus.so)
 

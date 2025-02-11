@@ -7,65 +7,63 @@
 namespace hande_driver
 {
 
-// Action Request
-constexpr uint8_t kActionRequestByte = 0;
-constexpr uint8_t kActivatePositionByte = 0;             // rACT
+/* Register mapping done based on Hand-E documentation: 
+ * https://assets.robotiq.com/website-assets/support_documents/document/Hand-E_Instruction_Manual_e-Series_PDF_20190306.pdf
+ */
+enum class ActionRequestPositionBit : uint8_t {
+    ACTIVATE = 0u,                      /* rACT */
+    GO_TO = 3u,                         /* rGTO */
+    AUTOMATIC_RELEASE = 4u,             /* rATR */
+    AUTOMATIC_RELEASE_DIRECTION = 5u,   /* rARD */
+};
+
 enum class Activate : uint8_t {
     DEACTIVATE_GRIPPER = 0u,
     ACTIVATE_GRIPPER
 };
 
-constexpr uint8_t kGoToPositionByte = 3;                 // rGTO
 enum class GoTo : uint8_t {
     STOP = 0u,
     GO_TO_REQ_POS
 };
 
-constexpr uint8_t kAutomaticReleasePositionByte = 4;     // rATR
 enum class AutomaticRelease : uint8_t {
     NORMAL = 0u,
     EMERGENCY_AUTO_RELEASE
 };
 
-constexpr uint8_t kAutoReleaseDirectionPositionByte = 5; // rARD
 enum class AutoReleaseDirection : uint8_t  {
     CLOSING = 0u,
     OPENING
 };
 
-//Position Request
-constexpr uint8_t kPositionRequestByte = 3;
-// 0x00 - Open position, with 50 mm opening
-// 0xFF - Closed
-// Opening / count: ≈0.2 mm for 50 mm stroke
-
-//Speed Request
-constexpr uint8_t kSpeedRequestByte = 4;
-// 0x00 - Minimum speed
-// 0xFF - Maximum speed
-
-//Force Request
-constexpr uint8_t kForceRequestByte = 5;
-// 0x00 - Minimum force
-// 0xFF - Maximum force
-
 // Gripper Status
-constexpr uint8_t kStatusByte = 0;
-constexpr uint8_t kActivationStatusPositionByte = 0;         // gACT
+enum class ResponseByte : uint8_t {
+    STATUS = 0u,
+    FAULT_STATUS = 2u,
+    SPEED = 4u,
+    FORCE = 5u,
+};
+
+enum class StatusPositionBit : uint8_t {
+    ACTIVATION_STATUS = 0u,         /* gACT */
+    ACTION_STATUS = 3u,             /* gGTO */
+    GRIPPER_STATUS = 4u,            /* gSTA */
+    OBJECT_DETECTION_STATUS = 6u,   /* gObj */
+};
+
 constexpr auto kActivationStatusBits = 0b1;
 enum class ActivationStatus : uint8_t {
     GRIPPER_RESET = 0u,
     GRIPPER_ACTIVATION
 };
 
-constexpr uint8_t kActionStatusPositionByte = 3;               // gGTO
 constexpr auto kActionStatusBits = 0b1;
 enum class ActionStatus : uint8_t {
     STOPPED = 0u,
     GO_TO_POSITION_REQUEST
 };
 
-constexpr uint8_t kGripperStatusPositionByte = 4;            // gSTA
 constexpr auto kGripperStatusBits = 0b11;
 enum class GripperStatus : uint8_t {
     GRIPPER_IN_RESET = 0u,
@@ -74,7 +72,6 @@ enum class GripperStatus : uint8_t {
     ACTIVATION_COMPLETE
 };
 
-constexpr uint8_t kObjectDetectionStatusPositionByte = 6;    // gObj
 constexpr auto kObjectDetectionStatusBits = 0b11;
 enum class ObjectDetectionStatus : uint8_t {
     MOTION_NO_OBJECT = 0u,
@@ -82,15 +79,6 @@ enum class ObjectDetectionStatus : uint8_t {
     STOPPED_CLOSING_DETECTED,
     REQ_POS_NO_OBJECT
 };
-
-// Fault Status
-constexpr uint8_t kFaultStatusByte = 2;
-// Position Request Echo
-constexpr uint8_t kPositionRequestEchoByte = 3;
-// Position (current)
-constexpr uint8_t kPositionByte = 4;
-// Current
-constexpr uint8_t kCurrentByte = 5;
 
 
 /**

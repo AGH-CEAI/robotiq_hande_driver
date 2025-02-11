@@ -39,7 +39,7 @@ public:
      *
      * @param none
      * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void stop();
 
@@ -113,7 +113,7 @@ public:
      * @return Gripper requested position
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double requested_position();
+    double get_requested_position();
 
     /**
      * @brief Returns the gripper position
@@ -122,7 +122,7 @@ public:
      * @return Gripper position in [m]
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double position();
+    double get_position();
 
     /**
      * @brief Moves the gripper to requested position
@@ -140,7 +140,7 @@ public:
      * @return Gripper current in [A] (range: 0-2.55A)
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double current();
+    double get_current();
 
 
     void read();

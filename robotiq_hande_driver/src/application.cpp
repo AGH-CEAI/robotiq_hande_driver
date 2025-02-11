@@ -13,9 +13,9 @@ constexpr auto kMaxSpeed = 255;
 constexpr auto kMaxForce = 255;
 
 ApplicationLayer::ApplicationLayer()
-:   requested_position_(0)
-,   position_(0)
-,   current_(0)
+:   requested_position_()
+,   position_()
+,   current_()
 {
     printf("ApplicationLayer constructor\n");
 }
@@ -60,11 +60,11 @@ ApplicationLayer::FaultStatus ApplicationLayer::get_fault_status(){
     return fault_status_;
 }
 
-double ApplicationLayer::requested_position(){
+double ApplicationLayer::get_requested_position(){
     return  requested_position_;
 }
 
-double ApplicationLayer::position(){
+double ApplicationLayer::get_position(){
     return position_;
 }
 
@@ -74,7 +74,7 @@ void ApplicationLayer::set_position(double position){
     protocol_logic_.go_to(raw_position, kMaxSpeed, kMaxForce);
 }
 
-double ApplicationLayer::current(){
+double ApplicationLayer::get_current(){
     return current_;
 }
 

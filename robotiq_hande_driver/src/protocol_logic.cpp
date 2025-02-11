@@ -29,7 +29,7 @@ ProtocolLogic::~ProtocolLogic(){
 void ProtocolLogic::reset(){
     communication_.clear_output_bytes();
 
-    communication_.write_action_bit(kActivatePositionByte, (bool)Activate::DEACTIVATE_GRIPPER);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::DEACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
@@ -37,14 +37,14 @@ void ProtocolLogic::reset(){
 void ProtocolLogic::set(){
     communication_.clear_output_bytes();
 
-    communication_.write_action_bit(kActivatePositionByte, (bool)Activate::ACTIVATE_GRIPPER);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::ACTIVATE_GRIPPER);
 
     communication_.read_write_registers();
 }
 
 void ProtocolLogic::auto_release(){
-    communication_.write_action_bit(kAutomaticReleasePositionByte, (bool)AutomaticRelease::EMERGENCY_AUTO_RELEASE);
-    communication_.write_action_bit(kAutoReleaseDirectionPositionByte, (bool)AutoReleaseDirection::OPENING);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE, (bool)AutomaticRelease::EMERGENCY_AUTO_RELEASE);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION, (bool)AutoReleaseDirection::OPENING);
 
     communication_.read_write_registers();
 }
@@ -55,7 +55,7 @@ void ProtocolLogic::activate(){
 }
 
 void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force){
-    communication_.write_action_bit(kGoToPositionByte, (bool)GoTo::GO_TO_REQ_POS);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::GO_TO_REQ_POS);
 
     communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
     communication_.set_output_byte(OutputBytes::SPEED, velocity);
@@ -65,7 +65,7 @@ void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force){
 }
 
 void ProtocolLogic::stop(){
-    communication_.write_action_bit(kGoToPositionByte, (bool)GoTo::STOP);
+    communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::STOP);
 
     communication_.read_write_registers();
 }
@@ -120,16 +120,16 @@ void ProtocolLogic::refresh_registers(){
     status_ = communication_.get_input_byte(InputBytes::GRIPPER_STATUS);
 
     activation_status_ = (ActivationStatus)(
-        (status_>>kActivationStatusPositionByte) & kActivationStatusBits);
+        (status_>>(uint)StatusPositionBit::ACTIVATION_STATUS) & kActivationStatusBits);
 
     action_status_ = (ActionStatus)(
-        (status_>>kActionStatusPositionByte) & kActionStatusBits);
+        (status_>>(uint)StatusPositionBit::ACTION_STATUS) & kActionStatusBits);
 
     gripper_status_ = (GripperStatus)(
-        (status_>>kGripperStatusPositionByte) & kGripperStatusBits);
+        (status_>>(uint)StatusPositionBit::GRIPPER_STATUS) & kGripperStatusBits);
 
     object_detection_status_ = (ObjectDetectionStatus)(
-        (status_>>kObjectDetectionStatusPositionByte) & kObjectDetectionStatusBits);
+        (status_>>(uint)StatusPositionBit::OBJECT_DETECTION_STATUS) & kObjectDetectionStatusBits);
 
     fault_status_ = communication_.get_input_byte(InputBytes::FAULT_STATUS);
     //To bo specified

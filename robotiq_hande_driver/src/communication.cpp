@@ -1,7 +1,6 @@
 #include "communication.hpp"
 
 #include <cstdio>
-#include <stdint.h>
 #include <string.h>
 
 
@@ -19,8 +18,8 @@ constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
 constexpr uint16_t kGripperInputFirstReg = 0x03E8;
 
 Communication::Communication()
-:    input_bytes_{0, 0, 0, 0, 0, 0}
-,    output_bytes_{0, 0, 0, 0, 0, 0}
+:    input_bytes_{}
+,    output_bytes_{}
 {
     printf("Communication constructor\n");
     mb_ = modbus_new_rtu(kDeviceName, kBaudrate, kParity, kDataBits, kStopBit);
@@ -82,16 +81,16 @@ void Communication::clear_output_bytes(){
 }
 
 uint8_t Communication::get_input_byte(InputBytes index){
-    return input_bytes_[index];
+    return input_bytes_[(uint)index];
 }
 
 void Communication::set_output_byte(OutputBytes index, uint8_t value){
-    output_bytes_[index] = value;
+    output_bytes_[(uint)index] = value;
 }
 
 void Communication::write_action_bit(uint8_t position_bit, bool value){
-    output_bytes_[OUTPUT_BYTES_ACTION_REQUEST] = bit_set_to(
-        output_bytes_[OUTPUT_BYTES_ACTION_REQUEST], position_bit, value);
+    output_bytes_[(uint)OutputBytes::ACTION_REQUEST] = bit_set_to(
+        output_bytes_[(uint)OutputBytes::ACTION_REQUEST], position_bit, value);
 }
 
 inline uint Communication::bit_set_to(uint number, uint n, bool x) {

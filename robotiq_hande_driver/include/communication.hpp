@@ -1,38 +1,36 @@
 #ifndef COMMUNICATION_HPP_
 #define COMMUNICATION_HPP_
 
-#include <stdint.h>
-#include <stddef.h>
-#include <vector>
 #include <modbus/modbus.h>
 
-/**
- * @brief This class contains low level gripper commands and status
- */
 
 namespace hande_driver
 {
 constexpr auto kRegisterWordLength = 3;
 enum class OutputBytes : uint8_t {
-    OUTPUT_BYTES_RESERVED_1 = 0u,
-    OUTPUT_BYTES_ACTION_REQUEST,
-    OUTPUT_BYTES_POSITION_REQUEST,
-    OUTPUT_BYTES_RESERVED_2,
-    OUTPUT_BYTES_FORCE,
-    OUTPUT_BYTES_SPEED,
-    OUTPUT_BYTES_MAX
+    RESERVED_1 = 0u,
+    ACTION_REQUEST,
+    POSITION_REQUEST,
+    RESERVED_2,
+    FORCE,
+    SPEED,
+    BYTES_MAX
 };
 
 enum class InputBytes : uint8_t {
-    INPUT_BYTES_RESERVED_1 = 0u,
-    INPUT_BYTES_GRIPPER_STATUS,
-    INPUT_BYTES_POSITION_REQUEST_ECHO,
-    INPUT_BYTES_FAULT_STATUS,
-    INPUT_BYTES_CURRENT,
-    INPUT_BYTES_POSITION,
-    INPUT_BYTES_MAX
+    RESERVED_1 = 0u,
+    GRIPPER_STATUS,
+    POSITION_REQUEST_ECHO,
+    FAULT_STATUS,
+    CURRENT,
+    POSITION,
+    BYTES_MAX
 };
 
+
+/**
+ * @brief This class contains low level gripper commands and status
+ */
 class Communication{
 public:
     Communication();
@@ -116,8 +114,8 @@ public:
 private:
     modbus_t *mb_;
 
-    uint8_t input_bytes_[INPUT_BYTES_MAX];
-    uint8_t output_bytes_[OUTPUT_BYTES_MAX];
+    uint8_t input_bytes_[static_cast<size_t>(InputBytes::BYTES_MAX)];
+    uint8_t output_bytes_[static_cast<size_t>(OutputBytes::BYTES_MAX)];
 
 };
 }   // namespace hande_driver

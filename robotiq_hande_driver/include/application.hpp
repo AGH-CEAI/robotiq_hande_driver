@@ -5,13 +5,14 @@
 
 #include "protocol_logic.hpp"
 
-/**
- * @brief This class contains high level gripper commands and status
- */
 
 namespace hande_driver
 {
 
+
+/**
+ * @brief This class contains high level gripper commands and status
+ */
 class ApplicationLayer{
 public:
 

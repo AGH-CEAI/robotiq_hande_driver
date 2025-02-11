@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <modbus/modbus.h>
 
-#define SERVER_ID 0x09
+constexpr uint8_t SERVER_ID = 0x09;
 
 int main(void) {
   modbus_t *mb;

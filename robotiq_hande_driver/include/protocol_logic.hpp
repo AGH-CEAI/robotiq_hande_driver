@@ -1,13 +1,8 @@
 #ifndef PROTOCOL_LOGIC_HPP_
 #define PROTOCOL_LOGIC_HPP_
 
-#include <stdint.h>
-
 #include <communication.hpp>
 
-/**
- * @brief This class contains protocol oriented functions and definitions
- */
 
 namespace hande_driver
 {
@@ -97,6 +92,10 @@ constexpr uint8_t kPositionByte = 4;
 // Current
 constexpr uint8_t kCurrentByte = 5;
 
+
+/**
+ * @brief This class contains protocol oriented functions and definitions
+ */
 class ProtocolLogic{
 public:
     ProtocolLogic();

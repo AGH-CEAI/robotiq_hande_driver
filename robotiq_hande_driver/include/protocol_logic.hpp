@@ -283,7 +283,7 @@ private:
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
-    
+
     /* Fault */
     uint8_t fault_status_;
 

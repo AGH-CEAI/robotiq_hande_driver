@@ -112,7 +112,7 @@ public:
      */
     void clear_output_bytes() {
         memset(output_bytes_, 0, sizeof(output_bytes_));
-    }; 
+    };
 
     /**
      * @brief Retrieves the input byte value at the specified index.

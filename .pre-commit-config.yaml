@@ -20,7 +20,7 @@ repos:
       - id: clang-format
         types_or: [c++, c]
         args:
-          - --style=Google
+          - --style=file
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

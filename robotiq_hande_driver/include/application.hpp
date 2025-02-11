@@ -9,6 +9,12 @@
 namespace hande_driver
 {
 
+constexpr auto kGripperPositionMin = 0.0;
+constexpr auto kGripperPositionMax = 0.05;
+constexpr auto kGripperPositionStep = (kGripperPositionMax - kGripperPositionMin) / 255.0;
+constexpr auto kGripperCurrentScale = 0.01;
+constexpr auto kMaxSpeed = 255;
+constexpr auto kMaxForce = 255;
 
 /**
  * @brief This class contains high level gripper commands and status
@@ -32,7 +38,7 @@ public:
 
     ApplicationLayer();
 
-    ~ApplicationLayer();
+    ~ApplicationLayer() {};
 
     /**
      * @brief Stops movement of the gripper
@@ -41,7 +47,9 @@ public:
      * @return none
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void stop();
+    void stop() {
+        protocol_logic_.stop();
+    };
 
     /**
      * @brief Resets the gripper: deactivate and activate again
@@ -50,7 +58,9 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void reset();
+    void reset() {
+        protocol_logic_.reset();
+    };
 
     /**
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -59,7 +69,9 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void auto_release();
+    void auto_release() {
+        protocol_logic_.auto_release();
+    };
 
     /**
      * @brief Activates the gripper, after that it can be used
@@ -68,7 +80,9 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void activate();
+    void activate() {
+        protocol_logic_.activate();
+    };
 
     /**
      * @brief Opens the gripper
@@ -77,7 +91,9 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void open();
+    void open() {
+        set_position(kGripperPositionMax);
+    };
 
     /**
      * @brief Closes the gripper
@@ -86,7 +102,9 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void close();
+    void close() {
+        set_position(kGripperPositionMin);
+    };
 
     /**
      * @brief Returns the gripper status
@@ -95,7 +113,9 @@ public:
      * @return Gripper status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    Status get_status();
+    Status get_status() {
+        return status_;
+    };
 
     /**
      * @brief Returns the gripper fault status
@@ -104,7 +124,9 @@ public:
      * @return Fault Status
      * @note see status on success, exception thrown if communicatoin issues
      */
-    FaultStatus get_fault_status();
+    FaultStatus get_fault_status() {
+        return fault_status_;
+    };
 
     /**
      * @brief Returns the gripper requested position
@@ -113,7 +135,9 @@ public:
      * @return Gripper requested position
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double get_requested_position();
+    double get_requested_position() {
+        return  requested_position_;
+    };
 
     /**
      * @brief Returns the gripper position
@@ -122,7 +146,9 @@ public:
      * @return Gripper position in [m]
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double get_position();
+    double get_position() {
+        return position_;
+    };
 
     /**
      * @brief Moves the gripper to requested position
@@ -131,7 +157,10 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void set_position(double position);
+    void set_position(double position) {
+        protocol_logic_.go_to(
+            (uint8_t)((kGripperPositionMax - position) / kGripperPositionStep), kMaxSpeed, kMaxForce);
+    };
 
     /**
      * @brief Returns the gripper current
@@ -140,12 +169,15 @@ public:
      * @return Gripper current in [A] (range: 0-2.55A)
      * @note see status on success, exception thrown if communicatoin issues
      */
-    double get_current();
-
+    double get_current() {
+        return current_;
+    };
 
     void read();
 
-    void write();
+    void write() {
+        protocol_logic_.refresh_registers();
+    };
 
 private:
     /**

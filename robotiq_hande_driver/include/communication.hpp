@@ -2,10 +2,23 @@
 #define COMMUNICATION_HPP_
 
 #include <modbus/modbus.h>
+#include <string.h>
 
 
-namespace hande_driver
+namespace hande_driver 
 {
+
+constexpr auto kDeviceName = "/tmp/ttyUR";
+constexpr auto kBaudrate = 115200;
+constexpr auto kParity = 'N';
+constexpr auto kDataBits = 8;
+constexpr auto kStopBit = 1;
+constexpr auto kDebugModbus = true;
+constexpr uint8_t kSlaveID = 0x09;
+
+constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
+constexpr uint16_t kGripperInputFirstReg = 0x03E8;
+
 constexpr auto kRegisterWordLength = 3;
 enum class OutputBytes : uint8_t {
     RESERVED_1 = 0u,
@@ -35,7 +48,10 @@ class Communication{
 public:
     Communication();
 
-    ~Communication();
+    ~Communication() {
+        disconnect();
+        modbus_free(mb_);
+    };
 
     /**
      * @brief Connect to gripper using modbus rtu and virtual socket
@@ -53,7 +69,9 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void disconnect();
+    void disconnect() {
+        modbus_close(mb_);
+    };
 
     /**
      * @brief Read and write input.output registers at once
@@ -62,7 +80,28 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void read_write_registers();
+    void read_write_registers() {
+    /**
+     * @brief Read and write modbus registers at once
+     *
+     * @param modbus_t *ctx
+     * @param int write_addr
+     * @param int write_nb
+     * @param uint16_t *src
+     * @param int read_addr
+     * @param int read_nb
+     * @param uint16_t *dest
+     * @return int >0 on success
+     * @note see status on success, exception thrown in case of communication issues
+     */
+    modbus_write_and_read_registers(mb_,
+                                    kGripperInputFirstReg,
+                                    kRegisterWordLength,
+                                    (uint16_t *)output_bytes_,
+                                    kGripperOutputFirstReg,
+                                    kRegisterWordLength,
+                                    (uint16_t *)input_bytes_);
+    };
 
     /**
      * @brief Set output bytes to zeros
@@ -71,7 +110,9 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void clear_output_bytes();
+    void clear_output_bytes() {
+        memset(output_bytes_, 0, sizeof(output_bytes_));
+    };
 
     /**
      * @brief Get input byte value
@@ -80,7 +121,9 @@ public:
      * @return requested byte value
      * @note see status on success, exception thrown in case of communication issues
      */
-    uint8_t get_input_byte(InputBytes index);
+    uint8_t get_input_byte(InputBytes index) {
+        return input_bytes_[(uint)index];
+    };
 
     /**
      * @brief Set output byte value
@@ -90,7 +133,9 @@ public:
      * @return none
      * @note see status on success, exception thrown in case of communication issues
      */
-    void set_output_byte(OutputBytes index, uint8_t value);
+    void set_output_byte(OutputBytes index, uint8_t value) {
+        output_bytes_[(uint)index] = value;
+    };
 
     /**
      * @brief Set n-th bit to action request byte
@@ -99,7 +144,10 @@ public:
      * @param value bool value
      * @return none
      */
-    void write_action_bit(uint8_t position_bit, bool value);
+    void write_action_bit(uint8_t position_bit, bool value) {
+        output_bytes_[(uint)OutputBytes::ACTION_REQUEST] = bit_set_to(
+            output_bytes_[(uint)OutputBytes::ACTION_REQUEST], position_bit, value);
+    };
 
     /**
      * @brief Set n-th bit to x value
@@ -109,7 +157,9 @@ public:
      * @param x bool value
      * @return uint number with n-th bit set to x
      */
-    uint bit_set_to(uint number, uint n, bool x);
+    uint bit_set_to(uint number, uint n, bool x) {
+        return (number & ~((uint)1 << n)) | ((uint)x << n);
+    };
 
 private:
     modbus_t *mb_;

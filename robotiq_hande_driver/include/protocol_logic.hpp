@@ -7,7 +7,7 @@
 namespace hande_driver
 {
 
-/* Register mapping done based on Hand-E documentation: 
+/* Register mapping done based on Hand-E documentation:
  * https://assets.robotiq.com/website-assets/support_documents/document/Hand-E_Instruction_Manual_e-Series_PDF_20190306.pdf
  */
 enum class ActionRequestPositionBit : uint8_t {
@@ -80,6 +80,8 @@ enum class ObjectDetectionStatus : uint8_t {
     REQ_POS_NO_OBJECT
 };
 
+constexpr auto kGripperPositionOpenedThreshold = 230;
+constexpr auto kGripperPositionClosedThreshold = 13;
 
 /**
  * @brief This class contains protocol oriented functions and definitions
@@ -88,7 +90,7 @@ class ProtocolLogic{
 public:
     ProtocolLogic();
 
-    ~ProtocolLogic();
+    ~ProtocolLogic() {};
 
     /**
      *  @brief Resets the gripper
@@ -97,7 +99,11 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void reset();
+    void reset() {
+        communication_.clear_output_bytes();
+        communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::DEACTIVATE_GRIPPER);
+        communication_.read_write_registers();
+    };
 
     /**
      *  @brief Sets the gripper
@@ -106,7 +112,11 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void set();
+    void set() {
+        communication_.clear_output_bytes();
+        communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::ACTIVATE_GRIPPER);
+        communication_.read_write_registers();
+    };
 
     /**
      * @brief Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -115,7 +125,11 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void auto_release();
+    void auto_release() {
+        communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE, (bool)AutomaticRelease::EMERGENCY_AUTO_RELEASE);
+        communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION, (bool)AutoReleaseDirection::OPENING);
+        communication_.read_write_registers();
+    };
 
     /**
      * @brief Activates the gripper, after that it can be used
@@ -124,7 +138,10 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void activate();
+    void activate() {
+        reset();
+        set();
+    };
 
     /**
      * @brief Moves the gripper
@@ -135,7 +152,13 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void go_to(uint8_t position, uint8_t velocity, uint8_t force);
+    void go_to(uint8_t position, uint8_t velocity, uint8_t force) {
+        communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::GO_TO_REQ_POS);
+        communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
+        communication_.set_output_byte(OutputBytes::SPEED, velocity);
+        communication_.set_output_byte(OutputBytes::FORCE, force);
+        communication_.read_write_registers();
+    };
 
     /**
      * @brief Stops the gripper
@@ -143,77 +166,104 @@ public:
      * @return none
      * @note see status on success, exception thrown if communicatoin issues
      */
-    void stop();
+    void stop() {
+        communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::STOP);
+        communication_.read_write_registers();
+    };
 
     /**
      * @brief Logic for reset state
      *
      * @return True if gripper is in reset state
      */
-    bool is_reset();
+    bool is_reset() {
+        return (gripper_status_ == GripperStatus::GRIPPER_IN_RESET &&
+                activation_status_ == ActivationStatus::GRIPPER_RESET);
+    };
 
     /**
      * @brief Logic for ready state
      *
      * @return True if gripper is ready
      */
-    bool is_ready();
+    bool is_ready() {
+        return (gripper_status_ == GripperStatus::ACTIVATION_COMPLETE &&
+                activation_status_ == ActivationStatus::GRIPPER_ACTIVATION);
+    };
 
     /**
      * @brief Logic for moving state
      *
      * @return True if gripper is moving
      */
-    bool is_moving();
+    bool is_moving() {
+    return (action_status_ == ActionStatus::GO_TO_POSITION_REQUEST &&
+            object_detection_status_ == ObjectDetectionStatus::MOTION_NO_OBJECT);
+    };
 
     /**
      * @brief Logic for stopped state
      *
      * @return True if gripper is stopped
      */
-    bool is_stopped();
+    bool is_stopped() {
+        return object_detection_status_ != ObjectDetectionStatus::MOTION_NO_OBJECT;
+    };
 
     /**
      * @brief Logic for closed state
      *
      * @return True if gripper is closed
      */
-    bool is_closed();
+    bool is_closed() {
+        return position_ >= kGripperPositionOpenedThreshold;
+    };
 
     /**
      * @brief Logic for opened state
      *
      * @return True if gripper is opened
      */
-    bool is_opened();
+    bool is_opened() {
+        return position_ <= kGripperPositionClosedThreshold;
+    };
 
     /**
      * @brief Logic for detecting the object
      *
      * @return True if gripper has detected the object
      */
-    bool obj_detected();
+    bool obj_detected() {
+    return (object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED ||
+            object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);
+    };
 
     /**
      * @brief Getter of requested gripper position
      *
      * @return Requested gripper position
      */
-    uint8_t get_reg_pos();
+    uint8_t get_reg_pos() {
+        return position_request_echo_;
+    };
 
     /**
      * @brief Getter of current gripper position
      *
      * @return Current gripper position
      */
-    uint8_t get_pos();
+    uint8_t get_pos() {
+        return position_;
+    };
 
     /**
      * @brief Getter of current
      *
      * @return Current gripper
      */
-    uint8_t get_current();
+    uint8_t get_current() {
+        return current_;
+    };
 
     /**
      * @brief Decode modbus registers and refresh appropriate data

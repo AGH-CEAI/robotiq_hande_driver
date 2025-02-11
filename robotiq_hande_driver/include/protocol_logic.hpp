@@ -84,7 +84,7 @@ constexpr auto GRIPPER_POSITION_OPENED_THRESHOLD = 230;
 constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
 
 /**
- * @brief This class contains protocol oriented functions and definitions
+ * @brief This class contains protocol oriented functions and definitions.
  */
 class ProtocolLogic{
 public:
@@ -93,11 +93,11 @@ public:
     ~ProtocolLogic() {};
 
     /**
-     *  @brief Resets the gripper
+     *  @brief Resets the gripper.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void reset() {
         communication_.clear_output_bytes();
@@ -106,11 +106,11 @@ public:
     };
 
     /**
-     *  @brief Sets the gripper
+     *  @brief Sets the gripper.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void set() {
         communication_.clear_output_bytes();
@@ -119,11 +119,11 @@ public:
     };
 
     /**
-     * @brief Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
+     * @brief Performs an emergency auto-release. The fingers slowly open, requiring reactivation.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void auto_release() {
         communication_.write_action_bit((uint)ActionRequestPositionBit::AUTOMATIC_RELEASE, (bool)AutomaticRelease::EMERGENCY_AUTO_RELEASE);
@@ -132,11 +132,11 @@ public:
     };
 
     /**
-     * @brief Activates the gripper, after that it can be used
+     * @brief Activates the gripper, making it ready for use.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void activate() {
         reset();
@@ -144,13 +144,13 @@ public:
     };
 
     /**
-     * @brief Moves the gripper
+     * @brief Moves the gripper to the requested position with specified velocity and force.
      *
-     * @param position requested position
-     * @param velocity requested position
-     * @param force requested position
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @param position The requested position.
+     * @param velocity The requested velocity.
+     * @param force The requested force.
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void go_to(uint8_t position, uint8_t velocity, uint8_t force) {
         communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::GO_TO_REQ_POS);
@@ -161,10 +161,10 @@ public:
     };
 
     /**
-     * @brief Stops the gripper
+     * @brief Stops the gripper.
      *
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void stop() {
         communication_.write_action_bit((uint)ActionRequestPositionBit::GO_TO, (bool)GoTo::STOP);
@@ -172,9 +172,9 @@ public:
     };
 
     /**
-     * @brief Logic for reset state
+     * @brief Checks if the gripper is in reset state.
      *
-     * @return True if gripper is in reset state
+     * @return True if the gripper is in reset state.
      */
     bool is_reset() {
         return (gripper_status_ == GripperStatus::GRIPPER_IN_RESET &&
@@ -182,9 +182,9 @@ public:
     };
 
     /**
-     * @brief Logic for ready state
+     * @brief Checks if the gripper is in ready state.
      *
-     * @return True if gripper is ready
+     * @return True if the gripper is in ready state.
      */
     bool is_ready() {
         return (gripper_status_ == GripperStatus::ACTIVATION_COMPLETE &&
@@ -192,9 +192,9 @@ public:
     };
 
     /**
-     * @brief Logic for moving state
+     * @brief Checks if the gripper is moving.
      *
-     * @return True if gripper is moving
+     * @return True if gripper is moving.
      */
     bool is_moving() {
     return (action_status_ == ActionStatus::GO_TO_POSITION_REQUEST &&
@@ -202,36 +202,36 @@ public:
     };
 
     /**
-     * @brief Logic for stopped state
+     * @brief Checks if the gripper is stopped.
      *
-     * @return True if gripper is stopped
+     * @return True if gripper is stopped.
      */
     bool is_stopped() {
         return object_detection_status_ != ObjectDetectionStatus::MOTION_NO_OBJECT;
     };
 
     /**
-     * @brief Logic for closed state
+     * @brief Checks if the gripper is closed.
      *
-     * @return True if gripper is closed
+     * @return True if gripper is closed.
      */
     bool is_closed() {
         return position_ >= GRIPPER_POSITION_OPENED_THRESHOLD;
     };
 
     /**
-     * @brief Logic for opened state
+     * @brief Checks if the gripper is opened.
      *
-     * @return True if gripper is opened
+     * @return True if gripper is opened.
      */
     bool is_opened() {
         return position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
     };
 
     /**
-     * @brief Logic for detecting the object
+     * @brief Checks if the gripper has detected an object.
      *
-     * @return True if gripper has detected the object
+     * @return True if gripper has detected an object.
      */
     bool obj_detected() {
     return (object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED ||
@@ -239,61 +239,62 @@ public:
     };
 
     /**
-     * @brief Getter of requested gripper position
+     * @brief Retrieves the requested position of the gripper.
      *
-     * @return Requested gripper position
+     * @return Requested gripper position.
      */
     uint8_t get_reg_pos() {
         return position_request_echo_;
     };
 
     /**
-     * @brief Getter of current gripper position
+     * @brief Retrieves the actual position of the gripper.
      *
-     * @return Current gripper position
+     * @return The actual gripper position.
      */
     uint8_t get_pos() {
         return position_;
     };
 
     /**
-     * @brief Getter of current
+     * @brief Retrieves the electric current drawn by the gripper.
      *
-     * @return Current gripper
+     * @return The electric current.
      */
     uint8_t get_current() {
         return current_;
     };
 
     /**
-     * @brief Decode modbus registers and refresh appropriate data
+     * @brief Decodes Modbus registers and refreshes appropriate data.
      *
-     * @return none
+     * @return None.
      */
     void refresh_registers();
 
 private:
-// Gripper
+    /* Gripper */
     uint8_t status_;
     ActivationStatus activation_status_;
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
-//Fault
+    
+    /* Fault */
     uint8_t fault_status_;
 
     /**
-     * @brief Requested position in normalized 0-255 value
+     * @brief Stores the requested position in normalized 0–255 value.
      */
     uint8_t position_request_echo_;
 
     /**
-     * @brief Position in normalized 0-255 value
+     * @brief Stores the actual position in normalized 0–255 value.
      */
     uint8_t position_;
 
     /**
-     * @brief Current in 10 mA
+     * @brief Stores the electric current drawn by the gripper in 10 mA.
      */
     uint8_t current_;
 

@@ -105,7 +105,7 @@ int main(void) {
   getc(stdin);
 
   printf("BYPASS: Step: Move the robot to the pick-up location\n");
-  
+
   close_gripper(mb);
   wait_movement_complete(mb);
   printf("Gripper closed, press any key to continue\n");

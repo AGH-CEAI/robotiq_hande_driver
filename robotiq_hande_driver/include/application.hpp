@@ -17,12 +17,12 @@ constexpr auto MAX_SPEED = 255;
 constexpr auto MAX_FORCE = 255;
 
 /**
- * @brief This class contains high level gripper commands and status
+ * @brief This class contains high-level gripper commands and status.
  */
-class ApplicationLayer{
+class ApplicationLayer {
 public:
 
-    struct Status{
+    struct Status {
         bool is_reset;
         bool is_ready;
         bool is_moving;
@@ -32,7 +32,7 @@ public:
         bool object_detected;
     };
 
-    struct FaultStatus{
+    struct FaultStatus {
         bool is_error;
     };
 
@@ -41,10 +41,10 @@ public:
     ~ApplicationLayer() {};
 
     /**
-     * @brief Stops movement of the gripper
+     * @brief Stops the gripper movement.
      *
      * @param none
-     * @return none
+     * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void stop() {
@@ -52,11 +52,11 @@ public:
     };
 
     /**
-     * @brief Resets the gripper: deactivate and activate again
+     * @brief Resets the gripper by deactivating and reactivating it.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void reset() {
         protocol_logic_.reset();
@@ -66,96 +66,96 @@ public:
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void auto_release() {
         protocol_logic_.auto_release();
     };
 
     /**
-     * @brief Activates the gripper, after that it can be used
+     * @brief Activates the gripper, making it ready for use.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void activate() {
         protocol_logic_.activate();
     };
 
     /**
-     * @brief Opens the gripper
+     * @brief Opens the gripper.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void open() {
         set_position(GRIPPER_POSITION_MAX);
     };
 
     /**
-     * @brief Closes the gripper
+     * @brief Closes the gripper.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void close() {
         set_position(GRIPPER_POSITION_MIN);
     };
 
     /**
-     * @brief Returns the gripper status
+     * @brief Retrieves the gripper status.
      *
      * @param none
-     * @return Gripper status
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return The current gripper status.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     Status get_status() {
         return status_;
     };
 
     /**
-     * @brief Returns the gripper fault status
+     * @brief Retrieves the gripper fault status.
      *
      * @param none
-     * @return Fault Status
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return The current gripper fault status.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     FaultStatus get_fault_status() {
         return fault_status_;
     };
 
     /**
-     * @brief Returns the gripper requested position
+     * @brief Retrieves the requested position of the gripper.
      *
      * @param none
-     * @return Gripper requested position
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return The requested gripper position in meters.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     double get_requested_position() {
         return  requested_position_;
     };
 
     /**
-     * @brief Returns the gripper position
+     * @brief Retrieves the actual position of the gripper.
      *
      * @param none
-     * @return Gripper position in [m]
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return The actual gripper position in meters.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     double get_position() {
         return position_;
     };
 
     /**
-     * @brief Moves the gripper to requested position
+     * @brief Moves the gripper to the requested position.
      *
-     * @param position to which the gripper has to move, in [m]
-     * @return none
-     * @note see status on success, exception thrown if communicatoin issues
+     * @param position The target position in meters.
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void set_position(double position) {
         protocol_logic_.go_to(
@@ -163,50 +163,64 @@ public:
     };
 
     /**
-     * @brief Returns the gripper current
+     * @brief Retrieves the electric current drawn by the gripper.
      *
      * @param none
-     * @return Gripper current in [A] (range: 0-2.55A)
-     * @note see status on success, exception thrown if communicatoin issues
+     * @return The electric current in amperes (range: 0–2.55 A)
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     double get_current() {
         return current_;
     };
 
+    /**
+     * @brief Closes the gripper.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
     void read();
 
+    /**
+     * @brief Closes the gripper.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
     void write() {
         protocol_logic_.refresh_registers();
     };
 
 private:
     /**
-     * Protocol logic, used for middle level abstraction
+     * Handles protocol logic for mid-level abstraction.
      */
     ProtocolLogic protocol_logic_;
 
     /**
-     * Struct with status bits
+     * Stores the gripper status bits.
      */
     Status status_;
 
     /**
-     * Struct with fault status bits
+     * Stores the fault status bits.
      */
     FaultStatus fault_status_;
 
     /**
-     * Requested position of the gripper, in [m]
+     * Stores the requested position of the gripper in meters.
      */
     double requested_position_;
 
     /**
-     * POsition of the gripper, in [m]
+     * Stores the actual position of the gripper in meters.
      */
     double position_;
 
     /**
-     * Current flowin through the gripper, in [A]
+     * Stores the electric current drawn by the gripper in amperes.
      */
     double current_;
 

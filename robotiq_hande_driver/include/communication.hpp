@@ -54,31 +54,31 @@ public:
     };
 
     /**
-     * @brief Connect to gripper using modbus rtu and virtual socket
+     * @brief Connects to the gripper using Modbus RTU and a virtual socket.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown in case of communication issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void connect();
 
     /**
-     * @brief Disconnect from gripper using modbus rtu and virtual socket
+     * @brief Disconnects from the gripper using Modbus RTU and a virtual socket.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown in case of communication issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void disconnect() {
         modbus_close(mb_);
     };
 
     /**
-     * @brief Read and write input.output registers at once
+     * @brief Reads and writes input/output registers at once.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown in case of communication issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void read_write_registers() {
     /**
@@ -92,7 +92,7 @@ public:
      * @param int read_nb
      * @param uint16_t *dest
      * @return int >0 on success
-     * @note see status on success, exception thrown in case of communication issues
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     modbus_write_and_read_registers(mb_,
                                     GRIPPER_INPUT_FIRST_REG,
@@ -104,45 +104,45 @@ public:
     };
 
     /**
-     * @brief Set output bytes to zeros
+     * @brief Sets output bytes to zeros.
      *
      * @param none
-     * @return none
-     * @note see status on success, exception thrown in case of communication issues
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void clear_output_bytes() {
         memset(output_bytes_, 0, sizeof(output_bytes_));
     };
 
     /**
-     * @brief Get input byte value
+     * @brief Retrieves the input byte value at the specified index.
      *
-     * @param index InputBytes byte index
-     * @return requested byte value
-     * @note see status on success, exception thrown in case of communication issues
+     * @param index The InputBytes byte index.
+     * @return Requested byte value.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     uint8_t get_input_byte(InputBytes index) {
         return input_bytes_[(uint)index];
     };
 
     /**
-     * @brief Set output byte value
+     * @brief Sets the output byte value at the specified index.
      *
      * @param index OutputBytes byte index
-     * @param value to be set
+     * @param value The value to be set.
      * @return none
-     * @note see status on success, exception thrown in case of communication issues
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void set_output_byte(OutputBytes index, uint8_t value) {
         output_bytes_[(uint)index] = value;
     };
 
     /**
-     * @brief Set n-th bit to action request byte
+     * @brief Sets the n-th bit of the action request byte.
      *
      * @param position_bit n-th bit in byte
-     * @param value bool value
-     * @return none
+     * @param value The boolean value to set for the bit.
+     * @return None.
      */
     void write_action_bit(uint8_t position_bit, bool value) {
         output_bytes_[(uint)OutputBytes::ACTION_REQUEST] = bit_set_to(
@@ -150,12 +150,12 @@ public:
     };
 
     /**
-     * @brief Set n-th bit to x value
+     * @brief Sets the n-th bit of a number to the specified boolean value.
      *
      * @param number
-     * @param n n-th bit in number
-     * @param x bool value
-     * @return uint number with n-th bit set to x
+     * @param n The n-th bit position to set.
+     * @param x The boolean value to set the bit to.
+     * @return The modified number with the n-th bit set to the specified value.
      */
     uint bit_set_to(uint number, uint n, bool x) {
         return (number & ~((uint)1 << n)) | ((uint)x << n);

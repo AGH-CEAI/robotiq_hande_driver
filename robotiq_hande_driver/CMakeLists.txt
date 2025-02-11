@@ -5,8 +5,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-set(HW_IF_INCLUDE_DEPENDS fmt hardware_interface pluginlib rclcpp
-                          rclcpp_lifecycle rcpputils)
+set(HW_IF_INCLUDE_DEPENDS
+    fmt
+    hardware_interface
+    pluginlib
+    rclcpp
+    rclcpp_lifecycle
+    rcpputils)
 
 find_package(ament_cmake REQUIRED)
 foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
@@ -17,13 +22,11 @@ add_library(${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
-  robotiq_hande_driver
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hardware/include>
-         $<INSTALL_INTERFACE:include>)
+  robotiq_hande_driver PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hardware/include>
+                              $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(${PROJECT_NAME} PUBLIC ${HW_IF_INCLUDE_DEPENDS})
 
-pluginlib_export_plugin_description_file(hardware_interface
-                                         ros2_control_plugin.xml)
+pluginlib_export_plugin_description_file(hardware_interface ros2_control_plugin.xml)
 
 install(DIRECTORY hardware/include/ DESTINATION include/)
 install(DIRECTORY bringup DESTINATION share/${PROJECT_NAME})
@@ -43,10 +46,9 @@ if(BUILD_TESTING)
   ament_add_gmock(test_load_hw_interface test/test_load_hw_interface.cpp)
   target_link_libraries(test_load_hw_interface ${PROJECT_NAME})
 
-  # TODO: investigate ament_add_pytest_test(example_7_urdf_xacro
-  # test/test_urdf_xacro.py) ament_add_pytest_test(view_example_7_launch
-  # test/test_view_robot_launch.py) ament_add_pytest_test(run_example_7_launch
-  # test/test_r6bot_controller_launch.py)
+  # TODO: investigate ament_add_pytest_test(example_7_urdf_xacro test/test_urdf_xacro.py)
+  # ament_add_pytest_test(view_example_7_launch test/test_view_robot_launch.py)
+  # ament_add_pytest_test(run_example_7_launch test/test_r6bot_controller_launch.py)
 endif()
 
 # EXPORTS

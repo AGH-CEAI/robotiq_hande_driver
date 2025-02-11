@@ -9,12 +9,12 @@
 namespace hande_driver
 {
 
-constexpr auto kGripperPositionMin = 0.0;
-constexpr auto kGripperPositionMax = 0.05;
-constexpr auto kGripperPositionStep = (kGripperPositionMax - kGripperPositionMin) / 255.0;
-constexpr auto kGripperCurrentScale = 0.01;
-constexpr auto kMaxSpeed = 255;
-constexpr auto kMaxForce = 255;
+constexpr auto GRIPPER_POSITION_MIN = 0.0;
+constexpr auto GRIPPER_POSITION_MAX = 0.05;
+constexpr auto GRIPPER_POSITION_STEP = (GRIPPER_POSITION_MAX - GRIPPER_POSITION_MIN) / 255.0;
+constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
+constexpr auto MAX_SPEED = 255;
+constexpr auto MAX_FORCE = 255;
 
 /**
  * @brief This class contains high level gripper commands and status
@@ -92,7 +92,7 @@ public:
      * @note see status on success, exception thrown if communicatoin issues
      */
     void open() {
-        set_position(kGripperPositionMax);
+        set_position(GRIPPER_POSITION_MAX);
     };
 
     /**
@@ -103,7 +103,7 @@ public:
      * @note see status on success, exception thrown if communicatoin issues
      */
     void close() {
-        set_position(kGripperPositionMin);
+        set_position(GRIPPER_POSITION_MIN);
     };
 
     /**
@@ -159,7 +159,7 @@ public:
      */
     void set_position(double position) {
         protocol_logic_.go_to(
-            (uint8_t)((kGripperPositionMax - position) / kGripperPositionStep), kMaxSpeed, kMaxForce);
+            (uint8_t)((GRIPPER_POSITION_MAX - position) / GRIPPER_POSITION_STEP), MAX_SPEED, MAX_FORCE);
     };
 
     /**

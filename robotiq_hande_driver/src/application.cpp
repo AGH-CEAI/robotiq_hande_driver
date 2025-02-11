@@ -25,8 +25,8 @@ void ApplicationLayer::read(){
 
     //fault_status
 
-    requested_position_ = kGripperPositionMax - (double)protocol_logic_.get_reg_pos() * kGripperPositionStep;
-    position_ = kGripperPositionMax - (double)protocol_logic_.get_pos() * kGripperPositionStep;
-    current_ = (double)protocol_logic_.get_current() * kGripperCurrentScale;
+    requested_position_ = GRIPPER_POSITION_MAX - (double)protocol_logic_.get_reg_pos() * GRIPPER_POSITION_STEP;
+    position_ = GRIPPER_POSITION_MAX - (double)protocol_logic_.get_pos() * GRIPPER_POSITION_STEP;
+    current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
 }
 }   // namespace hande_driver

@@ -80,8 +80,8 @@ enum class ObjectDetectionStatus : uint8_t {
     REQ_POS_NO_OBJECT
 };
 
-constexpr auto kGripperPositionOpenedThreshold = 230;
-constexpr auto kGripperPositionClosedThreshold = 13;
+constexpr auto GRIPPER_POSITION_OPENED_THRESHOLD = 230;
+constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
 
 /**
  * @brief This class contains protocol oriented functions and definitions
@@ -216,7 +216,7 @@ public:
      * @return True if gripper is closed
      */
     bool is_closed() {
-        return position_ >= kGripperPositionOpenedThreshold;
+        return position_ >= GRIPPER_POSITION_OPENED_THRESHOLD;
     };
 
     /**
@@ -225,7 +225,7 @@ public:
      * @return True if gripper is opened
      */
     bool is_opened() {
-        return position_ <= kGripperPositionClosedThreshold;
+        return position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
     };
 
     /**

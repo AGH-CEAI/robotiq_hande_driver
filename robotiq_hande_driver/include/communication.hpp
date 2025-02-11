@@ -5,19 +5,19 @@
 #include <string.h>
 
 
-namespace hande_driver 
+namespace hande_driver
 {
 
-constexpr auto kDeviceName = "/tmp/ttyUR";
-constexpr auto kBaudrate = 115200;
-constexpr auto kParity = 'N';
-constexpr auto kDataBits = 8;
-constexpr auto kStopBit = 1;
-constexpr auto kDebugModbus = true;
-constexpr uint8_t kSlaveID = 0x09;
+constexpr auto DEVICE_NAME = "/tmp/ttyUR";
+constexpr auto BAUDRATE = 115200;
+constexpr auto PARITY = 'N';
+constexpr auto DATA_BITS = 8;
+constexpr auto STOP_BIT = 1;
+constexpr auto DEBUG_MODBUS = true;
+constexpr uint8_t SLAVE_ID = 0x09;
 
-constexpr uint16_t kGripperOutputFirstReg = 0x07D0;
-constexpr uint16_t kGripperInputFirstReg = 0x03E8;
+constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
+constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
 
 constexpr auto kRegisterWordLength = 3;
 enum class OutputBytes : uint8_t {
@@ -95,10 +95,10 @@ public:
      * @note see status on success, exception thrown in case of communication issues
      */
     modbus_write_and_read_registers(mb_,
-                                    kGripperInputFirstReg,
+                                    GRIPPER_INPUT_FIRST_REG,
                                     kRegisterWordLength,
                                     (uint16_t *)output_bytes_,
-                                    kGripperOutputFirstReg,
+                                    GRIPPER_OUTPUT_FIRST_REG,
                                     kRegisterWordLength,
                                     (uint16_t *)input_bytes_);
     };

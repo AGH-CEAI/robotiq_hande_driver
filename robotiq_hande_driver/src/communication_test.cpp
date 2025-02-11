@@ -2,23 +2,23 @@
 #include <unistd.h>
 #include <modbus/modbus.h>
 
-constexpr auto kRegisterReadLength = 32;
-constexpr auto kDeviceName = "/tmp/ttyUR";
-constexpr auto kBaudrate = 115200;
-constexpr auto kParity = 'N';
-constexpr auto kDataBits = 8;
-constexpr auto kStopBit = 1;
-constexpr auto kDebugModbus = true;
+constexpr auto REGISTER_READ_LENGTH = 32;
+constexpr auto DEVICE_NAME = "/tmp/ttyUR";
+constexpr auto BAUDRATE = 115200;
+constexpr auto PARITY = 'N';
+constexpr auto DATA_BITS = 8;
+constexpr auto STOP_BIT = 1;
+constexpr auto DEBUG_MODBUS = true;
 
 constexpr uint8_t SERVER_ID = 0x09;
 
 int main(void) {
   modbus_t *mb;
-  uint16_t tab_reg[kRegisterReadLength];
+  uint16_t tab_reg[REGISTER_READ_LENGTH];
 
-  mb = modbus_new_rtu(kDeviceName, kBaudrate, kParity, kDataBits, kStopBit);
+  mb = modbus_new_rtu(DEVICE_NAME, BAUDRATE, PARITY, DATA_BITS, STOP_BIT);
   modbus_set_slave(mb, SERVER_ID);
-  modbus_set_debug(mb, kDebugModbus);
+  modbus_set_debug(mb, DEBUG_MODBUS);
   modbus_connect(mb);
   printf("\nConnected\n");
 

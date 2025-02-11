@@ -6,7 +6,7 @@
 #include <communication.hpp>
 
 /**
- * @brief This class contains high level gripper commands and status
+ * @brief This class contains protocol oriented functions and definitions
  */
 
 namespace hande_driver

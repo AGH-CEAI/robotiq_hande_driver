@@ -48,9 +48,8 @@ def generate_launch_description():
 
 
 def launch_setup(context: LaunchContext) -> list[IncludeLaunchDescription]:
-
     # tf_prefix is implicitly used in robot_state_publisher (in URDF substitution)
-    tf_prefix = LaunchConfiguration("tf_prefix", default="")
+    tf_prefix = LaunchConfiguration("tf_prefix", default="")  # noqa: F841
 
     return [
         preapre_control_node(),
@@ -105,7 +104,8 @@ def preapre_control_node() -> Node:
 
 
 def prepare_robot_state_publisher_node() -> Node:
-    tf_prefix = LaunchConfiguration("tf_prefix", default="")
+    # tf_prefix is implicitly used in ParameterValue()
+    tf_prefix = LaunchConfiguration("tf_prefix", default="")  # noqa: F841
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
 
     robot_description_str = Command(

@@ -5,6 +5,8 @@
 #include <hardware_interface/system_interface.hpp>
 #include <rclcpp/rclcpp.hpp>
 
+#include "application.hpp"
+
 namespace robotiq_hande_driver {
 
 namespace HWI = hardware_interface;
@@ -35,7 +37,8 @@ public:
     rclcpp::Logger get_logger() const { return *logger_; }
 
 private:
-    //TODO(modbus integration): composition of the modbus communication
+    //--TODO(modbus integration): composition of the modbus communication
+    GripperApplication application_layer_;
     std::shared_ptr<rclcpp::Logger> logger_;
 
     std::string tty_port_;

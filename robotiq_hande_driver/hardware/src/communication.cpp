@@ -9,10 +9,7 @@ Communication::Communication()
 :    input_bytes_{}
 ,    output_bytes_{}
 {
-    mb_ = modbus_new_rtu(DEVICE_NAME, BAUDRATE, PARITY, DATA_BITS, STOP_BIT);
-    modbus_set_slave(mb_, SLAVE_ID);
-    modbus_set_debug(mb_, DEBUG_MODBUS);
-    connect();
+
 }
 
 void Communication::connect(){

@@ -1,10 +1,12 @@
 #ifndef PROTOCOL_LOGIC_HPP_
 #define PROTOCOL_LOGIC_HPP_
 
-#include <communication.hpp>
+#include <string>
+
+#include "communication.hpp"
 
 
-namespace hande_driver
+namespace robotiq_hande_driver
 {
 
 /* Register mapping done based on Hand-E documentation:
@@ -93,6 +95,48 @@ public:
     ~ProtocolLogic() {};
 
     /**
+     * @brief Initializes driver parameters.
+     *
+     * @param tty_port modbus virtual port
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void initialize(std::string tty_port) {
+        communication_.initialize(tty_port);
+        // communication_.configure();
+    };
+
+    /**
+     * @brief Configures protocol layer.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void configure() {
+        activation_status_  = ActivationStatus::GRIPPER_RESET;
+        action_status_ = ActionStatus::STOPPED;
+        gripper_status_ = GripperStatus::NOT_USED;
+        object_detection_status_ = ObjectDetectionStatus::REQ_POS_NO_OBJECT;
+        fault_status_ = 0;
+        position_request_echo_ = 0;
+        position_ = 0;
+        current_ = 0;
+        communication_.configure();
+    };
+
+    /**
+     * @brief Deinitializes protocol layer.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void cleanup() {
+        communication_.cleanup();
+    };
+
+    /**
      *  @brief Resets the gripper.
      *
      * @param none
@@ -143,6 +187,17 @@ public:
     void activate() {
         reset();
         set();
+    };
+
+        /**
+     * @brief Deactivates the gripper.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void deactivate() {
+        reset();
     };
 
     /**
@@ -304,5 +359,5 @@ private:
 
     Communication communication_;
 };
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver
 #endif  // PROTOCOL_LOGIC_HPP_

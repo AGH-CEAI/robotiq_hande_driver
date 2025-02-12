@@ -5,14 +5,14 @@
 
 namespace hande_driver  {
 
-ApplicationLayer::ApplicationLayer()
+GripperApplication::GripperApplication()
 :   requested_position_()
 ,   position_()
 ,   current_()
 {
 }
 
-void ApplicationLayer::read(){
+void GripperApplication::read(){
     protocol_logic_.refresh_registers();
 
     status_.is_reset = protocol_logic_.is_reset();

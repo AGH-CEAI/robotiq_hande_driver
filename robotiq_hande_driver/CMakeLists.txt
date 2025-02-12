@@ -5,6 +5,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+include(FindPkgConfig)
+pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
+
+set(DEPENDS
+  modbus
+)
+
 set(HW_IF_INCLUDE_DEPENDS
   fmt
   hardware_interface
@@ -25,27 +32,8 @@ add_library(${PROJECT_NAME}
     hardware/src/hande_hardware_interface.cpp
 )
 
-include(FindPkgConfig)
-pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
-
-set(DEPENDS
-  modbus
-)
-
-include_directories(
-  "include"
-  "src"
-)
-
-add_executable(hande_driver src/hande_driver.cpp src/application.cpp src/protocol_logic.cpp src/communication.cpp)
-target_link_libraries(hande_driver ${catkin_LIBRARIES} ${DEPENDS})
-
-add_executable(communication_test src/communication_test.cpp)
+add_executable(communication_test test/communication_test.cpp)
 target_link_libraries(communication_test ${catkin_LIBRARIES} ${DEPENDS})
-
-target_include_directories(hande_driver PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(robotiq_hande_driver PUBLIC

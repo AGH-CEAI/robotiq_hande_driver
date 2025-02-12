@@ -6,7 +6,7 @@
 #include "protocol_logic.hpp"
 
 
-namespace hande_driver
+namespace robotiq_hande_driver
 {
 
 constexpr auto GRIPPER_POSITION_MIN = 0.0;
@@ -19,7 +19,7 @@ constexpr auto MAX_FORCE = 255;
 /**
  * @brief This class contains high-level gripper commands and status.
  */
-class ApplicationLayer {
+class GripperApplication {
 public:
 
     struct Status {
@@ -36,9 +36,40 @@ public:
         bool is_error;
     };
 
-    ApplicationLayer();
+    GripperApplication();
 
-    ~ApplicationLayer() {};
+    ~GripperApplication() {};
+
+    /**
+     * @brief Initializes driver parameters.
+     *
+     * @param tty_port modbus virtual port
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void initialize(std::string tty_port) {
+        protocol_logic_.initialize(tty_port);
+    };
+
+    /**
+     * @brief Configures driver session.
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void configure() {
+        protocol_logic_.configure();
+    };
+
+    /**
+     * @brief Deinitializes driver.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void cleanup() {
+        protocol_logic_.cleanup();
+    };
 
     /**
      * @brief Stops the gripper movement.
@@ -82,6 +113,29 @@ public:
      */
     void activate() {
         protocol_logic_.activate();
+    };
+
+    /**
+     * @brief Deactivates the gripper.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void deactivate() {
+        protocol_logic_.reset();
+    };
+
+        /**
+     * @brief Deactivates the gripper.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void shutdown() {
+        deactivate();
+        cleanup();
     };
 
     /**
@@ -225,5 +279,5 @@ private:
     double current_;
 
 };
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver
 #endif  // APPLICATION_HPP_

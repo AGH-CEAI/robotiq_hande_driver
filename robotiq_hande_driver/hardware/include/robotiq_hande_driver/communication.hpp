@@ -3,9 +3,10 @@
 
 #include <modbus/modbus.h>
 #include <cstring>
+#include <string>
 
 
-namespace hande_driver
+namespace robotiq_hande_driver
 {
 
 constexpr auto DEVICE_NAME = "/tmp/ttyUR";
@@ -50,6 +51,42 @@ public:
     Communication();
 
     ~Communication() {
+        cleanup();
+    };
+
+    /**
+     * @brief Initializes driver parameters.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void initialize(std::string tty_port) {
+        tty_port_ = tty_port.c_str();
+    };
+
+    /**
+     * @brief Initializes communication layer.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void configure() {
+        mb_ = modbus_new_rtu(tty_port_, BAUDRATE, PARITY, DATA_BITS, STOP_BIT);
+        modbus_set_slave(mb_, SLAVE_ID);
+        modbus_set_debug(mb_, DEBUG_MODBUS);
+        connect();
+    };
+
+    /**
+     * @brief Deinitializes communication layer.
+     *
+     * @param none
+     * @return None.
+     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     */
+    void cleanup() {
         disconnect();
         modbus_free(mb_);
     };
@@ -165,11 +202,12 @@ public:
     };
 
 private:
+    const char* tty_port_;
     modbus_t *mb_;
 
     uint8_t input_bytes_[static_cast<size_t>(InputBytes::BYTES_MAX)];
     uint8_t output_bytes_[static_cast<size_t>(OutputBytes::BYTES_MAX)];
 
 };
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver
 #endif  // COMMUNICATION_HPP_

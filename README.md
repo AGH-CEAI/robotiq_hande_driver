@@ -23,6 +23,14 @@ source ./install/local_setup.sh
 ros2 run robotiq_hande_driver hande_driver
 ```
 
+### Test Serial Connection
+
+Another terminal
+```bash
+cd cd ~/ceai_ws/src/robotiq_hande_driver/build/robotiq_hande_driver/
+./communication_test
+./hande_driver
+```
 
 ---
 ## Development notes

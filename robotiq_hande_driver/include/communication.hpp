@@ -97,10 +97,10 @@ public:
     modbus_write_and_read_registers(mb_,
                                     GRIPPER_INPUT_FIRST_REG,
                                     kRegisterWordLength,
-                                    (uint16_t *)output_bytes_,
+                                    reinterpret_cast<uint16_t*>(output_bytes_),
                                     GRIPPER_OUTPUT_FIRST_REG,
                                     kRegisterWordLength,
-                                    (uint16_t *)input_bytes_);
+                                    reinterpret_cast<uint16_t*>(input_bytes_));
     };
 
     /**

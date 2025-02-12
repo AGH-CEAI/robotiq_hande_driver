@@ -101,7 +101,7 @@ public:
      */
     void reset() {
         communication_.clear_output_bytes();
-        communication_.write_action_bit((uint)ActionRequestPositionBit::ACTIVATE, (bool)Activate::DEACTIVATE_GRIPPER);
+        communication_.write_action_bit(static_cast<uint>(ActionRequestPositionBit::ACTIVATE), static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
         communication_.read_write_registers();
     };
 

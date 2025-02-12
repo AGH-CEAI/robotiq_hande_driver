@@ -19,7 +19,6 @@ constexpr uint8_t SLAVE_ID = 0x09;
 constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
 constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
 
-constexpr auto kRegisterWordLength = 3;
 enum class OutputBytes : uint8_t {
     RESERVED_1 = 0u,
     ACTION_REQUEST,
@@ -29,6 +28,7 @@ enum class OutputBytes : uint8_t {
     SPEED,
     BYTES_MAX
 };
+constexpr auto OUTPUT_REGISTER_WORD_LENGTH = static_cast<uint>(OutputBytes::BYTES_MAX) / 2;
 
 enum class InputBytes : uint8_t {
     RESERVED_1 = 0u,
@@ -39,6 +39,7 @@ enum class InputBytes : uint8_t {
     POSITION,
     BYTES_MAX
 };
+constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 
 
 /**
@@ -96,10 +97,10 @@ public:
      */
     modbus_write_and_read_registers(mb_,
                                     GRIPPER_INPUT_FIRST_REG,
-                                    kRegisterWordLength,
+                                    OUTPUT_REGISTER_WORD_LENGTH,
                                     reinterpret_cast<uint16_t*>(output_bytes_),
                                     GRIPPER_OUTPUT_FIRST_REG,
-                                    kRegisterWordLength,
+                                    INPUT_REGISTER_WORD_LENGTH,
                                     reinterpret_cast<uint16_t*>(input_bytes_));
     };
 

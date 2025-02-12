@@ -1,0 +1,5 @@
+repositories:
+  robotiq_hande_description:
+    type: git
+    url: https://github.com/macmacal/robotiq_hande_description
+    version: 4d6999f97b4fd471fcd30983aba5572c2e383b1f

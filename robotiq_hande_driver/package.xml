@@ -15,8 +15,17 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>gripper_controllers</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>robotiq_hande_description</depend>
+
+  <test_depend>ament_cmake_gmock</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ros2_control_test_assets</test_depend>
 
   <depend>libmodbus-dev</depend>
 

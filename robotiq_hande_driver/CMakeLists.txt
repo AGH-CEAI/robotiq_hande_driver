@@ -6,6 +6,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+include(FindPkgConfig)
+pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
+
+set(DEPENDS
+  modbus
+)
 
 include_directories(
   "include"
@@ -13,12 +19,10 @@ include_directories(
 )
 
 add_executable(hande_driver src/hande_driver.cpp src/application.cpp src/protocol_logic.cpp src/communication.cpp)
-target_link_libraries(hande_driver ${catkin_LIBRARIES})
-target_link_libraries(hande_driver /lib/x86_64-linux-gnu/libmodbus.so)
+target_link_libraries(hande_driver ${catkin_LIBRARIES} ${DEPENDS})
 
 add_executable(communication_test src/communication_test.cpp)
-target_link_libraries(communication_test ${catkin_LIBRARIES})
-target_link_libraries(communication_test /lib/x86_64-linux-gnu/libmodbus.so)
+target_link_libraries(communication_test ${catkin_LIBRARIES} ${DEPENDS})
 
 target_include_directories(hande_driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

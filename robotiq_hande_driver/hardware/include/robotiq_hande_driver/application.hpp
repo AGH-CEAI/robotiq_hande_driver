@@ -2,6 +2,7 @@
 #define APPLICATION_HPP_
 
 #include <stdint.h>
+#include <unistd.h>
 
 #include "protocol_logic.hpp"
 
@@ -12,6 +13,10 @@ namespace robotiq_hande_driver
 constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
 constexpr auto MAX_SPEED = 255;
 constexpr auto MAX_FORCE = 255;
+
+void sleep_100ms(){
+  usleep(100 * 1000);   // ms * 1000
+}
 
 /**
  * @brief This class contains high-level gripper commands and status.
@@ -114,12 +119,25 @@ public:
     /**
      * @brief Activates the gripper, making it ready for use.
      *
-     * @param none
+     * @param blocking If true wait until the gripper is active.
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void activate() {
-        protocol_logic_.activate();
+    void activate(bool blocking=true) {
+        read();
+
+        if (status_.is_ready)
+            printf("Gripper already active");
+        else {
+            printf("Activation in progress");
+            
+            protocol_logic_.activate();
+            while(!status_.is_ready && blocking) {
+                printf("Waiting another 100ms");
+                sleep_100ms();
+                read();
+            }
+        }
     };
 
     /**

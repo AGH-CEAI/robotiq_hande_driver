@@ -41,10 +41,19 @@ private:
     GripperApplication application_layer_;
     std::shared_ptr<rclcpp::Logger> logger_;
 
+    double gripper_position_min_;
+    double gripper_position_max_;
     std::string tty_port_;
+    int baudrate_;
+    char parity_;
+    int data_bits_;
+    int stop_bit_;
+    int slave_id_;
+
     double state_position_;
     double state_velocity_;
     double cmd_position_;
+    double cmd_force_;
 };
 
 } // namespace robotiq_hande_driver

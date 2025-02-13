@@ -97,13 +97,17 @@ public:
     /**
      * @brief Initializes driver parameters.
      *
-     * @param tty_port modbus virtual port
+     * @param tty_port Modbus virtual port.
+     * @param baudrate Modbus serial baudrate.
+     * @param parity Modbus serial parity.
+     * @param data_bits Modbus serial data bits.
+     * @param stop_bit Modbus serial stopbit.
+     * @param slave_id Modbus slave id.
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void initialize(std::string tty_port) {
-        communication_.initialize(tty_port);
-        // communication_.configure();
+    void initialize(std::string tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+        communication_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
     };
 
     /**

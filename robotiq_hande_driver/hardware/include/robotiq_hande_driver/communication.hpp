@@ -5,17 +5,13 @@
 #include <cstring>
 #include <string>
 
+#include <rclcpp/rclcpp.hpp>
+
 
 namespace robotiq_hande_driver
 {
 
-constexpr auto DEVICE_NAME = "/tmp/ttyUR";
-constexpr auto BAUDRATE = 115200;
-constexpr auto PARITY = 'N';
-constexpr auto DATA_BITS = 8;
-constexpr auto STOP_BIT = 1;
 constexpr auto DEBUG_MODBUS = true;
-constexpr uint8_t SLAVE_ID = 0x09;
 
 constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
 constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
@@ -57,12 +53,22 @@ public:
     /**
      * @brief Initializes driver parameters.
      *
-     * @param none
+     * @param tty_port Modbus virtual port.
+     * @param baudrate Modbus serial baudrate.
+     * @param parity Modbus serial parity.
+     * @param data_bits Modbus serial data bits.
+     * @param stop_bit Modbus serial stopbit.
+     * @param slave_id Modbus slave id.
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void initialize(std::string tty_port) {
+    void initialize(std::string tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
         tty_port_ = tty_port.c_str();
+        baudrate_ = baudrate;
+        parity_ = parity;
+        data_bits_ = data_bits;
+        stop_bit_ = stop_bit;
+        slave_id_ = slave_id;
     };
 
     /**
@@ -73,8 +79,8 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void configure() {
-        mb_ = modbus_new_rtu(tty_port_, BAUDRATE, PARITY, DATA_BITS, STOP_BIT);
-        modbus_set_slave(mb_, SLAVE_ID);
+        mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
+        modbus_set_slave(mb_, slave_id_);
         modbus_set_debug(mb_, DEBUG_MODBUS);
         connect();
     };
@@ -203,6 +209,12 @@ public:
 
 private:
     const char* tty_port_;
+    int baudrate_;
+    char parity_;
+    int data_bits_;
+    int stop_bit_;
+    int slave_id_;
+
     modbus_t *mb_;
 
     uint8_t input_bytes_[static_cast<size_t>(InputBytes::BYTES_MAX)];

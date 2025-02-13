@@ -9,6 +9,9 @@ GripperApplication::GripperApplication()
 :   requested_position_()
 ,   position_()
 ,   current_()
+,   gripper_position_min_()
+,   gripper_position_max_()
+,   gripper_postion_step_()
 {
 }
 
@@ -25,8 +28,8 @@ void GripperApplication::read(){
 
     //fault_status
 
-    requested_position_ = GRIPPER_POSITION_MAX - (double)protocol_logic_.get_reg_pos() * GRIPPER_POSITION_STEP;
-    position_ = GRIPPER_POSITION_MAX - (double)protocol_logic_.get_pos() * GRIPPER_POSITION_STEP;
+    requested_position_ = gripper_position_max_ - (double)protocol_logic_.get_reg_pos() * gripper_postion_step_;
+    position_ = gripper_position_max_ - (double)protocol_logic_.get_pos() * gripper_postion_step_;
     current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
 }
 }   // namespace hande_driver

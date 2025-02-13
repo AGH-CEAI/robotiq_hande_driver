@@ -9,9 +9,6 @@
 namespace robotiq_hande_driver
 {
 
-constexpr auto GRIPPER_POSITION_MIN = 0.0;
-constexpr auto GRIPPER_POSITION_MAX = 0.05;
-constexpr auto GRIPPER_POSITION_STEP = (GRIPPER_POSITION_MAX - GRIPPER_POSITION_MIN) / 255.0;
 constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
 constexpr auto MAX_SPEED = 255;
 constexpr auto MAX_FORCE = 255;
@@ -43,12 +40,22 @@ public:
     /**
      * @brief Initializes driver parameters.
      *
-     * @param tty_port modbus virtual port
+     * @param gripper_position_min Minimal gripper position in meters.
+     * @param gripper_position_max Maximal gripper position in meters.
+     * @param tty_port Modbus virtual port.
+     * @param baudrate Modbus serial baudrate.
+     * @param parity Modbus serial parity.
+     * @param data_bits Modbus serial data bits.
+     * @param stop_bit Modbus serial stopbit.
+     * @param slave_id Modbus slave id.
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void initialize(std::string tty_port) {
-        protocol_logic_.initialize(tty_port);
+    void initialize(double gripper_position_min, double gripper_position_max, std::string tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+        gripper_position_min_ = gripper_position_min;
+        gripper_position_max_ = gripper_position_max;
+        gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
+        protocol_logic_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
     };
 
     /**
@@ -146,7 +153,7 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void open() {
-        set_position(GRIPPER_POSITION_MAX);
+        set_position(gripper_position_max_);
     };
 
     /**
@@ -157,7 +164,7 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void close() {
-        set_position(GRIPPER_POSITION_MIN);
+        set_position(gripper_position_min_);
     };
 
     /**
@@ -211,9 +218,10 @@ public:
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void set_position(double position) {
+    void set_position(double position, double force=1.0) {
+        uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
         protocol_logic_.go_to(
-            (uint8_t)((GRIPPER_POSITION_MAX - position) / GRIPPER_POSITION_STEP), MAX_SPEED, MAX_FORCE);
+            (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_), MAX_SPEED, scaled_force);
     };
 
     /**
@@ -277,6 +285,10 @@ private:
      * Stores the electric current drawn by the gripper in amperes.
      */
     double current_;
+
+    double gripper_position_min_;
+    double gripper_position_max_;
+    double gripper_postion_step_;
 
 };
 }   // namespace robotiq_hande_driver

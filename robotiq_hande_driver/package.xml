@@ -17,6 +17,7 @@
 
   <depend>gripper_controllers</depend>
   <depend>hardware_interface</depend>
+  <depend>libmodbus-dev</depend>
   <depend>pluginlib</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
@@ -26,8 +27,6 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>ros2_control_test_assets</test_depend>
-
-  <depend>libmodbus-dev</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

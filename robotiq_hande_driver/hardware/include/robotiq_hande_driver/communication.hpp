@@ -1,5 +1,5 @@
-#ifndef COMMUNICATION_HPP_
-#define COMMUNICATION_HPP_
+#ifndef ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
+#define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
 #include <modbus/modbus.h>
 #include <cstring>
@@ -222,4 +222,4 @@ private:
 
 };
 }   // namespace robotiq_hande_driver
-#endif  // COMMUNICATION_HPP_
+#endif  // ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_

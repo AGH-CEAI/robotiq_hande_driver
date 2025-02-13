@@ -1,5 +1,5 @@
-#ifndef PROTOCOL_LOGIC_HPP_
-#define PROTOCOL_LOGIC_HPP_
+#ifndef ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_
+#define ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_
 
 #include <string>
 
@@ -364,4 +364,4 @@ private:
     Communication communication_;
 };
 }   // namespace robotiq_hande_driver
-#endif  // PROTOCOL_LOGIC_HPP_
+#endif  // ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_

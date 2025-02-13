@@ -1,5 +1,5 @@
-#ifndef APPLICATION_HPP_
-#define APPLICATION_HPP_
+#ifndef ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_
+#define ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_
 
 #include <stdint.h>
 #include <unistd.h>
@@ -310,4 +310,4 @@ private:
 
 };
 }   // namespace robotiq_hande_driver
-#endif  // APPLICATION_HPP_
+#endif  // ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_

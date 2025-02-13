@@ -29,7 +29,14 @@ protected:
             <ros2_control name="HandeGripperExample" type="system">
                 <hardware>
                     <plugin>robotiq_hande_driver/RobotiqHandeHardwareInterface</plugin>
-                    <param name="tty">/tmp/ttyX</param>
+                    <param name="grip_pos_min">0.0</param>
+                    <param name="grip_pos_max" default="0.025</param>
+                    <param name="tty">/tmp/ttyUR</param>
+                    <param name="baudrate" >115200</param>
+                    <param name="parity">N</param>
+                    <param name="data_bits">8</param>
+                    <param name="stop_bit">1</param>
+                    <param name="slave_id">9</param>
                 </hardware>
                 <joint name="joint1">
                     <command_interface name="position"/>

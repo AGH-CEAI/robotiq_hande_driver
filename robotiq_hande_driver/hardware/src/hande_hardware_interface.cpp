@@ -12,9 +12,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
         return HWI::CallbackReturn::ERROR;
     }
 
-    state_position_ = 0.025;
     state_velocity_ = 0.0;
-    cmd_position_ = 0.025;
     cmd_force_ = 1.0;
     gripper_position_min_ = stod(info_.hardware_parameters["grip_pos_min"]);
     gripper_position_max_ = stod(info_.hardware_parameters["grip_pos_max"]);
@@ -24,6 +22,9 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     data_bits_ = stoi(info_.hardware_parameters["data_bits"]);
     stop_bit_ = stoi(info_.hardware_parameters["stop_bit"]);
     slave_id_ = stoi(info_.hardware_parameters["slave_id"]);
+
+    cmd_position_ = gripper_position_max_;
+    state_position_ = gripper_position_max_;
 
     logger_ = std::make_shared<rclcpp::Logger>(
     rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system.RobotiqHandeHardwareInterface"));

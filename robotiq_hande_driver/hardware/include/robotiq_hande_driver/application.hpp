@@ -130,7 +130,7 @@ public:
             printf("Gripper already active");
         else {
             printf("Activation in progress");
-            
+
             protocol_logic_.activate();
             while(!status_.is_ready && blocking) {
                 printf("Waiting another 100ms");

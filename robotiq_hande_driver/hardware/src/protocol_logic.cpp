@@ -1,9 +1,9 @@
-#include "protocol_logic.hpp"
+#include "robotiq_hande_driver/protocol_logic.hpp"
 
 #include <cstdio>
 
 
-namespace hande_driver  {
+namespace robotiq_hande_driver  {
 
 ProtocolLogic::ProtocolLogic()
 :   status_()
@@ -43,4 +43,4 @@ void ProtocolLogic::refresh_registers(){
     position_ = communication_.get_input_byte(InputBytes::POSITION);
     current_ = communication_.get_input_byte(InputBytes::CURRENT);
 }
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver

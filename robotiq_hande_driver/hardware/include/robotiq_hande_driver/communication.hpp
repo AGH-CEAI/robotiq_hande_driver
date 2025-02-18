@@ -5,8 +5,6 @@
 #include <cstring>
 #include <string>
 
-#include <rclcpp/rclcpp.hpp>
-
 
 namespace robotiq_hande_driver
 {

@@ -30,6 +30,9 @@ endforeach()
 add_library(${PROJECT_NAME}
     SHARED
     hardware/src/hande_hardware_interface.cpp
+    hardware/src/application.cpp
+    hardware/src/communication.cpp
+    hardware/src/protocol_logic.cpp
 )
 
 add_executable(communication_test test/communication_test.cpp)

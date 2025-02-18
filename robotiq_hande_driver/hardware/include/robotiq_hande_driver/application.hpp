@@ -254,7 +254,7 @@ public:
     };
 
     /**
-     * @brief Closes the gripper.
+     * @brief Reads gripper data.
      *
      * @param none
      * @return None.
@@ -263,7 +263,7 @@ public:
     void read();
 
     /**
-     * @brief Closes the gripper.
+     * @brief Writes gripper data.
      *
      * @param none
      * @return None.

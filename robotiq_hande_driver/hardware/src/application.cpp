@@ -1,9 +1,9 @@
-#include "application.hpp"
+#include "robotiq_hande_driver/application.hpp"
 
 #include <cstdio>
 
 
-namespace hande_driver  {
+namespace robotiq_hande_driver  {
 
 GripperApplication::GripperApplication()
 :   requested_position_()
@@ -32,4 +32,4 @@ void GripperApplication::read(){
     position_ = gripper_position_max_ - (double)protocol_logic_.get_pos() * gripper_postion_step_;
     current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
 }
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver

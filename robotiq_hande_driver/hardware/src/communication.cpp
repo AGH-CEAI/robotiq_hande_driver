@@ -1,9 +1,9 @@
-#include "communication.hpp"
+#include "robotiq_hande_driver/communication.hpp"
 
 #include <cstdio>
 
 
-namespace hande_driver  {
+namespace robotiq_hande_driver  {
 
 Communication::Communication()
 :    input_bytes_{}
@@ -25,4 +25,4 @@ void Communication::connect(){
     else
         printf("Couldn't connect: %d\n", result);
 }
-}   // namespace hande_driver
+}   // namespace robotiq_hande_driver

@@ -14,10 +14,6 @@ constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
 constexpr auto MAX_SPEED = 255;
 constexpr auto MAX_FORCE = 255;
 
-void sleep_100ms(){
-  usleep(100 * 1000);   // ms * 1000
-}
-
 /**
  * @brief This class contains high-level gripper commands and status.
  */
@@ -124,18 +120,20 @@ public:
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
     void activate(bool blocking=true) {
+        int iter = 0;
         read();
 
         if (status_.is_ready)
-            printf("Gripper already active");
+            printf("Gripper already active\n");
         else {
-            printf("Activation in progress");
-
+            printf("Activation in progress\n");
             protocol_logic_.activate();
+
             while(!status_.is_ready && blocking) {
-                printf("Waiting another 100ms");
-                sleep_100ms();
+                printf("Waiting another 100ms, attempt: %d\n", iter);
+                usleep(100 * 1000);
                 read();
+                if(iter++ > 100) break;
             }
         }
     };

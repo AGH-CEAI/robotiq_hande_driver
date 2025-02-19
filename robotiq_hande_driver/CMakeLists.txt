@@ -15,6 +15,7 @@ set(DEPENDS
 set(HW_IF_INCLUDE_DEPENDS
   fmt
   hardware_interface
+  libmodbus
   pluginlib
   rclcpp
   rclcpp_lifecycle
@@ -33,6 +34,11 @@ add_library(${PROJECT_NAME}
     hardware/src/application.cpp
     hardware/src/communication.cpp
     hardware/src/protocol_logic.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+    modbus
 )
 
 add_executable(communication_test test/communication_test.cpp)

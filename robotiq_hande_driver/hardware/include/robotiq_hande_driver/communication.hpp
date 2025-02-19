@@ -73,14 +73,18 @@ public:
      * @brief Initializes communication layer.
      *
      * @param none
-     * @return None.
+     * @return int, when error <0.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void configure() {
+    int configure() {
+        int result;
+
         mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
         modbus_set_slave(mb_, slave_id_);
         modbus_set_debug(mb_, DEBUG_MODBUS);
-        connect();
+        result = connect();
+
+        return result;
     };
 
     /**
@@ -99,10 +103,10 @@ public:
      * @brief Connects to the gripper using Modbus RTU and a virtual socket.
      *
      * @param none
-     * @return None.
+     * @return int if error: <0.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void connect();
+    int connect();
 
     /**
      * @brief Disconnects from the gripper using Modbus RTU and a virtual socket.

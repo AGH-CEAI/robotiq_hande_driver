@@ -38,9 +38,12 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(const rlccp_lc::State& /*previous_state*/){
     //--TODO(modbus integration): Initialize the ModbusRTU communication session
-    application_layer_.configure();
+    int result;
+
+    result = application_layer_.configure();
 
     RCLCPP_INFO(get_logger(), "configure()");
+    if (result<0) return HWI::CallbackReturn::FAILURE;
     return HWI::CallbackReturn::SUCCESS;
 }
 

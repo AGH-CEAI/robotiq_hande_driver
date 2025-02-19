@@ -114,10 +114,12 @@ public:
      * @brief Configures protocol layer.
      *
      * @param none
-     * @return None.
+     * @return int, when error <0.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void configure() {
+    int configure() {
+        int result;
+
         activation_status_  = ActivationStatus::GRIPPER_RESET;
         action_status_ = ActionStatus::STOPPED;
         gripper_status_ = GripperStatus::NOT_USED;
@@ -126,7 +128,9 @@ public:
         position_request_echo_ = 0;
         position_ = 0;
         current_ = 0;
-        communication_.configure();
+        result = communication_.configure();
+
+        return result;
     };
 
     /**

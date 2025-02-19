@@ -12,7 +12,7 @@ Communication::Communication()
 
 }
 
-void Communication::connect(){
+int Communication::connect(){
     uint16_t activation_status[1] = {0x0000};
     int result;
 
@@ -24,5 +24,7 @@ void Communication::connect(){
         printf("Connected successfully: %d\n", result);
     else
         printf("Couldn't connect: %d\n", result);
+
+    return result;
 }
 }   // namespace robotiq_hande_driver

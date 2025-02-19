@@ -61,11 +61,15 @@ public:
 
     /**
      * @brief Configures driver session.
-     * @return None.
+     * @return int, when error <0.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void configure() {
-        protocol_logic_.configure();
+    int configure() {
+        int result;
+
+        result = protocol_logic_.configure();
+
+        return result;
     };
 
     /**

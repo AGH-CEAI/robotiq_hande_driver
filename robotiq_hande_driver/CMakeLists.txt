@@ -15,7 +15,6 @@ set(DEPENDS
 set(HW_IF_INCLUDE_DEPENDS
   fmt
   hardware_interface
-  libmodbus
   pluginlib
   rclcpp
   rclcpp_lifecycle
@@ -73,6 +72,10 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
 )
 
+# include_directories(hardware/include/robotiq_hande_driver)
+# add_executable(application_test test/application_test.cpp hardware/src/application.cpp hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
+# target_link_libraries(application_test ${catkin_LIBRARIES} ${DEPENDS})
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
   # find_package(ament_cmake_pytest REQUIRED)
@@ -82,6 +85,11 @@ if(BUILD_TESTING)
     test/test_load_hw_interface.cpp
   )
   target_link_libraries(test_load_hw_interface ${PROJECT_NAME})
+
+  # ament_add_gmock(application_test
+  # test/application_test.cpp
+  # )
+  # target_link_libraries(application_test ${PROJECT_NAME})
 
   # TODO: investigate
   # ament_add_pytest_test(example_7_urdf_xacro test/test_urdf_xacro.py)

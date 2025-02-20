@@ -52,7 +52,7 @@ public:
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void initialize(double gripper_position_min, double gripper_position_max, std::string tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+    void initialize(double gripper_position_min, double gripper_position_max, std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
         gripper_position_min_ = gripper_position_min;
         gripper_position_max_ = gripper_position_max;
         gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;

@@ -37,9 +37,14 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
         return *logger_;
     }
 
+    rclcpp::Clock::SharedPtr get_clock() const {
+        return clock_;
+    }
+
    private:
     GripperApplication gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;
+    rclcpp::Clock::SharedPtr clock_;
 
     double gripper_position_min_;
     double gripper_position_max_;

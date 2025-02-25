@@ -5,6 +5,7 @@
 
 namespace robotiq_hande_driver {
 
+constexpr auto THROTTLE_1000_MS = 1000;
 constexpr auto ACTIVATION_MAX_ITER = 100;
 inline void wait_100ms() {
     usleep(100 * 1000);
@@ -128,6 +129,7 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
     int iter = 0;
+    clock_ = std::make_shared<rclcpp::Clock>(rclcpp::Clock());
     gripper_driver_.read();
 
     if(gripper_driver_.get_status().is_ready)
@@ -137,7 +139,12 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
         gripper_driver_.activate();
 
         while(!gripper_driver_.get_status().is_ready) {
-            RCLCPP_INFO(get_logger(), "Waiting another 100ms, attempt: %d", iter);
+            RCLCPP_DEBUG_SKIPFIRST_THROTTLE(
+                get_logger(),
+                *get_clock(),
+                THROTTLE_1000_MS,
+                "Waiting for activation to be finished: %d",
+                iter);
             wait_100ms();
             gripper_driver_.read();
             if(iter++ > ACTIVATION_MAX_ITER) {

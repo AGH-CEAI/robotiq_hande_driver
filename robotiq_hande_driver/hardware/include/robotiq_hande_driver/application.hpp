@@ -53,7 +53,7 @@ class GripperApplication {
     void initialize(
         double gripper_position_min,
         double gripper_position_max,
-        std::string& tty_port,
+        const std::string& tty_port,
         int baudrate,
         char parity,
         int data_bits,

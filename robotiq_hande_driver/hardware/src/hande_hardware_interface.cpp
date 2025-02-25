@@ -44,7 +44,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
         rclcpp::get_logger("controller_manager.resource_manager.hardware_"
                            "component.system.RobotiqHandeHardwareInterface"));
 
-    application_layer_.initialize(
+    gripper_driver_.initialize(
         gripper_position_min_,
         gripper_position_max_,
         tty_port_,
@@ -69,7 +69,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     const rlccp_lc::State& /*previous_state*/) {
     int result;
 
-    result = application_layer_.configure();
+    result = gripper_driver_.configure();
 
     RCLCPP_INFO(get_logger(), "Configured Hand-E Gripper");
     if(result < 0) return HWI::CallbackReturn::FAILURE;
@@ -78,7 +78,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(
     const rlccp_lc::State& /*previous_state*/) {
-    application_layer_.cleanup();
+    gripper_driver_.cleanup();
 
     RCLCPP_INFO(get_logger(), "Cleaned up Hand-E connection");
     return HWI::CallbackReturn::SUCCESS;
@@ -115,7 +115,7 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
-    application_layer_.activate();
+    gripper_driver_.activate();
 
     RCLCPP_INFO(get_logger(), "Hand-E successfully activated");
     return HWI::CallbackReturn::SUCCESS;
@@ -123,7 +123,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(
     const rlccp_lc::State& /*previous_state*/) {
-    application_layer_.deactivate();
+    gripper_driver_.deactivate();
 
     RCLCPP_INFO(get_logger(), "Hand-E successfully deactivated");
     return HWI::CallbackReturn::SUCCESS;
@@ -131,7 +131,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_shutdown(
     const rlccp_lc::State& /*previous_state*/) {
-    application_layer_.shutdown();
+    gripper_driver_.shutdown();
 
     RCLCPP_INFO(get_logger(), "Hand-E shutdown");
     return HWI::CallbackReturn::SUCCESS;
@@ -139,22 +139,21 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_shutdown(
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_error(
     const rlccp_lc::State& /*previous_state*/) {
-    RCLCPP_INFO(get_logger(), "Handled error with FAILURE on purpose - check logs");
+    RCLCPP_INFO(get_logger(), "Handled error with FAILURE on purpose - check previous logs");
     return HWI::CallbackReturn::FAILURE;
 }
 
 HWI::return_type RobotiqHandeHardwareInterface::read(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    application_layer_.read();
-    state_position_ = application_layer_.get_position();
+    gripper_driver_.read();
+    state_position_ = gripper_driver_.get_position();
 
     return hardware_interface::return_type::OK;
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    application_layer_.set_position(cmd_position_, cmd_force_);
-    application_layer_.write();
-
+    gripper_driver_.set_position(cmd_position_, cmd_force_);
+    gripper_driver_.write();
 
     return hardware_interface::return_type::OK;
 }

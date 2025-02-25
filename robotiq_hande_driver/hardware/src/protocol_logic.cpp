@@ -36,8 +36,8 @@ void ProtocolLogic::refresh_registers() {
                                  >> static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS))
                                 & OBJECT_DETECTION_STATUS_BITS);
 
+    // TODO(issue#9) Read Hand-E fault status flags
     fault_status_ = communication_.get_input_byte(InputBytes::FAULT_STATUS);
-    // To bo specified
 
     position_request_echo_ = communication_.get_input_byte(InputBytes::POSITION_REQUEST_ECHO);
     position_ = communication_.get_input_byte(InputBytes::POSITION);

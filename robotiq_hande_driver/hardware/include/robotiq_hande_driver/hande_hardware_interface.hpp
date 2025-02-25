@@ -38,7 +38,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     }
 
    private:
-    GripperApplication application_layer_;
+    GripperApplication gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;
 
     double gripper_position_min_;

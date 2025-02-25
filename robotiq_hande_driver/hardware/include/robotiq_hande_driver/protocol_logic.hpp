@@ -88,7 +88,7 @@ class ProtocolLogic {
      * communication issues occur.
      */
     void initialize(
-        std::string& tty_port,
+        const std::string& tty_port,
         int baudrate,
         char parity,
         int data_bits,

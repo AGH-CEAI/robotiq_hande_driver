@@ -85,13 +85,6 @@ class Communication {
     int configure() {
         int result;
 
-        printf(
-            "Connecting to: %s, %d, %c, %d, %d\n",
-            tty_port_,
-            baudrate_,
-            parity_,
-            data_bits_,
-            stop_bit_);
         mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
         modbus_set_slave(mb_, slave_id_);
         modbus_set_debug(mb_, DEBUG_MODBUS);

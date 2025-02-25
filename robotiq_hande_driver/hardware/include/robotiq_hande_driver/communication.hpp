@@ -77,7 +77,7 @@ class Communication {
      * @brief Initializes communication layer.
      *
      * @param none
-     * @return int, when error <0.
+     * @return int Connection status code.
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
@@ -116,7 +116,7 @@ class Communication {
      * @brief Connects to the gripper using Modbus RTU and a virtual socket.
      *
      * @param none
-     * @return int if error: <0.
+     * @return connection status code.
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */

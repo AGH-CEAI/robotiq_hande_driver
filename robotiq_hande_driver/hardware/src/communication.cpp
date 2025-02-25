@@ -14,11 +14,6 @@ int Communication::connect() {
 
     result = modbus_read_registers(mb_, GRIPPER_OUTPUT_FIRST_REG, 1, activation_status);
 
-    if(result > 0)
-        printf("Connected successfully: %d\n", result);
-    else
-        printf("Couldn't connect: %d\n", result);
-
-    return 1;
+    return result;
 }
 }  // namespace robotiq_hande_driver

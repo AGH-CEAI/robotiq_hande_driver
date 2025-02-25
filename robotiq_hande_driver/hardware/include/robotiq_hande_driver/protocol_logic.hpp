@@ -101,7 +101,7 @@ class ProtocolLogic {
      * @brief Configures protocol layer.
      *
      * @param none
-     * @return int, when error <0.
+     * @return int Connection status code.
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */

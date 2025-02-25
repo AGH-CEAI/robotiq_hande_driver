@@ -6,7 +6,7 @@
 namespace robotiq_hande_driver {
 
 constexpr auto ACTIVATION_MAX_ITER = 100;
-inline wait_100ms() {
+inline void wait_100ms() {
     usleep(100 * 1000);
 }
 

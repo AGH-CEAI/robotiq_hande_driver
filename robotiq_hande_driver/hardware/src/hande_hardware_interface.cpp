@@ -17,6 +17,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     if(HWI::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
         return HWI::CallbackReturn::ERROR;
     }
+    clock_ = std::make_shared<rclcpp::Clock>(rclcpp::Clock());
     logger_ = std::make_shared<rclcpp::Logger>(
         rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system."
                            "RobotiqHandeHardwareInterface"));
@@ -129,7 +130,6 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
     int iter = 0;
-    clock_ = std::make_shared<rclcpp::Clock>(rclcpp::Clock());
     gripper_driver_.read();
 
     if(gripper_driver_.get_status().is_ready)

@@ -8,6 +8,7 @@
 namespace robotiq_hande_driver {
 
 constexpr auto DEBUG_MODBUS = true;
+constexpr auto FAILURE_MODBUS = -1;
 
 constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
 constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;

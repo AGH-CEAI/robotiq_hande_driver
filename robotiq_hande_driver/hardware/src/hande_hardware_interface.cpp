@@ -45,10 +45,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     cmd_position_ = gripper_position_max_;
     state_position_ = gripper_position_max_;
 
-    logger_ = std::make_shared<rclcpp::Logger>(
-        rclcpp::get_logger("controller_manager.resource_manager.hardware_"
-                           "component.system.RobotiqHandeHardwareInterface"));
-
     gripper_driver_.initialize(
         gripper_position_min_,
         gripper_position_max_,

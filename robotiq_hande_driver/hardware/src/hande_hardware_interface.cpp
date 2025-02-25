@@ -71,7 +71,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
 
     result = application_layer_.configure();
 
-    RCLCPP_INFO(get_logger(), "configure()");
+    RCLCPP_INFO(get_logger(), "Configured Hand-E Gripper");
     if(result < 0) return HWI::CallbackReturn::FAILURE;
     return HWI::CallbackReturn::SUCCESS;
 }

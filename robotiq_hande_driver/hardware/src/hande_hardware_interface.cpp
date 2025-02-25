@@ -80,7 +80,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(
     const rlccp_lc::State& /*previous_state*/) {
     application_layer_.cleanup();
 
-    RCLCPP_INFO(get_logger(), "cleanup()");
+    RCLCPP_INFO(get_logger(), "Cleaned up Hand-E connection");
     return HWI::CallbackReturn::SUCCESS;
 }
 

@@ -148,7 +148,6 @@ HWI::return_type RobotiqHandeHardwareInterface::read(
     application_layer_.read();
     state_position_ = application_layer_.get_position();
 
-    RCLCPP_DEBUG(get_logger(), "read()");
     return hardware_interface::return_type::OK;
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(

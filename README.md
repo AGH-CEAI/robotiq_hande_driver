@@ -27,7 +27,7 @@ ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_h
 
 ### Test Serial Connection
 
-Another terminal
+There is an additional test tool with hardcoded parameters to test the connection with the Hand-E without any ROS dependencies. To run it:
 ```bash
 cd cd ~/ceai_ws/src/robotiq_hande_driver/build/robotiq_hande_driver/
 ./communication_test

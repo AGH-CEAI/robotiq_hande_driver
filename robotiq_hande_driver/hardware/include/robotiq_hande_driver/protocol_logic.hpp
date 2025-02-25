@@ -106,7 +106,7 @@ public:
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
      */
-    void initialize(std::string tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+    void initialize(std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
         communication_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
     };
 

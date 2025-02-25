@@ -5,39 +5,25 @@
 
 #include "communication.hpp"
 
-
-namespace robotiq_hande_driver
-{
+namespace robotiq_hande_driver {
 
 /* Register mapping done based on Hand-E documentation:
  * https://assets.robotiq.com/website-assets/support_documents/document/Hand-E_Instruction_Manual_e-Series_PDF_20190306.pdf
  */
 enum class ActionRequestPositionBit : uint8_t {
-    ACTIVATE = 0u,                      /* rACT */
-    GO_TO = 3u,                         /* rGTO */
-    AUTOMATIC_RELEASE = 4u,             /* rATR */
-    AUTOMATIC_RELEASE_DIRECTION = 5u,   /* rARD */
+    ACTIVATE = 0u,                    /* rACT */
+    GO_TO = 3u,                       /* rGTO */
+    AUTOMATIC_RELEASE = 4u,           /* rATR */
+    AUTOMATIC_RELEASE_DIRECTION = 5u, /* rARD */
 };
 
-enum class Activate : uint8_t {
-    DEACTIVATE_GRIPPER = 0u,
-    ACTIVATE_GRIPPER
-};
+enum class Activate : uint8_t { DEACTIVATE_GRIPPER = 0u, ACTIVATE_GRIPPER };
 
-enum class GoTo : uint8_t {
-    STOP = 0u,
-    GO_TO_REQ_POS
-};
+enum class GoTo : uint8_t { STOP = 0u, GO_TO_REQ_POS };
 
-enum class AutomaticRelease : uint8_t {
-    NORMAL = 0u,
-    EMERGENCY_AUTO_RELEASE
-};
+enum class AutomaticRelease : uint8_t { NORMAL = 0u, EMERGENCY_AUTO_RELEASE };
 
-enum class AutoReleaseDirection : uint8_t  {
-    CLOSING = 0u,
-    OPENING
-};
+enum class AutoReleaseDirection : uint8_t { CLOSING = 0u, OPENING };
 
 /* Gripper Status */
 enum class ResponseByte : uint8_t {
@@ -48,23 +34,17 @@ enum class ResponseByte : uint8_t {
 };
 
 enum class StatusPositionBit : uint8_t {
-    ACTIVATION_STATUS = 0u,         /* gACT */
-    ACTION_STATUS = 3u,             /* gGTO */
-    GRIPPER_STATUS = 4u,            /* gSTA */
-    OBJECT_DETECTION_STATUS = 6u,   /* gObj */
+    ACTIVATION_STATUS = 0u,       /* gACT */
+    ACTION_STATUS = 3u,           /* gGTO */
+    GRIPPER_STATUS = 4u,          /* gSTA */
+    OBJECT_DETECTION_STATUS = 6u, /* gObj */
 };
 
 constexpr auto ACTIVATION_STATUS_BITS = 0b1;
-enum class ActivationStatus : uint8_t {
-    GRIPPER_RESET = 0u,
-    GRIPPER_ACTIVATION
-};
+enum class ActivationStatus : uint8_t { GRIPPER_RESET = 0u, GRIPPER_ACTIVATION };
 
 constexpr auto ACTION_STATUS_BITS = 0b1;
-enum class ActionStatus : uint8_t {
-    STOPPED = 0u,
-    GO_TO_POSITION_REQUEST
-};
+enum class ActionStatus : uint8_t { STOPPED = 0u, GO_TO_POSITION_REQUEST };
 
 constexpr auto GRIPPER_STATUS_BITS = 0b11;
 enum class GripperStatus : uint8_t {
@@ -88,8 +68,8 @@ constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
 /**
  * @brief This class contains protocol oriented functions and definitions.
  */
-class ProtocolLogic{
-public:
+class ProtocolLogic {
+   public:
     ProtocolLogic();
 
     ~ProtocolLogic() {};
@@ -104,9 +84,16 @@ public:
      * @param stop_bit Modbus serial stopbit.
      * @param slave_id Modbus slave id.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
-    void initialize(std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+    void initialize(
+        std::string& tty_port,
+        int baudrate,
+        char parity,
+        int data_bits,
+        int stop_bit,
+        int slave_id) {
         communication_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
     };
 
@@ -115,12 +102,13 @@ public:
      *
      * @param none
      * @return int, when error <0.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     int configure() {
         int result;
 
-        activation_status_  = ActivationStatus::GRIPPER_RESET;
+        activation_status_ = ActivationStatus::GRIPPER_RESET;
         action_status_ = ActionStatus::STOPPED;
         gripper_status_ = GripperStatus::NOT_USED;
         object_detection_status_ = ObjectDetectionStatus::REQ_POS_NO_OBJECT;
@@ -138,7 +126,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void cleanup() {
         communication_.cleanup();
@@ -149,11 +138,14 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void reset() {
         communication_.clear_output_bytes();
-        communication_.write_action_bit(static_cast<uint>(ActionRequestPositionBit::ACTIVATE), static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
+            static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
         communication_.read_write_registers();
     };
 
@@ -162,11 +154,14 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void set() {
         communication_.clear_output_bytes();
-        communication_.write_action_bit(static_cast<uint>(ActionRequestPositionBit::ACTIVATE), static_cast<bool>(Activate::ACTIVATE_GRIPPER));
+        communication_.write_action_bit(
+            static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
+            static_cast<bool>(Activate::ACTIVATE_GRIPPER));
         communication_.read_write_registers();
     };
 
@@ -175,13 +170,16 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void auto_release() {
         communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE), static_cast<bool>(AutomaticRelease::EMERGENCY_AUTO_RELEASE));
+            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE),
+            static_cast<bool>(AutomaticRelease::EMERGENCY_AUTO_RELEASE));
         communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION), static_cast<bool>(AutoReleaseDirection::OPENING));
+            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION),
+            static_cast<bool>(AutoReleaseDirection::OPENING));
         communication_.read_write_registers();
     };
 
@@ -190,19 +188,21 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void activate() {
         reset();
         set();
     };
 
-        /**
+    /**
      * @brief Deactivates the gripper.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void deactivate() {
         reset();
@@ -215,11 +215,13 @@ public:
      * @param velocity The requested velocity.
      * @param force The requested force.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void go_to(uint8_t position, uint8_t velocity, uint8_t force) {
         communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::GO_TO_REQ_POS));
+            static_cast<uint>(ActionRequestPositionBit::GO_TO),
+            static_cast<bool>(GoTo::GO_TO_REQ_POS));
         communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
         communication_.set_output_byte(OutputBytes::SPEED, velocity);
         communication_.set_output_byte(OutputBytes::FORCE, force);
@@ -230,7 +232,8 @@ public:
      * @brief Stops the gripper.
      *
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void stop() {
         communication_.write_action_bit(
@@ -244,8 +247,9 @@ public:
      * @return True if the gripper is in reset state.
      */
     bool is_reset() {
-        return (gripper_status_ == GripperStatus::GRIPPER_IN_RESET &&
-                activation_status_ == ActivationStatus::GRIPPER_RESET);
+        return (
+            gripper_status_ == GripperStatus::GRIPPER_IN_RESET
+            && activation_status_ == ActivationStatus::GRIPPER_RESET);
     };
 
     /**
@@ -254,8 +258,9 @@ public:
      * @return True if the gripper is in ready state.
      */
     bool is_ready() {
-        return (gripper_status_ == GripperStatus::ACTIVATION_COMPLETE &&
-                activation_status_ == ActivationStatus::GRIPPER_ACTIVATION);
+        return (
+            gripper_status_ == GripperStatus::ACTIVATION_COMPLETE
+            && activation_status_ == ActivationStatus::GRIPPER_ACTIVATION);
     };
 
     /**
@@ -264,8 +269,9 @@ public:
      * @return True if gripper is moving.
      */
     bool is_moving() {
-    return (action_status_ == ActionStatus::GO_TO_POSITION_REQUEST &&
-            object_detection_status_ == ObjectDetectionStatus::MOTION_NO_OBJECT);
+        return (
+            action_status_ == ActionStatus::GO_TO_POSITION_REQUEST
+            && object_detection_status_ == ObjectDetectionStatus::MOTION_NO_OBJECT);
     };
 
     /**
@@ -301,8 +307,9 @@ public:
      * @return True if gripper has detected an object.
      */
     bool obj_detected() {
-    return (object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED ||
-            object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);
+        return (
+            object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED
+            || object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);
     };
 
     /**
@@ -339,7 +346,7 @@ public:
      */
     void refresh_registers();
 
-private:
+   private:
     /* Gripper */
     uint8_t status_;
     ActivationStatus activation_status_;
@@ -367,5 +374,5 @@ private:
 
     Communication communication_;
 };
-}   // namespace robotiq_hande_driver
+}  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_

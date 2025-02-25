@@ -2,17 +2,11 @@
 
 #include <cstdio>
 
+namespace robotiq_hande_driver {
 
-namespace robotiq_hande_driver  {
+Communication::Communication() : input_bytes_{}, output_bytes_{} {}
 
-Communication::Communication()
-:    input_bytes_{}
-,    output_bytes_{}
-{
-
-}
-
-int Communication::connect(){
+int Communication::connect() {
     uint16_t activation_status[1] = {0x0000};
     int result;
 
@@ -20,11 +14,11 @@ int Communication::connect(){
 
     result = modbus_read_registers(mb_, GRIPPER_OUTPUT_FIRST_REG, 1, activation_status);
 
-    if (result > 0)
+    if(result > 0)
         printf("Connected successfully: %d\n", result);
     else
         printf("Couldn't connect: %d\n", result);
 
     return 1;
 }
-}   // namespace robotiq_hande_driver
+}  // namespace robotiq_hande_driver

@@ -2,20 +2,17 @@
 
 #include <cstdio>
 
-
-namespace robotiq_hande_driver  {
+namespace robotiq_hande_driver {
 
 GripperApplication::GripperApplication()
-:   requested_position_()
-,   position_()
-,   current_()
-,   gripper_position_min_()
-,   gripper_position_max_()
-,   gripper_postion_step_()
-{
-}
+    : requested_position_(),
+      position_(),
+      current_(),
+      gripper_position_min_(),
+      gripper_position_max_(),
+      gripper_postion_step_() {}
 
-void GripperApplication::read(){
+void GripperApplication::read() {
     protocol_logic_.refresh_registers();
 
     status_.is_reset = protocol_logic_.is_reset();
@@ -26,10 +23,11 @@ void GripperApplication::read(){
     status_.is_closed = protocol_logic_.is_closed();
     status_.object_detected = protocol_logic_.obj_detected();
 
-    //fault_status
+    // fault_status
 
-    requested_position_ = gripper_position_max_ - (double)protocol_logic_.get_reg_pos() * gripper_postion_step_;
+    requested_position_ = gripper_position_max_
+                          - (double)protocol_logic_.get_reg_pos() * gripper_postion_step_;
     position_ = gripper_position_max_ - (double)protocol_logic_.get_pos() * gripper_postion_step_;
     current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
 }
-}   // namespace robotiq_hande_driver
+}  // namespace robotiq_hande_driver

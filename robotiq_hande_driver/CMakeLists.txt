@@ -9,9 +9,7 @@ endif()
 include(FindPkgConfig)
 pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
 
-set(DEPENDS
-  modbus
-)
+set(DEPENDS modbus)
 
 set(HW_IF_INCLUDE_DEPENDS
     fmt
@@ -23,22 +21,15 @@ set(HW_IF_INCLUDE_DEPENDS
 
 find_package(ament_cmake REQUIRED)
 
-foreach(Dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
-  find_package(${Dependency} REQUIRED)
+foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
+  find_package(${dependency} REQUIRED)
 endforeach()
 
-add_library(${PROJECT_NAME}
-    SHARED
-    hardware/src/hande_hardware_interface.cpp
-    hardware/src/application.cpp
-    hardware/src/communication.cpp
-    hardware/src/protocol_logic.cpp
-)
+add_library(
+  ${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp hardware/src/application.cpp
+                         hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
 
-target_link_libraries(${PROJECT_NAME}
-  PUBLIC
-    modbus
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC modbus)
 
 add_executable(communication_test test/communication_test.cpp)
 target_link_libraries(communication_test ${catkin_LIBRARIES} ${DEPENDS})
@@ -61,9 +52,10 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
-# include_directories(hardware/include/robotiq_hande_driver)
-# add_executable(application_test test/application_test.cpp hardware/src/application.cpp hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
-# target_link_libraries(application_test ${catkin_LIBRARIES} ${DEPENDS})
+# include_directories(hardware/include/robotiq_hande_driver) add_executable(application_test
+# test/application_test.cpp hardware/src/application.cpp hardware/src/communication.cpp
+# hardware/src/protocol_logic.cpp) target_link_libraries(application_test ${catkin_LIBRARIES}
+# ${DEPENDS})
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
@@ -73,9 +65,7 @@ if(BUILD_TESTING)
   ament_add_gmock(test_load_hw_interface test/test_load_hw_interface.cpp)
   target_link_libraries(test_load_hw_interface ${PROJECT_NAME})
 
-  # ament_add_gmock(application_test
-  # test/application_test.cpp
-  # )
+  # ament_add_gmock(application_test test/application_test.cpp )
   # target_link_libraries(application_test ${PROJECT_NAME})
 
   # TODO: investigate ament_add_pytest_test(example_7_urdf_xacro test/test_urdf_xacro.py)

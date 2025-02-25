@@ -6,9 +6,7 @@
 
 #include "protocol_logic.hpp"
 
-
-namespace robotiq_hande_driver
-{
+namespace robotiq_hande_driver {
 
 constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
 constexpr auto MAX_SPEED = 255;
@@ -18,8 +16,7 @@ constexpr auto MAX_FORCE = 255;
  * @brief This class contains high-level gripper commands and status.
  */
 class GripperApplication {
-public:
-
+   public:
     struct Status {
         bool is_reset;
         bool is_ready;
@@ -50,9 +47,18 @@ public:
      * @param stop_bit Modbus serial stopbit.
      * @param slave_id Modbus slave id.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
-    void initialize(double gripper_position_min, double gripper_position_max, std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
+    void initialize(
+        double gripper_position_min,
+        double gripper_position_max,
+        std::string& tty_port,
+        int baudrate,
+        char parity,
+        int data_bits,
+        int stop_bit,
+        int slave_id) {
         gripper_position_min_ = gripper_position_min;
         gripper_position_max_ = gripper_position_max;
         gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
@@ -62,7 +68,8 @@ public:
     /**
      * @brief Configures driver session.
      * @return int, when error <0.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     int configure() {
         int result;
@@ -77,7 +84,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void cleanup() {
         protocol_logic_.cleanup();
@@ -88,7 +96,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void stop() {
         protocol_logic_.stop();
@@ -99,7 +108,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void reset() {
         protocol_logic_.reset();
@@ -110,7 +120,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void auto_release() {
         protocol_logic_.auto_release();
@@ -121,13 +132,14 @@ public:
      *
      * @param blocking If true wait until the gripper is active.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
-    void activate(bool blocking=true) {
+    void activate(bool blocking = true) {
         int iter = 0;
         read();
 
-        if (status_.is_ready)
+        if(status_.is_ready)
             printf("Gripper already active\n");
         else {
             printf("Activation in progress\n");
@@ -147,18 +159,20 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void deactivate() {
         protocol_logic_.reset();
     };
 
-        /**
+    /**
      * @brief Deactivates the gripper.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void shutdown() {
         deactivate();
@@ -170,7 +184,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void open() {
         set_position(gripper_position_max_);
@@ -181,7 +196,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void close() {
         set_position(gripper_position_min_);
@@ -192,7 +208,8 @@ public:
      *
      * @param none
      * @return The current gripper status.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     Status get_status() {
         return status_;
@@ -203,7 +220,8 @@ public:
      *
      * @param none
      * @return The current gripper fault status.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     FaultStatus get_fault_status() {
         return fault_status_;
@@ -214,10 +232,11 @@ public:
      *
      * @param none
      * @return The requested gripper position in meters.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     double get_requested_position() {
-        return  requested_position_;
+        return requested_position_;
     };
 
     /**
@@ -225,7 +244,8 @@ public:
      *
      * @param none
      * @return The actual gripper position in meters.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     double get_position() {
         return position_;
@@ -236,12 +256,15 @@ public:
      *
      * @param position The target position in meters.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
-    void set_position(double position, double force=1.0) {
+    void set_position(double position, double force = 1.0) {
         uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
         protocol_logic_.go_to(
-            (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_), MAX_SPEED, scaled_force);
+            (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),
+            MAX_SPEED,
+            scaled_force);
     };
 
     /**
@@ -249,7 +272,8 @@ public:
      *
      * @param none
      * @return The electric current in amperes (range: 0–2.55 A)
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     double get_current() {
         return current_;
@@ -260,7 +284,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void read();
 
@@ -269,13 +294,14 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void write() {
         protocol_logic_.refresh_registers();
     };
 
-private:
+   private:
     /**
      * Handles protocol logic for mid-level abstraction.
      */
@@ -309,7 +335,6 @@ private:
     double gripper_position_min_;
     double gripper_position_max_;
     double gripper_postion_step_;
-
 };
-}   // namespace robotiq_hande_driver
+}  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_

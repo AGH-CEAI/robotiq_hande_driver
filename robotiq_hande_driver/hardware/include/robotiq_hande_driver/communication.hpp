@@ -5,9 +5,7 @@
 #include <cstring>
 #include <string>
 
-
-namespace robotiq_hande_driver
-{
+namespace robotiq_hande_driver {
 
 constexpr auto DEBUG_MODBUS = true;
 
@@ -36,12 +34,11 @@ enum class InputBytes : uint8_t {
 };
 constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 
-
 /**
  * @brief This class contains low level gripper commands and status
  */
-class Communication{
-public:
+class Communication {
+   public:
     Communication();
 
     ~Communication() {
@@ -58,10 +55,16 @@ public:
      * @param stop_bit Modbus serial stopbit.
      * @param slave_id Modbus slave id.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
-    void initialize(std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
-
+    void initialize(
+        std::string& tty_port,
+        int baudrate,
+        char parity,
+        int data_bits,
+        int stop_bit,
+        int slave_id) {
         tty_port_ = tty_port.c_str();
         baudrate_ = baudrate;
         parity_ = parity;
@@ -75,12 +78,19 @@ public:
      *
      * @param none
      * @return int, when error <0.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     int configure() {
         int result;
 
-        printf("Connecting to: %s, %d, %c, %d, %d\n", tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
+        printf(
+            "Connecting to: %s, %d, %c, %d, %d\n",
+            tty_port_,
+            baudrate_,
+            parity_,
+            data_bits_,
+            stop_bit_);
         mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
         modbus_set_slave(mb_, slave_id_);
         modbus_set_debug(mb_, DEBUG_MODBUS);
@@ -94,7 +104,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void cleanup() {
         disconnect();
@@ -106,7 +117,8 @@ public:
      *
      * @param none
      * @return int if error: <0.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     int connect();
 
@@ -115,7 +127,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void disconnect() {
         modbus_close(mb_);
@@ -126,29 +139,32 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void read_write_registers() {
-    /**
-     * @brief Read and write modbus registers at once
-     *
-     * @param modbus_t *ctx
-     * @param int write_addr
-     * @param int write_nb
-     * @param uint16_t *src
-     * @param int read_addr
-     * @param int read_nb
-     * @param uint16_t *dest
-     * @return int >0 on success
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
-     */
-    modbus_write_and_read_registers(mb_,
-                                    GRIPPER_INPUT_FIRST_REG,
-                                    OUTPUT_REGISTER_WORD_LENGTH,
-                                    reinterpret_cast<uint16_t*>(output_bytes_),
-                                    GRIPPER_OUTPUT_FIRST_REG,
-                                    INPUT_REGISTER_WORD_LENGTH,
-                                    reinterpret_cast<uint16_t*>(input_bytes_));
+        /**
+         * @brief Read and write modbus registers at once
+         *
+         * @param modbus_t *ctx
+         * @param int write_addr
+         * @param int write_nb
+         * @param uint16_t *src
+         * @param int read_addr
+         * @param int read_nb
+         * @param uint16_t *dest
+         * @return int >0 on success
+         * @note The status should be checked to verify successful execution. An exception is thrown
+         * if communication issues occur.
+         */
+        modbus_write_and_read_registers(
+            mb_,
+            GRIPPER_INPUT_FIRST_REG,
+            OUTPUT_REGISTER_WORD_LENGTH,
+            reinterpret_cast<uint16_t*>(output_bytes_),
+            GRIPPER_OUTPUT_FIRST_REG,
+            INPUT_REGISTER_WORD_LENGTH,
+            reinterpret_cast<uint16_t*>(input_bytes_));
     };
 
     /**
@@ -156,7 +172,8 @@ public:
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void clear_output_bytes() {
         memset(output_bytes_, 0, sizeof(output_bytes_));
@@ -167,7 +184,8 @@ public:
      *
      * @param index The InputBytes byte index.
      * @return Requested byte value.
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     uint8_t get_input_byte(InputBytes index) {
         return input_bytes_[static_cast<uint>(index)];
@@ -179,7 +197,8 @@ public:
      * @param index OutputBytes byte index
      * @param value The value to be set.
      * @return none
-     * @note The status should be checked to verify successful execution. An exception is thrown if communication issues occur.
+     * @note The status should be checked to verify successful execution. An exception is thrown if
+     * communication issues occur.
      */
     void set_output_byte(OutputBytes index, uint8_t value) {
         output_bytes_[static_cast<uint>(index)] = value;
@@ -211,7 +230,7 @@ public:
         return (value & reset_n_bit) | set_n_bit;
     };
 
-private:
+   private:
     const char* tty_port_;
     int baudrate_;
     char parity_;
@@ -219,11 +238,10 @@ private:
     int stop_bit_;
     int slave_id_;
 
-    modbus_t *mb_;
+    modbus_t* mb_;
 
     uint8_t input_bytes_[static_cast<size_t>(InputBytes::BYTES_MAX)];
     uint8_t output_bytes_[static_cast<size_t>(OutputBytes::BYTES_MAX)];
-
 };
-}   // namespace robotiq_hande_driver
+}  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_

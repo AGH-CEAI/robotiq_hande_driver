@@ -37,7 +37,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
         return *logger_;
     }
 
-private:
+   private:
     GripperApplication application_layer_;
     std::shared_ptr<rclcpp::Logger> logger_;
 

@@ -5,6 +5,11 @@
 
 namespace robotiq_hande_driver {
 
+constexpr auto ACTIVATION_MAX_ITER = 100;
+inline wait_100ms() {
+    usleep(100 * 1000);
+}
+
 RobotiqHandeHardwareInterface::RobotiqHandeHardwareInterface() {}
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareInfo& info) {
@@ -115,7 +120,25 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
-    gripper_driver_.activate();
+    int iter = 0;
+    gripper_driver_.read();
+
+    if(gripper_driver_.get_status().is_ready)
+        RCLCPP_INFO(get_logger(), "Hand-E already active");
+    else {
+        RCLCPP_INFO(get_logger(), "Hand-E activation in progress");
+        gripper_driver_.activate();
+
+        while(!gripper_driver_.get_status().is_ready) {
+            RCLCPP_INFO(get_logger(), "Waiting another 100ms, attempt: %d", iter);
+            wait_100ms();
+            gripper_driver_.read();
+            if(iter++ > ACTIVATION_MAX_ITER) {
+                RCLCPP_INFO(get_logger(), "Hand-E NOT activated, failure");
+                return HWI::CallbackReturn::FAILURE;
+            }
+        }
+    }
 
     RCLCPP_INFO(get_logger(), "Hand-E successfully activated");
     return HWI::CallbackReturn::SUCCESS;

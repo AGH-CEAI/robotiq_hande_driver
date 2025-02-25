@@ -130,28 +130,12 @@ class GripperApplication {
     /**
      * @brief Activates the gripper, making it ready for use.
      *
-     * @param blocking If true wait until the gripper is active.
      * @return None.
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void activate(bool blocking = true) {
-        int iter = 0;
-        read();
-
-        if(status_.is_ready)
-            printf("Gripper already active\n");
-        else {
-            printf("Activation in progress\n");
-            protocol_logic_.activate();
-
-            while(!status_.is_ready && blocking) {
-                printf("Waiting another 100ms, attempt: %d\n", iter);
-                usleep(100 * 1000);
-                read();
-                if(iter++ > 100) break;
-            }
-        }
+    void activate() {
+        protocol_logic_.activate();
     };
 
     /**

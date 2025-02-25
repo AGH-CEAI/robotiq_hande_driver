@@ -63,7 +63,6 @@ public:
     void initialize(std::string& tty_port, int baudrate, char parity, int data_bits, int stop_bit, int slave_id) {
 
         tty_port_ = tty_port.c_str();
-        // tty_port_ = "/tmp/ttyUR";
         baudrate_ = baudrate;
         parity_ = parity;
         data_bits_ = data_bits;
@@ -82,7 +81,6 @@ public:
         int result;
 
         printf("Connecting to: %s, %d, %c, %d, %d\n", tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
-        
         mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
         modbus_set_slave(mb_, slave_id_);
         modbus_set_debug(mb_, DEBUG_MODBUS);

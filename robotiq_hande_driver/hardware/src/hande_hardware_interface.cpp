@@ -11,28 +11,37 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     if (HWI::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
         return HWI::CallbackReturn::ERROR;
     }
+    logger_ = std::make_shared<rclcpp::Logger>(
+    rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system.RobotiqHandeHardwareInterface"));
+
+
+    RCLCPP_DEBUG(get_logger(), "grip_pos_min: %s", info_.hardware_parameters["grip_pos_min"].c_str());
+    RCLCPP_DEBUG(get_logger(), "grip_pos_max: %s", info_.hardware_parameters["grip_pos_max"].c_str());
+    RCLCPP_DEBUG(get_logger(), "tty: %s", info_.hardware_parameters["tty"].c_str());
+    RCLCPP_DEBUG(get_logger(), "baudrate: %s", info_.hardware_parameters["baudrate"].c_str());
+    RCLCPP_DEBUG(get_logger(), "parity: %s", info_.hardware_parameters["parity"].c_str());
+    RCLCPP_DEBUG(get_logger(), "data_bits: %s", info_.hardware_parameters["data_bits"].c_str());
+    RCLCPP_DEBUG(get_logger(), "stop_bit:  %s", info_.hardware_parameters["stop_bit"].c_str());
+    RCLCPP_DEBUG(get_logger(), "slave_id: %s", info_.hardware_parameters["slave_id"].c_str());
 
     state_velocity_ = 0.0;
     cmd_force_ = 1.0;
-    gripper_position_min_ = stod(info_.hardware_parameters["grip_pos_min"]);
-    gripper_position_max_ = stod(info_.hardware_parameters["grip_pos_max"]);
+    gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
+    gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
     tty_port_ = info_.hardware_parameters["tty"];
-    baudrate_ = stoi(info_.hardware_parameters["baudrate"]);
-    parity_ = info_.hardware_parameters["parity"][0];
-    data_bits_ = stoi(info_.hardware_parameters["data_bits"]);
-    stop_bit_ = stoi(info_.hardware_parameters["stop_bit"]);
-    slave_id_ = stoi(info_.hardware_parameters["slave_id"]);
+    baudrate_ = std::stoi(info_.hardware_parameters["baudrate"]);
+    parity_ = (info_.hardware_parameters["parity"].c_str())[0];
+    data_bits_ = std::stoi(info_.hardware_parameters["data_bits"]);
+    stop_bit_ = std::stoi(info_.hardware_parameters["stop_bit"]);
+    slave_id_ = std::stoi(info_.hardware_parameters["slave_id"]);
 
     cmd_position_ = gripper_position_max_;
     state_position_ = gripper_position_max_;
 
-    logger_ = std::make_shared<rclcpp::Logger>(
-    rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system.RobotiqHandeHardwareInterface"));
-
     //--TODO(modbus integration): Set parameters for the modbus communication
     application_layer_.initialize(gripper_position_min_, gripper_position_max_, tty_port_, baudrate_, parity_, data_bits_, stop_bit_, slave_id_);
 
-    RCLCPP_INFO(get_logger(), "Initialized ModbusRTU for %s", tty_port_.c_str());
+    RCLCPP_INFO(get_logger(), "Initialized ModbusRTU for %s, %d, %c, %d, %d", tty_port_.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
     return HWI::CallbackReturn::SUCCESS;
 }
 

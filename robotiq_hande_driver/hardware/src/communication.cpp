@@ -25,6 +25,6 @@ int Communication::connect(){
     else
         printf("Couldn't connect: %d\n", result);
 
-    return result;
+    return 1;
 }
 }   // namespace robotiq_hande_driver

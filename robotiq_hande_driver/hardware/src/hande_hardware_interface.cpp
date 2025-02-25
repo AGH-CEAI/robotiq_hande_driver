@@ -117,7 +117,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
     application_layer_.activate();
 
-    RCLCPP_INFO(get_logger(), "activate()");
+    RCLCPP_INFO(get_logger(), "Hand-E successfully activated");
     return HWI::CallbackReturn::SUCCESS;
 }
 

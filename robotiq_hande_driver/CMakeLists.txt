@@ -12,7 +12,6 @@ pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
 set(DEPENDS modbus)
 
 set(HW_IF_INCLUDE_DEPENDS
-    fmt
     hardware_interface
     pluginlib
     rclcpp

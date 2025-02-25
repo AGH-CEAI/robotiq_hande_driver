@@ -125,7 +125,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(
     const rlccp_lc::State& /*previous_state*/) {
     application_layer_.deactivate();
 
-    RCLCPP_INFO(get_logger(), "deactivate()");
+    RCLCPP_INFO(get_logger(), "Hand-E successfully deactivated");
     return HWI::CallbackReturn::SUCCESS;
 }
 

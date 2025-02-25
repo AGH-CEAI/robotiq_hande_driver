@@ -155,7 +155,6 @@ HWI::return_type RobotiqHandeHardwareInterface::write(
     application_layer_.set_position(cmd_position_, cmd_force_);
     application_layer_.write();
 
-    RCLCPP_DEBUG(get_logger(), "write()");
 
     return hardware_interface::return_type::OK;
 }

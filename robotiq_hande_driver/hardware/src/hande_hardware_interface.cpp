@@ -133,7 +133,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_shutdown(
     const rlccp_lc::State& /*previous_state*/) {
     application_layer_.shutdown();
 
-    RCLCPP_INFO(get_logger(), "shutdown()");
+    RCLCPP_INFO(get_logger(), "Hand-E shutdown");
     return HWI::CallbackReturn::SUCCESS;
 }
 

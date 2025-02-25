@@ -30,6 +30,7 @@ add_library(
 
 target_link_libraries(${PROJECT_NAME} PUBLIC modbus)
 
+# TODO(issue#8) Build the communication_test only with BUILD_TESTING flag
 add_executable(communication_test test/communication_test.cpp)
 target_link_libraries(communication_test ${catkin_LIBRARIES} ${DEPENDS})
 

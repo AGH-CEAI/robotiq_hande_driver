@@ -82,11 +82,12 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
         stop_bit_);
     result = gripper_driver_.configure();
 
-    if(result == FAILURE_MODBUS) {
-        RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
-        return HWI::CallbackReturn::FAILURE;
-    }
-    RCLCPP_INFO(get_logger(), "Configured Hand-E Gripper");
+    // TODO(issue#10) Modbus connection check always fails
+    // if(result == FAILURE_MODBUS) {
+    //     RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
+    //     return HWI::CallbackReturn::FAILURE;
+    // }
+    RCLCPP_INFO(get_logger(), "Configured Hand-E Gripper: %d", result);
     return HWI::CallbackReturn::SUCCESS;
 }
 

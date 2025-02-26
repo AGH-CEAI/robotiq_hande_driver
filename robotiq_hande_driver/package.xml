@@ -17,6 +17,7 @@
 
   <depend>gripper_controllers</depend>
   <depend>hardware_interface</depend>
+  <depend>libmodbus-dev</depend>
   <depend>pluginlib</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>

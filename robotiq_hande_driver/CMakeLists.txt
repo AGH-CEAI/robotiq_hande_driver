@@ -6,8 +6,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+include(FindPkgConfig)
+pkg_check_modules(LIBMODBUS REQUIRED libmodbus)
+
+set(DEPENDS modbus)
+
 set(HW_IF_INCLUDE_DEPENDS
-    fmt
     hardware_interface
     pluginlib
     rclcpp
@@ -15,11 +19,20 @@ set(HW_IF_INCLUDE_DEPENDS
     rcpputils)
 
 find_package(ament_cmake REQUIRED)
+
 foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
   find_package(${dependency} REQUIRED)
 endforeach()
 
-add_library(${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp)
+add_library(
+  ${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp hardware/src/application.cpp
+                         hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DEPENDS})
+
+# TODO(issue#8) Build the communication_test only with BUILD_TESTING flag
+add_executable(communication_test test/communication_test.cpp)
+target_link_libraries(communication_test ${catkin_LIBRARIES} ${DEPENDS})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(
@@ -47,9 +60,9 @@ if(BUILD_TESTING)
   ament_add_gmock(test_load_hw_interface test/test_load_hw_interface.cpp)
   target_link_libraries(test_load_hw_interface ${PROJECT_NAME})
 
-  # TODO: investigate ament_add_pytest_test(example_7_urdf_xacro test/test_urdf_xacro.py)
-  # ament_add_pytest_test(view_example_7_launch test/test_view_robot_launch.py)
-  # ament_add_pytest_test(run_example_7_launch test/test_r6bot_controller_launch.py)
+  # TODO(issue#8) Build the communication_test only with BUILD_TESTING flag
+  # ament_add_gmock(application_test test/application_test.cpp )
+  # target_link_libraries(application_test ${PROJECT_NAME})
 endif()
 
 # EXPORTS

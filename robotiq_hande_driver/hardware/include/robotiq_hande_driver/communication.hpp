@@ -7,11 +7,11 @@
 
 namespace robotiq_hande_driver {
 
-constexpr auto DEBUG_MODBUS = true;
-constexpr auto FAILURE_MODBUS = -1;
+static constexpr auto DEBUG_MODBUS = true;
+static constexpr auto FAILURE_MODBUS = -1;
 
-constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
-constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
+static constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
+static constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
 
 enum class OutputBytes : uint8_t {
     RESERVED_1 = 0u,
@@ -22,7 +22,7 @@ enum class OutputBytes : uint8_t {
     SPEED,
     BYTES_MAX
 };
-constexpr auto OUTPUT_REGISTER_WORD_LENGTH = static_cast<uint>(OutputBytes::BYTES_MAX) / 2;
+static constexpr auto OUTPUT_REGISTER_WORD_LENGTH = static_cast<uint>(OutputBytes::BYTES_MAX) / 2;
 
 enum class InputBytes : uint8_t {
     RESERVED_1 = 0u,
@@ -33,7 +33,7 @@ enum class InputBytes : uint8_t {
     POSITION,
     BYTES_MAX
 };
-constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
+static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 
 /**
  * @brief This class contains low level gripper commands and status

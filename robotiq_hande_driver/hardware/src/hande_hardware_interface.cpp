@@ -5,8 +5,8 @@
 
 namespace robotiq_hande_driver {
 
-constexpr auto THROTTLE_1000_MS = 1000;
-constexpr auto ACTIVATION_MAX_ITER = 100;
+static constexpr auto THROTTLE_1000_MS = 1000;
+static constexpr auto ACTIVATION_MAX_ITER = 100;
 inline void wait_100ms() {
     usleep(100 * 1000);
 }

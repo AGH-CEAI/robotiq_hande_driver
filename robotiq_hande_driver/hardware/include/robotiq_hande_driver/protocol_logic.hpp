@@ -40,13 +40,13 @@ enum class StatusPositionBit : uint8_t {
     OBJECT_DETECTION_STATUS = 6u, /* gObj */
 };
 
-constexpr auto ACTIVATION_STATUS_BITS = 0b1;
+static constexpr auto ACTIVATION_STATUS_BITS = 0b1;
 enum class ActivationStatus : uint8_t { GRIPPER_RESET = 0u, GRIPPER_ACTIVATION };
 
-constexpr auto ACTION_STATUS_BITS = 0b1;
+static constexpr auto ACTION_STATUS_BITS = 0b1;
 enum class ActionStatus : uint8_t { STOPPED = 0u, GO_TO_POSITION_REQUEST };
 
-constexpr auto GRIPPER_STATUS_BITS = 0b11;
+static constexpr auto GRIPPER_STATUS_BITS = 0b11;
 enum class GripperStatus : uint8_t {
     GRIPPER_IN_RESET = 0u,
     ACTIVATION_IN_PROGRESS,
@@ -54,7 +54,7 @@ enum class GripperStatus : uint8_t {
     ACTIVATION_COMPLETE
 };
 
-constexpr auto OBJECT_DETECTION_STATUS_BITS = 0b11;
+static constexpr auto OBJECT_DETECTION_STATUS_BITS = 0b11;
 enum class ObjectDetectionStatus : uint8_t {
     MOTION_NO_OBJECT = 0u,
     STOPPED_OPENING_DETECTED,
@@ -62,8 +62,8 @@ enum class ObjectDetectionStatus : uint8_t {
     REQ_POS_NO_OBJECT
 };
 
-constexpr auto GRIPPER_POSITION_OPENED_THRESHOLD = 230;
-constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
+static constexpr auto GRIPPER_POSITION_OPENED_THRESHOLD = 230;
+static constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
 
 /**
  * @brief This class contains protocol oriented functions and definitions.

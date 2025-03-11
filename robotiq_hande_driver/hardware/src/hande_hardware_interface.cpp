@@ -83,7 +83,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
         data_bits_,
         stop_bit_);
 
-    result = gripper_driver_.configure();
 
     while(result == FAILURE_MODBUS) {
         wait_100ms();

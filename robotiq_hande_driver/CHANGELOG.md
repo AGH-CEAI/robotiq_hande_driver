@@ -23,6 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-* [PR-11](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/11) - Modbus connection check always fails
+* [PR-11](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/11) - Fixed an issue where the Modbus connection check always failed.
 
 ### Security

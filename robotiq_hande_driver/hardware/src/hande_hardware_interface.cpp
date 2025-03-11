@@ -103,7 +103,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     
     RCLCPP_INFO(get_logger(), "Connected");
     return HWI::CallbackReturn::SUCCESS;
-    return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(

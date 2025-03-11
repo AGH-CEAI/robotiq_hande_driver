@@ -7,6 +7,7 @@ namespace robotiq_hande_driver {
 
 static constexpr auto THROTTLE_1000_MS = 1000;
 static constexpr auto ACTIVATION_MAX_ITER = 100;
+static constexpr auto RECONNECT_MAX_ITER = 10;
 inline void wait_100ms() {
     usleep(100 * 1000);
 }
@@ -70,9 +71,10 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     const rlccp_lc::State& /*previous_state*/) {
-    int result;
+    int result = FAILURE_MODBUS;
 
-    RCLCPP_INFO(
+    RCLCPP_INFO(get_logger(), "Connecting to ModbusRTU");
+    RCLCPP_DEBUG(
         get_logger(),
         "Connecting to tty:%s, baudrate:%d, parity:%c, data_bits:%d, stop_bit:%d",
         tty_port_.c_str(),
@@ -80,14 +82,26 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
         parity_,
         data_bits_,
         stop_bit_);
+
     result = gripper_driver_.configure();
 
-    // TODO(issue#10) Modbus connection check always fails
-    // if(result == FAILURE_MODBUS) {
-    //     RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
-    //     return HWI::CallbackReturn::FAILURE;
-    // }
-    RCLCPP_INFO(get_logger(), "Configured Hand-E Gripper: %d", result);
+    for(int iter = 0; result == FAILURE_MODBUS && iter < RECONNECT_MAX_ITER; iter++) {
+        RCLCPP_DEBUG(
+            get_logger(), "Reconfiguring Hand-E Gripper attempt: %d; result: %d", iter, result);
+
+        wait_100ms();
+        wait_100ms();
+
+        gripper_driver_.cleanup();
+        result = gripper_driver_.configure();
+    }
+
+    if(result == FAILURE_MODBUS) {
+        RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
+        return HWI::CallbackReturn::FAILURE;
+    }
+
+    RCLCPP_INFO(get_logger(), "Connected");
     return HWI::CallbackReturn::SUCCESS;
 }
 

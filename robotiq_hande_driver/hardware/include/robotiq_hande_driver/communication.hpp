@@ -136,7 +136,7 @@ class Communication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void read_write_registers() {
+    int read_write_registers() {
         /**
          * @brief Read and write modbus registers at once
          *
@@ -147,11 +147,13 @@ class Communication {
          * @param int read_addr
          * @param int read_nb
          * @param uint16_t *dest
-         * @return int >0 on success
+         * @return int FAILURE_MODBUS on failure, nonnegative value for success
          * @note The status should be checked to verify successful execution. An exception is thrown
          * if communication issues occur.
          */
-        modbus_write_and_read_registers(
+        int result;
+
+        result = modbus_write_and_read_registers(
             mb_,
             GRIPPER_INPUT_FIRST_REG,
             OUTPUT_REGISTER_WORD_LENGTH,
@@ -159,6 +161,8 @@ class Communication {
             GRIPPER_OUTPUT_FIRST_REG,
             INPUT_REGISTER_WORD_LENGTH,
             reinterpret_cast<uint16_t*>(input_bytes_));
+
+        return result;
     };
 
     /**

@@ -84,22 +84,25 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
         stop_bit_);
 
 
-    while(result == FAILURE_MODBUS) {
-        wait_100ms();
-        wait_100ms();
+    result = gripper_driver_.configure();
 
+    for (int iter = 0; result == FAILURE_MODBUS && iter < RECONNECT_MAX_ITER; iter++) {
+        RCLCPP_DEBUG(get_logger(), "Reconfiguring Hand-E Gripper attempt: %d; result: %d", iter, result);
+    
+        wait_100ms();
+        wait_100ms();
+        
         gripper_driver_.cleanup();
         result = gripper_driver_.configure();
-        RCLCPP_DEBUG(
-            get_logger(), "Reconfiguring Hand-E Gripper iter: %d; result: %d", iter, result);
-
-        iter++;
-        if(iter == RECONNECT_MAX_ITER) {
-            RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
-            return HWI::CallbackReturn::FAILURE;
-        }
     }
-
+    
+    if(iter == RECONNECT_MAX_ITER) {
+        RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
+        return HWI::CallbackReturn::FAILURE;
+    }
+    
+    RCLCPP_INFO(get_logger(), "Connected");
+    return HWI::CallbackReturn::SUCCESS;
     return HWI::CallbackReturn::SUCCESS;
 }
 

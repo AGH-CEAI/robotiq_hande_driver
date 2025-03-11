@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* [PR-11](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/11) - Reconnecting to modbus on configure
+* [PR-11](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/11) - Added automatic reconnection to Modbus during configuration.
 * [PR-7](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/7) - Integration of ModbusRTU communication with ros2_control Hardware Interface
 * [PR-2](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/2) - ModbusRTU communication
 * [PR-2](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/2) - Protocol abstraction

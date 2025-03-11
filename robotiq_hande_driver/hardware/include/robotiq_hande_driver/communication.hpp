@@ -147,7 +147,7 @@ class Communication {
          * @param int read_addr
          * @param int read_nb
          * @param uint16_t *dest
-         * @return int > -1 on success
+         * @return int FAILURE_MODBUS on failure, nonnegative value for success
          * @note The status should be checked to verify successful execution. An exception is thrown
          * if communication issues occur.
          */

@@ -72,7 +72,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     const rlccp_lc::State& /*previous_state*/) {
     int result;
-    int iter = 0;
 
     RCLCPP_INFO(get_logger(), "Connecting to ModbusRTU");
 

@@ -74,6 +74,14 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     int result;
 
     RCLCPP_INFO(get_logger(), "Connecting to ModbusRTU");
+    RCLCPP_DEBUG(
+        get_logger(),
+        "Connecting to tty:%s, baudrate:%d, parity:%c, data_bits:%d, stop_bit:%d",
+        tty_port_.c_str(),
+        baudrate_,
+        parity_,
+        data_bits_,
+        stop_bit_);
 
     result = gripper_driver_.configure();
 

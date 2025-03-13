@@ -2,9 +2,7 @@
 [![Licence](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) from the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/macmacal/robotiq_hande_description) package for the URDF definitions.
-
-Work is still in progress.
+Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) from the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/macmacal/robotiq_hande_description) package for the URDF definitions. It was originally developed for integration with Universal Robots e-series (UR5e) and ROS 2 Humble, however it is be possible to change the repository to fit your needs. **PRs are welcome!**
 
 
 ---
@@ -25,6 +23,18 @@ source ./install/local_setup.sh
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
 ```
 
+### Examples
+**An example integration usage can be find** in the [AGH-CEAI/aegis_ros](https://github.com/AGH-CEAI/aegis_ros) repository.
+
+---
+## Development notes
+
+This project uses various tools for aiding the quality of the source code. Currently most of them are executed by the `pre-commit`. Please make sure to enable its hooks:
+
+```bash
+pre-commit install
+```
+
 ### Test Serial Connection
 
 There is an additional test tool with hardcoded parameters to test the connection with the Hand-E without any ROS dependencies.
@@ -34,15 +44,6 @@ To run test:
 ```bash
 cd cd ~/ceai_ws/src/robotiq_hande_driver/build/robotiq_hande_driver/
 ./communication_test
-```
-
----
-## Development notes
-
-This project uses various tools for aiding the quality of the source code. Currently most of them are executed by the `pre-commit`. Please make sure to enable its hooks:
-
-```bash
-pre-commit install
 ```
 
 ---

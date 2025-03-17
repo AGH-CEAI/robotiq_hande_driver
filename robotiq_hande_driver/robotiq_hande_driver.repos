@@ -2,4 +2,4 @@ repositories:
   robotiq_hande_description:
     type: git
     url: https://github.com/AGH-CEAI/robotiq_hande_description
-    version: TODO Release robotiq_hande_description
+    version: e6c0e4f54af83c21d6e6a38649b8849815353848

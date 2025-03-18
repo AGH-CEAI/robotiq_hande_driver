@@ -125,7 +125,6 @@ std::vector<HWI::StateInterface> RobotiqHandeHardwareInterface::export_state_int
         hardware_interface::HW_IF_VELOCITY,
         &state_velocity_));
 
-    RCLCPP_INFO(get_logger(), "export_state_interfaces()");
     return state_interfaces;
 }
 

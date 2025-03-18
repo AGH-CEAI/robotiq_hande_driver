@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>robotiq_hande_driver</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>The driver of the Robotiq Hand-E gripper for the ros2_control framework.</description>
   <maintainer email="ceai@agh.edu.pl">AGH Center of Excellence in Artificial Intelligence</maintainer>
   <license>Apache-2.0</license>
@@ -12,6 +12,7 @@
   <url type="bugtracker">https://github.com/AGH-CEAI/robotiq_hande_driver/issues</url>
 
   <author email="macal@agh.edu.pl">Maciej Aleksandrowicz</author>
+  <author email="kklimek@agh.edu.pl">Krzysztof Klimek</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

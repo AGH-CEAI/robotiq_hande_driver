@@ -1,0 +1,9 @@
+<library path="robotiq_hande_driver">
+  <class name="robotiq_hande_driver/RobotiqHandeHardwareInterface"
+         type="robotiq_hande_driver::RobotiqHandeHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+        Hardware plugin for the Robotiq Hand-E gripper.
+    </description>
+  </class>
+</library>

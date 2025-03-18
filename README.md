@@ -20,6 +20,7 @@ Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/product
 #### Modbus TCP
 * You can create a local `TCP` <-> `Virtual Serial Port` server with the `socat` command.
   * An example usage (in the form of a Python ROS 2 wrapper) can be found in `ur_robot_driver`'s [scripts/tool_communication.py](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/204e215c8a7371f6357e6a09f7e106364e566931/ur_robot_driver/scripts/tool_communication.py#L64).
+  * Example: `socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321`
 * For the UR's `ur_robot_driver`, the default path to the virtual serial port is `/tmp/ttyUR`.
 
 
@@ -40,6 +41,12 @@ source ./install/local_setup.sh
 ### Launch preview
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
+# In other terminal
+ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action/GripperCommand \
+"command:
+  position: 0.0
+  max_effort: 0.0
+"
 ```
 
 ### Examples

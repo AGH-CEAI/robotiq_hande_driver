@@ -14,13 +14,13 @@ Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/product
 * You are ready to go - just remember to pass the `use_fake_hardware:=true` argument.
 
 #### Modbus RTU
-* Connect the serial port to your system and locate the TTY device (typically `/dev/ttyX`). 
+* Connect the serial port to your system and locate the TTY device (typically `/dev/ttyX`).
 * You will need to configure the serial connection in your `.xacro.urdf` file ([example](https://github.com/AGH-CEAI/robotiq_hande_description/blob/humble/urdf/robotiq_hande_gripper.urdf.xacro) in `robotiq_hande_description`).
 
 #### Modbus TCP
-* You can create a local `TCP` <-> `Virtual Serial Port` server with the `socat` command.  
-  * An example usage (in the form of a Python ROS 2 wrapper) can be found in `ur_robot_driver`'s [scripts/tool_communication.py](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/204e215c8a7371f6357e6a09f7e106364e566931/ur_robot_driver/scripts/tool_communication.py#L64).  
-* For the UR's `ur_robot_driver`, the default path to the virtual serial port is `/tmp/ttyUR`.  
+* You can create a local `TCP` <-> `Virtual Serial Port` server with the `socat` command.
+  * An example usage (in the form of a Python ROS 2 wrapper) can be found in `ur_robot_driver`'s [scripts/tool_communication.py](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/204e215c8a7371f6357e6a09f7e106364e566931/ur_robot_driver/scripts/tool_communication.py#L64).
+* For the UR's `ur_robot_driver`, the default path to the virtual serial port is `/tmp/ttyUR`.
 
 
 ### Package setup
@@ -31,10 +31,10 @@ vcs import src < src/robotiq_hande_driver/robotiq_hande_driver.repos &&
 colcon build --symlink-install --packages-select robotiq_hande_driver
 source ./install/local_setup.sh
 ```
-> [!NOTE]  
-> **Configuration is split between two packages:**  
-> * `robotiq_hande_description`: Hardware connection parameters are set in the URDF file. [Example config file](https://github.com/AGH-CEAI/robotiq_hande_description/blob/humble/urdf/robotiq_hande_gripper.urdf.xacro).  
-> * `robotiq_hande_driver`: The controller configuration is set by launch parameters for the `controller_node`. [Example config file](robotiq_hande_driver/bringup/config/hande_controller.yaml).  
+> [!NOTE]
+> **Configuration is split between two packages:**
+> * `robotiq_hande_description`: Hardware connection parameters are set in the URDF file. [Example config file](https://github.com/AGH-CEAI/robotiq_hande_description/blob/humble/urdf/robotiq_hande_gripper.urdf.xacro).
+> * `robotiq_hande_driver`: The controller configuration is set by launch parameters for the `controller_node`. [Example config file](robotiq_hande_driver/bringup/config/hande_controller.yaml).
 
 
 ### Launch preview

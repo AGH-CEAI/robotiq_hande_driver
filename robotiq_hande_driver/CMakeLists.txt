@@ -19,6 +19,7 @@ set(HW_IF_INCLUDE_DEPENDS
     rcpputils)
 
 find_package(ament_cmake REQUIRED)
+find_package(behaviortree_cpp REQUIRED)
 
 foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
   find_package(${dependency} REQUIRED)

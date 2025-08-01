@@ -4,15 +4,16 @@
 
 namespace robotiq_hande_driver {
 
-Communication::Communication() : input_bytes_{}, output_bytes_{} {}
+Communication::Communication()
+    : input_bytes_modbus_{}, output_bytes_modbus_{}, input_bytes_{}, output_bytes_{} {}
 
 int Communication::connect() {
-    int result;
+    // int result;
 
     modbus_connect(mb_);
 
-    result = read_write_registers();
+    // read_write_registers();
 
-    return result;
+    return 0;
 }
 }  // namespace robotiq_hande_driver

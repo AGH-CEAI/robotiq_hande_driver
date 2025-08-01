@@ -13,6 +13,19 @@ GripperApplication::GripperApplication()
       gripper_postion_step_() {}
 
 void GripperApplication::read() {
+    // static int divider = 0;
+
+    // if(protocol_logic_.is_ready()){
+    //     divider++;
+    //     if(divider==1000){
+    //         divider=0;
+    //         protocol_logic_.refresh_registers();
+    //     }
+    // }
+    // else{
+    //    protocol_logic_.refresh_registers();
+    // }
+
     protocol_logic_.refresh_registers();
 
     status_.is_reset = protocol_logic_.is_reset();

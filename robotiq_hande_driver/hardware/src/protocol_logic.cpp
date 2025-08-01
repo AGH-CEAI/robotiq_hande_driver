@@ -16,7 +16,7 @@ ProtocolLogic::ProtocolLogic()
       current_() {}
 
 void ProtocolLogic::refresh_registers() {
-    communication_.read_write_registers();
+    // communication_.read_write_registers();
 
     status_ = communication_.get_input_byte(InputBytes::GRIPPER_STATUS);
 

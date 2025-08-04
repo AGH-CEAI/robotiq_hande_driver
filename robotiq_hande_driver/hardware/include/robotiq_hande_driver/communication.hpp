@@ -1,12 +1,13 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
-#include <modbus/modbus.h>
 #include <atomic>
 #include <cstring>
 #include <optional>
 #include <string>
 #include <thread>
+
+#include <modbus/modbus.h>
 
 namespace robotiq_hande_driver {
 

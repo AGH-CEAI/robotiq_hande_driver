@@ -26,6 +26,7 @@ enum class OutputBytes : uint8_t {
     SPEED,
     BYTES_MAX
 };
+static constexpr auto NUM_OF_OUTPUT_BYTES = static_cast<size_t>(OutputBytes::BYTES_MAX);
 static constexpr auto OUTPUT_REGISTER_WORD_LENGTH = static_cast<uint>(OutputBytes::BYTES_MAX) / 2;
 
 enum class InputBytes : uint8_t {
@@ -37,6 +38,7 @@ enum class InputBytes : uint8_t {
     POSITION,
     BYTES_MAX
 };
+static constexpr auto NUM_OF_INPUT_BYTES = static_cast<size_t>(OutputBytes::BYTES_MAX);
 static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 
 /**
@@ -104,10 +106,9 @@ class Communication {
         // int result;
 
         while(running) {
-            // sleep for 100ms
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-            for(size_t i = 0; i < static_cast<size_t>(OutputBytes::BYTES_MAX); ++i) {
+            for(size_t i = 0; i < NUM_OF_OUTPUT_BYTES; ++i) {
                 output_bytes_modbus_[i] = output_bytes_[i].load(std::memory_order_relaxed);
             }
 
@@ -120,7 +121,7 @@ class Communication {
                 INPUT_REGISTER_WORD_LENGTH,
                 reinterpret_cast<uint16_t*>(input_bytes_modbus_));
 
-            for(size_t i = 0; i < static_cast<size_t>(InputBytes::BYTES_MAX); ++i) {
+            for(size_t i = 0; i < NUM_OF_INPUT_BYTES; ++i) {
                 input_bytes_[i].store(input_bytes_modbus_[i], std::memory_order_relaxed);
             }
         }

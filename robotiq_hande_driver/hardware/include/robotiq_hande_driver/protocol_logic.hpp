@@ -146,7 +146,6 @@ class ProtocolLogic {
         communication_.write_action_bit(
             static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
             static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
-        // communication_.read_write_registers();
     };
 
     /**
@@ -162,7 +161,6 @@ class ProtocolLogic {
         communication_.write_action_bit(
             static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
             static_cast<bool>(Activate::ACTIVATE_GRIPPER));
-        // communication_.read_write_registers();
     };
 
     /**
@@ -180,7 +178,6 @@ class ProtocolLogic {
         communication_.write_action_bit(
             static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION),
             static_cast<bool>(AutoReleaseDirection::OPENING));
-        // communication_.read_write_registers();
     };
 
     /**
@@ -225,7 +222,6 @@ class ProtocolLogic {
         communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
         communication_.set_output_byte(OutputBytes::SPEED, velocity);
         communication_.set_output_byte(OutputBytes::FORCE, force);
-        // communication_.read_write_registers();
     };
 
     /**
@@ -238,7 +234,6 @@ class ProtocolLogic {
     void stop() {
         communication_.write_action_bit(
             static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::STOP));
-        // communication_.read_write_registers();
     };
 
     /**

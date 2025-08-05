@@ -33,13 +33,8 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     HWI::return_type read(const rclcpp::Time& time, const rclcpp::Duration& period) override;
     HWI::return_type write(const rclcpp::Time& time, const rclcpp::Duration& period) override;
 
-    rclcpp::Logger get_logger() const {
-        return *logger_;
-    }
-
-    rclcpp::Clock::SharedPtr get_clock() const {
-        return clock_;
-    }
+    rclcpp::Logger get_logger() const;
+    rclcpp::Clock::SharedPtr get_clock() const;
 
    private:
     GripperApplication gripper_driver_;

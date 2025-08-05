@@ -209,6 +209,14 @@ HWI::return_type RobotiqHandeHardwareInterface::write(
     return hardware_interface::return_type::OK;
 }
 
+rclcpp::Logger RobotiqHandeHardwareInterface::get_logger() const {
+    return *logger_;
+}
+
+rclcpp::Clock::SharedPtr RobotiqHandeHardwareInterface::get_clock() const {
+    return clock_;
+}
+
 }  // namespace robotiq_hande_driver
 
 #include "pluginlib/class_list_macros.hpp"

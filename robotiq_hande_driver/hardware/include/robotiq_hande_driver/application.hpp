@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <unistd.h>
 
-#include "protocol_logic.hpp"
+#include "robotiq_hande_driver/protocol_logic.hpp"
 
 namespace robotiq_hande_driver {
 
@@ -33,7 +33,7 @@ class GripperApplication {
 
     GripperApplication();
 
-    ~GripperApplication() {};
+    ~GripperApplication() = default;
 
     /**
      * @brief Initializes driver parameters.
@@ -47,8 +47,6 @@ class GripperApplication {
      * @param stop_bit Modbus serial stopbit.
      * @param slave_id Modbus slave id.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
     void initialize(
         double gripper_position_min,
@@ -58,12 +56,7 @@ class GripperApplication {
         char parity,
         int data_bits,
         int stop_bit,
-        int slave_id) {
-        gripper_position_min_ = gripper_position_min;
-        gripper_position_max_ = gripper_position_max;
-        gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
-        protocol_logic_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
-    };
+        int slave_id);
 
     /**
      * @brief Configures driver session.
@@ -71,37 +64,23 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    int configure() {
-        int result;
-
-        result = protocol_logic_.configure();
-
-        return result;
-    };
+    int configure();
 
     /**
      * @brief Deinitializes driver.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void cleanup() {
-        protocol_logic_.cleanup();
-    };
+    void cleanup();
 
     /**
      * @brief Stops the gripper movement.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void stop() {
-        protocol_logic_.stop();
-    };
+    void stop();
 
     /**
      * @brief Resets the gripper by deactivating and reactivating it.
@@ -111,9 +90,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void reset() {
-        protocol_logic_.reset();
-    };
+    void reset();
 
     /**
      *  Emergency auto-release, gripper fingers are slowly opened, reactivation necessary
@@ -123,9 +100,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void auto_release() {
-        protocol_logic_.auto_release();
-    };
+    void auto_release();
 
     /**
      * @brief Activates the gripper, making it ready for use.
@@ -134,9 +109,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void activate() {
-        protocol_logic_.activate();
-    };
+    void activate();
 
     /**
      * @brief Deactivates the gripper.
@@ -146,9 +119,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void deactivate() {
-        protocol_logic_.reset();
-    };
+    void deactivate();
 
     /**
      * @brief Deactivates the gripper.
@@ -158,10 +129,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void shutdown() {
-        deactivate();
-        cleanup();
-    };
+    void shutdown();
 
     /**
      * @brief Opens the gripper.
@@ -171,9 +139,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void open() {
-        set_position(gripper_position_max_);
-    };
+    void open();
 
     /**
      * @brief Closes the gripper.
@@ -183,9 +149,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void close() {
-        set_position(gripper_position_min_);
-    };
+    void close();
 
     /**
      * @brief Retrieves the gripper status.
@@ -195,9 +159,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    Status get_status() {
-        return status_;
-    };
+    const Status& get_status() const;
 
     /**
      * @brief Retrieves the gripper fault status.
@@ -207,9 +169,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    FaultStatus get_fault_status() {
-        return fault_status_;
-    };
+    const FaultStatus& get_fault_status() const;
 
     /**
      * @brief Retrieves the requested position of the gripper.
@@ -219,9 +179,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    double get_requested_position() {
-        return requested_position_;
-    };
+    double get_requested_position() const;
 
     /**
      * @brief Retrieves the actual position of the gripper.
@@ -231,25 +189,15 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    double get_position() {
-        return position_;
-    };
+    double get_position() const;
 
     /**
      * @brief Moves the gripper to the requested position.
      *
      * @param position The target position in meters.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void set_position(double position, double force = 1.0) {
-        uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
-        protocol_logic_.go_to(
-            (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),
-            MAX_SPEED,
-            scaled_force);
-    };
+    void set_position(double position, double force = 1.0);
 
     /**
      * @brief Retrieves the electric current drawn by the gripper.
@@ -259,17 +207,13 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    double get_current() {
-        return current_;
-    };
+    double get_current() const;
 
     /**
      * @brief Reads gripper data.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
     void read();
 
@@ -278,12 +222,8 @@ class GripperApplication {
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void write() {
-        protocol_logic_.refresh_registers();
-    };
+    void write();
 
    private:
     /**

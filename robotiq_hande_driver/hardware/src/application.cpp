@@ -118,7 +118,11 @@ void GripperApplication::read() {
 }
 
 void GripperApplication::write() {
+    // TODO investigate: we shouldn't read statue during the write phase
     protocol_logic_.refresh_registers();
+
+    // Here we should take internal registers and send them to the gripper
+    //  I.e. call set_position()
 }
 
 }  // namespace robotiq_hande_driver

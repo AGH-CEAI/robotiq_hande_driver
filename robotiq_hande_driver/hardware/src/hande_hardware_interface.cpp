@@ -3,13 +3,16 @@
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <rclcpp/rclcpp.hpp>
 
+#include <chrono>
+#include <thread>
+
 namespace robotiq_hande_driver {
 
 static constexpr auto THROTTLE_1000_MS = 1000;
-static constexpr auto ACTIVATION_MAX_ITER = 100;
+static constexpr auto ACTIVATION_MAX_ITER = 20;
 static constexpr auto RECONNECT_MAX_ITER = 10;
 inline void wait_100ms() {
-    usleep(100 * 1000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 RobotiqHandeHardwareInterface::RobotiqHandeHardwareInterface() {}
@@ -97,7 +100,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     }
 
     if(result == FAILURE_MODBUS) {
-        RCLCPP_INFO(get_logger(), "Failed to configure Hand-E Gripper");
+        RCLCPP_ERROR(get_logger(), "Failed to configure Hand-E Gripper");
         return HWI::CallbackReturn::FAILURE;
     }
 
@@ -146,25 +149,28 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     int iter = 0;
     gripper_driver_.read();
 
-    if(gripper_driver_.get_status().is_ready)
+    if(gripper_driver_.get_status().is_ready) {
         RCLCPP_INFO(get_logger(), "Hand-E already active");
-    else {
-        RCLCPP_INFO(get_logger(), "Hand-E activation in progress");
-        gripper_driver_.activate();
+        return HWI::CallbackReturn::SUCCESS;
+    }
 
-        while(!gripper_driver_.get_status().is_ready) {
-            RCLCPP_DEBUG_SKIPFIRST_THROTTLE(
-                get_logger(),
-                *get_clock(),
-                THROTTLE_1000_MS,
-                "Waiting for activation to be finished: %d",
-                iter);
-            wait_100ms();
-            gripper_driver_.read();
-            if(iter++ > ACTIVATION_MAX_ITER) {
-                RCLCPP_INFO(get_logger(), "Hand-E NOT activated, failure");
-                return HWI::CallbackReturn::FAILURE;
-            }
+    RCLCPP_INFO(get_logger(), "Hand-E activation in progress");
+    gripper_driver_.activate();
+
+    while(!gripper_driver_.get_status().is_ready) {
+        RCLCPP_DEBUG_SKIPFIRST_THROTTLE(
+            get_logger(),
+            *get_clock(),
+            THROTTLE_1000_MS,
+            "Waiting for activation to be finished: %d",
+            iter);
+        wait_100ms();
+        gripper_driver_.read();
+        if(iter++ > ACTIVATION_MAX_ITER) {
+            // const std::string red     = "\033[31m";
+            // const std::string reset   = "\033[0m";
+            RCLCPP_ERROR(get_logger(), "\033[31mFailed to activate Hand-E (Timeout)\033[0m");
+            return HWI::CallbackReturn::FAILURE;
         }
     }
 
@@ -203,6 +209,9 @@ HWI::return_type RobotiqHandeHardwareInterface::read(
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
+    // TODO Investigate better approach
+
+    // TODO stabilize connection (maybe its too fast?)
     gripper_driver_.set_position(cmd_position_, cmd_force_);
     gripper_driver_.write();
 

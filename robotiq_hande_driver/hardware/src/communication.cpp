@@ -17,7 +17,7 @@ Communication::Communication()
       output_bytes_modbus_{},
       input_bytes_{},
       output_bytes_{},
-      bg_comm_enabled_{true} {}
+      bg_comm_enabled_{false} {}
 
 Communication::~Communication() {
     cleanup();
@@ -41,6 +41,7 @@ void Communication::initialize(
 void Communication::read_write_registers() {
     int result = 0;
     while(bg_comm_enabled_) {
+        // TODO parametrize the sleep time
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         for(size_t i = 0; i < NUM_OF_OUTPUT_BYTES; ++i) {
@@ -72,8 +73,10 @@ int Communication::configure() {
     // socat)
     auto result = connect();
 
-    bg_comm_enabled_.store(true, std::memory_order_relaxed);
-    bg_comm_.emplace(&Communication::read_write_registers, this);
+    if(!bg_comm_enabled_) {
+        bg_comm_enabled_.store(true, std::memory_order_relaxed);
+        bg_comm_.emplace(&Communication::read_write_registers, this);
+    }
 
     return result;
 }

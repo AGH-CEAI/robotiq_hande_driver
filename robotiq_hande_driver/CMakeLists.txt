@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-  # TODO(issue#5) Fix warnings to enable the -Werror flag
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 include(FindPkgConfig)

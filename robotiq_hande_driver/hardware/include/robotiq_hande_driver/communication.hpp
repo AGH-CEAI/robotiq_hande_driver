@@ -2,7 +2,6 @@
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
 #include <atomic>
-// #include <cstring>
 #include <optional>
 #include <string>
 #include <thread>

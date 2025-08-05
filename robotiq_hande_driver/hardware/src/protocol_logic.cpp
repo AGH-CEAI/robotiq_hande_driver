@@ -16,6 +16,7 @@ ProtocolLogic::ProtocolLogic()
       current_() {}
 
 void ProtocolLogic::refresh_registers() {
+    // TODO get all input bytes at once
     status_ = communication_.get_input_byte(InputBytes::GRIPPER_STATUS);
 
     activation_status_ =
@@ -143,7 +144,7 @@ bool ProtocolLogic::is_opened() const {
     return position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
 }
 
-bool ProtocolLogic::obj_detected() {
+bool ProtocolLogic::obj_detected() const {
     return (
         object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED
         || object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);

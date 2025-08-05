@@ -68,7 +68,8 @@ int Communication::configure() {
     mb_ = modbus_new_rtu(tty_port_.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
     modbus_set_slave(mb_, slave_id_);
     modbus_set_debug(mb_, DEBUG_MODBUS);
-    // TODO: asynchronusly connect to the modbus TCP (wait for a virtual serial port creation from socat)
+    // TODO: asynchronously connect to the modbus TCP (wait for a virtual serial port creation from
+    // socat)
     auto result = connect();
 
     bg_comm_enabled_.store(true, std::memory_order_relaxed);

@@ -159,7 +159,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    const Status& get_status() const;
+    Status get_status() const;
 
     /**
      * @brief Retrieves the gripper fault status.
@@ -169,7 +169,7 @@ class GripperApplication {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    const FaultStatus& get_fault_status() const;
+    FaultStatus get_fault_status() const;
 
     /**
      * @brief Retrieves the requested position of the gripper.

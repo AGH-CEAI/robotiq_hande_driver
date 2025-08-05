@@ -71,11 +71,11 @@ void GripperApplication::close() {
     set_position(gripper_position_min_);
 }
 
-const GripperApplication::Status& GripperApplication::get_status() const {
+GripperApplication::Status GripperApplication::get_status() const {
     return status_;
 }
 
-const GripperApplication::FaultStatus& GripperApplication::get_fault_status() const {
+GripperApplication::FaultStatus GripperApplication::get_fault_status() const {
     return fault_status_;
 }
 

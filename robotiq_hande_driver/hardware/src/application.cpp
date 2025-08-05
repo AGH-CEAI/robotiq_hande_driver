@@ -71,11 +71,11 @@ void GripperApplication::close() {
     set_position(gripper_position_min_);
 }
 
-const Status& GripperApplication::get_status() const {
+const GripperApplication::Status& GripperApplication::get_status() const {
     return status_;
 }
 
-const FaultStatus& GripperApplication::get_fault_status() const {
+const GripperApplication::FaultStatus& GripperApplication::get_fault_status() const {
     return fault_status_;
 }
 
@@ -87,7 +87,7 @@ double GripperApplication::get_position() const {
     return position_;
 }
 
-void GripperApplication::set_position(double position, double force = 1.0) {
+void GripperApplication::set_position(double position, double force) {
     uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
     protocol_logic_.go_to(
         (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),

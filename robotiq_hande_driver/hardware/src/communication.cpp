@@ -1,8 +1,7 @@
 #include "robotiq_hande_driver/communication.hpp"
 
-// #include <cstdio>
+#include <cstring>
 #include <iostream>
-#include <stdexcept>
 
 namespace robotiq_hande_driver {
 
@@ -66,9 +65,10 @@ void Communication::read_write_registers() {
 }
 
 int Communication::configure() {
-    mb_ = modbus_new_rtu(tty_port.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
+    mb_ = modbus_new_rtu(tty_port_.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
     modbus_set_slave(mb_, slave_id_);
     modbus_set_debug(mb_, DEBUG_MODBUS);
+    // TODO: asynchronusly connect to the modbus TCP (wait for a virtual serial port creation from socat)
     auto result = connect();
 
     bg_comm_enabled_.store(true, std::memory_order_relaxed);
@@ -92,7 +92,7 @@ void Communication::cleanup() {
 int Communication::connect() {
     auto result = modbus_connect(mb_);
     if(result == FAILURE_MODBUS)
-        throw std::runtime_error("[robotiq_hande_driver] Failed to establish Modbus connection.");
+        std::cout << "[WARNING] [robotiq_hande_driver] Failed to establish Modbus connection.\n";
     return result;
 }
 
@@ -104,7 +104,7 @@ void Communication::clear_output_bytes() {
     for(size_t i = 0; i < NUM_OF_OUTPUT_BYTES; ++i) {
         output_bytes_[i].store(0, std::memory_order_relaxed);
     }
-    memset(output_bytes_modbus_, 0, sizeof(output_bytes_modbus_));
+    std::memset(output_bytes_modbus_, 0, sizeof(output_bytes_modbus_));
 }
 
 uint8_t Communication::get_input_byte(InputBytes index) {

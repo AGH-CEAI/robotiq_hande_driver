@@ -72,7 +72,7 @@ class ProtocolLogic {
    public:
     ProtocolLogic();
 
-    ~ProtocolLogic() {};
+    ~ProtocolLogic() = default;
 
     /**
      * @brief Initializes driver parameters.
@@ -84,8 +84,6 @@ class ProtocolLogic {
      * @param stop_bit Modbus serial stopbit.
      * @param slave_id Modbus slave id.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
     void initialize(
         const std::string& tty_port,
@@ -93,9 +91,7 @@ class ProtocolLogic {
         char parity,
         int data_bits,
         int stop_bit,
-        int slave_id) {
-        communication_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
-    };
+        int slave_id);
 
     /**
      * @brief Configures protocol layer.
@@ -105,93 +101,47 @@ class ProtocolLogic {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    int configure() {
-        int result;
-
-        activation_status_ = ActivationStatus::GRIPPER_RESET;
-        action_status_ = ActionStatus::STOPPED;
-        gripper_status_ = GripperStatus::NOT_USED;
-        object_detection_status_ = ObjectDetectionStatus::REQ_POS_NO_OBJECT;
-        fault_status_ = 0;
-        position_request_echo_ = 0;
-        position_ = 0;
-        current_ = 0;
-        result = communication_.configure();
-
-        return result;
-    };
+    int configure();
 
     /**
      * @brief Deinitializes protocol layer.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void cleanup() {
-        communication_.cleanup();
-    };
+    void cleanup();
 
     /**
      *  @brief Resets the gripper.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void reset() {
-        communication_.clear_output_bytes();
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
-            static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
-    };
+    void reset();
 
     /**
      *  @brief Sets the gripper.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void set() {
-        communication_.clear_output_bytes();
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
-            static_cast<bool>(Activate::ACTIVATE_GRIPPER));
-    };
+    void set();
 
     /**
      * @brief Performs an emergency auto-release. The fingers slowly open, requiring reactivation.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void auto_release() {
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE),
-            static_cast<bool>(AutomaticRelease::EMERGENCY_AUTO_RELEASE));
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION),
-            static_cast<bool>(AutoReleaseDirection::OPENING));
-    };
+    void auto_release();
 
     /**
      * @brief Activates the gripper, making it ready for use.
      *
      * @param none
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void activate() {
-        reset();
-        set();
-    };
+    void activate();
 
     /**
      * @brief Deactivates the gripper.
@@ -201,9 +151,7 @@ class ProtocolLogic {
      * @note The status should be checked to verify successful execution. An exception is thrown if
      * communication issues occur.
      */
-    void deactivate() {
-        reset();
-    };
+    void deactivate();
 
     /**
      * @brief Moves the gripper to the requested position with specified velocity and force.
@@ -212,127 +160,85 @@ class ProtocolLogic {
      * @param velocity The requested velocity.
      * @param force The requested force.
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void go_to(uint8_t position, uint8_t velocity, uint8_t force) {
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::GO_TO),
-            static_cast<bool>(GoTo::GO_TO_REQ_POS));
-        communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
-        communication_.set_output_byte(OutputBytes::SPEED, velocity);
-        communication_.set_output_byte(OutputBytes::FORCE, force);
-    };
+    void go_to(uint8_t position, uint8_t velocity, uint8_t force);
 
     /**
      * @brief Stops the gripper.
      *
      * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    void stop() {
-        communication_.write_action_bit(
-            static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::STOP));
-    };
+    void stop();
 
     /**
      * @brief Checks if the gripper is in reset state.
      *
      * @return True if the gripper is in reset state.
      */
-    bool is_reset() {
-        return (
-            gripper_status_ == GripperStatus::GRIPPER_IN_RESET
-            && activation_status_ == ActivationStatus::GRIPPER_RESET);
-    };
+    bool is_reset() const;
 
     /**
      * @brief Checks if the gripper is in ready state.
      *
      * @return True if the gripper is in ready state.
      */
-    bool is_ready() {
-        return (
-            gripper_status_ == GripperStatus::ACTIVATION_COMPLETE
-            && activation_status_ == ActivationStatus::GRIPPER_ACTIVATION);
-    };
+    bool is_ready() const;
 
     /**
      * @brief Checks if the gripper is moving.
      *
      * @return True if gripper is moving.
      */
-    bool is_moving() {
-        return (
-            action_status_ == ActionStatus::GO_TO_POSITION_REQUEST
-            && object_detection_status_ == ObjectDetectionStatus::MOTION_NO_OBJECT);
-    };
+    bool is_moving() const;
 
     /**
      * @brief Checks if the gripper is stopped.
      *
      * @return True if gripper is stopped.
      */
-    bool is_stopped() {
-        return object_detection_status_ != ObjectDetectionStatus::MOTION_NO_OBJECT;
-    };
+    bool is_stopped() const;
 
     /**
      * @brief Checks if the gripper is closed.
      *
      * @return True if gripper is closed.
      */
-    bool is_closed() {
-        return position_ >= GRIPPER_POSITION_OPENED_THRESHOLD;
-    };
+    bool is_closed() const;
 
     /**
      * @brief Checks if the gripper is opened.
      *
      * @return True if gripper is opened.
      */
-    bool is_opened() {
-        return position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
-    };
+    bool is_opened() const;
 
     /**
      * @brief Checks if the gripper has detected an object.
      *
      * @return True if gripper has detected an object.
      */
-    bool obj_detected() {
-        return (
-            object_detection_status_ == ObjectDetectionStatus::STOPPED_OPENING_DETECTED
-            || object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);
-    };
+    bool obj_detected() const;
 
     /**
      * @brief Retrieves the requested position of the gripper.
      *
      * @return Requested gripper position.
      */
-    uint8_t get_reg_pos() {
-        return position_request_echo_;
-    };
+    uint8_t get_reg_pos() const;
 
     /**
      * @brief Retrieves the actual position of the gripper.
      *
      * @return The actual gripper position.
      */
-    uint8_t get_pos() {
-        return position_;
-    };
+    uint8_t get_pos() const;
 
     /**
      * @brief Retrieves the electric current drawn by the gripper.
      *
      * @return The electric current.
      */
-    uint8_t get_current() {
-        return current_;
-    };
+    uint8_t get_current() const;
 
     /**
      * @brief Decodes Modbus registers and refreshes appropriate data.

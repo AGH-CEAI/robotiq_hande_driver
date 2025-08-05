@@ -2,7 +2,7 @@
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
 #include <atomic>
-#include <cstring>
+// #include <cstring>
 #include <optional>
 #include <string>
 #include <thread>
@@ -160,7 +160,7 @@ class Communication {
     uint bit_set_to(uint value, uint n, bool x);
 
    private:
-    const char* tty_port_;
+    std::string tty_port_;
     int baudrate_;
     char parity_;
     int data_bits_;
@@ -175,7 +175,7 @@ class Communication {
     std::atomic<uint8_t> input_bytes_[NUM_OF_INPUT_BYTES];
     std::atomic<uint8_t> output_bytes_[NUM_OF_OUTPUT_BYTES];
 
-    std::atomic<bool> bg_comm_enabled_{true};
+    std::atomic<bool> bg_comm_enabled_;
     std::optional<std::thread> bg_comm_;
 };
 }  // namespace robotiq_hande_driver

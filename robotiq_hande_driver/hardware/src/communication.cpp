@@ -1,11 +1,24 @@
 #include "robotiq_hande_driver/communication.hpp"
 
-#include <cstdio>
+// #include <cstdio>
+#include <iostream>
+#include <stdexcept>
 
 namespace robotiq_hande_driver {
 
 Communication::Communication()
-    : input_bytes_modbus_{}, output_bytes_modbus_{}, input_bytes_{}, output_bytes_{} {}
+    : tty_port_{},
+      baudrate_{},
+      parity_{},
+      data_bits_{},
+      stop_bit_{},
+      slave_id_{},
+      mb_{nullptr},
+      input_bytes_modbus_{},
+      output_bytes_modbus_{},
+      input_bytes_{},
+      output_bytes_{},
+      bg_comm_enabled_{true} {}
 
 Communication::~Communication() {
     cleanup();
@@ -18,7 +31,7 @@ void Communication::initialize(
     int data_bits,
     int stop_bit,
     int slave_id) {
-    tty_port_ = tty_port.c_str();
+    tty_port_ = tty_port;
     baudrate_ = baudrate;
     parity_ = parity;
     data_bits_ = data_bits;
@@ -27,6 +40,7 @@ void Communication::initialize(
 }
 
 void Communication::read_write_registers() {
+    int result = 0;
     while(bg_comm_enabled_) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -34,7 +48,7 @@ void Communication::read_write_registers() {
             output_bytes_modbus_[i] = output_bytes_[i].load(std::memory_order_relaxed);
         }
 
-        modbus_write_and_read_registers(
+        result = modbus_write_and_read_registers(
             mb_,
             GRIPPER_INPUT_FIRST_REG,
             OUTPUT_REGISTER_WORD_LENGTH,
@@ -42,6 +56,8 @@ void Communication::read_write_registers() {
             GRIPPER_OUTPUT_FIRST_REG,
             INPUT_REGISTER_WORD_LENGTH,
             reinterpret_cast<uint16_t*>(input_bytes_modbus_));
+        if(result == FAILURE_MODBUS)
+            std::cout << "[WARNING] Failed to read & write Hand-e registers via modbus\n";
 
         for(size_t i = 0; i < NUM_OF_INPUT_BYTES; ++i) {
             input_bytes_[i].store(input_bytes_modbus_[i], std::memory_order_relaxed);
@@ -50,11 +66,12 @@ void Communication::read_write_registers() {
 }
 
 int Communication::configure() {
-    mb_ = modbus_new_rtu(tty_port_, baudrate_, parity_, data_bits_, stop_bit_);
+    mb_ = modbus_new_rtu(tty_port.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
     modbus_set_slave(mb_, slave_id_);
     modbus_set_debug(mb_, DEBUG_MODBUS);
     auto result = connect();
 
+    bg_comm_enabled_.store(true, std::memory_order_relaxed);
     bg_comm_.emplace(&Communication::read_write_registers, this);
 
     return result;
@@ -66,12 +83,17 @@ void Communication::cleanup() {
         bg_comm_->join();
     }
 
+    if(mb_ == nullptr) return;
     disconnect();
     modbus_free(mb_);
+    mb_ = nullptr;
 }
 
 int Communication::connect() {
-    return modbus_connect(mb_);
+    auto result = modbus_connect(mb_);
+    if(result == FAILURE_MODBUS)
+        throw std::runtime_error("[robotiq_hande_driver] Failed to establish Modbus connection.");
+    return result;
 }
 
 void Communication::disconnect() {
@@ -96,7 +118,7 @@ void Communication::set_output_byte(OutputBytes index, uint8_t value) {
 }
 
 void Communication::write_action_bit(uint8_t position_bit, bool value) {
-    auto idx = static_cast<uint>(OutputBytes::ACTION_REQUEST;
+    auto idx = static_cast<uint>(OutputBytes::ACTION_REQUEST);
     auto reg = output_bytes_[idx].load(std::memory_order_relaxed);
     auto result = bit_set_to(reg, position_bit, value);
 

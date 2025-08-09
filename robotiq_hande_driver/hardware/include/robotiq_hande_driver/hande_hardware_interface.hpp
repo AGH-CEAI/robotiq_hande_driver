@@ -37,7 +37,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     rclcpp::Clock::SharedPtr get_clock() const;
 
    private:
-    void log_parsed_urdf_config() const;
+    void log_parsed_urdf_config();
 
     HandeGripper gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;

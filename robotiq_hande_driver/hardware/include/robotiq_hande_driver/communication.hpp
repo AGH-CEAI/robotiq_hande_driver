@@ -56,13 +56,13 @@ using InputBuffer = std::array<uint8_t, NUM_OF_INPUT_BYTES>;
  * @param th_sleep_rate The Modbus communication sleep rate.
  */
 struct CommunicationConfig {
-    const std::string tty_port;
-    const int baudrate;
-    const char parity;
-    const int data_bits;
-    const int stop_bit;
-    const int slave_id;
-    const std::chrono::milliseconds th_sleep_rate;
+    std::string tty_port;
+    int baudrate;
+    char parity;
+    int data_bits;
+    int stop_bit;
+    int slave_id;
+    std::chrono::milliseconds th_sleep_rate;
 };
 
 /**

@@ -35,8 +35,8 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
     auto cfg = CommunicationConfig{
         info_.hardware_parameters["tty"],  // TODO change name to tty_port
-        std::stoi(info_.hardware_parameters["baudrate"])(
-            info_.hardware_parameters["parity"].c_str())[0],
+        std::stoi(info_.hardware_parameters["baudrate"]),
+        (info_.hardware_parameters["parity"].c_str())[0],
         std::stoi(info_.hardware_parameters["data_bits"]),
         std::stoi(info_.hardware_parameters["stop_bit"]),
         std::stoi(info_.hardware_parameters["slave_id"]),
@@ -45,7 +45,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
     cmd_position_ = gripper_position_max_;
     state_position_ = gripper_position_max_;
-    gripper_driver_.initialize(cfg);
+    gripper_driver_.initialize(gripper_position_min_, gripper_position_max_, cfg);
 
     RCLCPP_INFO(
         get_logger(),

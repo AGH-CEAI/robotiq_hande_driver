@@ -41,23 +41,11 @@ class HandeGripper {
      *
      * @param gripper_position_min Minimal gripper position in meters.
      * @param gripper_position_max Maximal gripper position in meters.
-     * @param tty_port Modbus virtual port.
-     * @param baudrate Modbus serial baudrate.
-     * @param parity Modbus serial parity.
-     * @param data_bits Modbus serial data bits.
-     * @param stop_bit Modbus serial stopbit.
-     * @param slave_id Modbus slave id.
+     * @param cfg Modbus communication cfg.
      * @return None.
      */
     void initialize(
-        double gripper_position_min,
-        double gripper_position_max,
-        const std::string& tty_port,
-        int baudrate,
-        char parity,
-        int data_bits,
-        int stop_bit,
-        int slave_id);
+        double gripper_position_min, double gripper_position_max, const CommunicationConfig& cfg);
 
     /**
      * @brief Configures driver session.

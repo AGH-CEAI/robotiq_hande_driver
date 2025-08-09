@@ -17,18 +17,11 @@ HandeGripper::HandeGripper()
       gripper_postion_step_{} {}
 
 void HandeGripper::initialize(
-    double gripper_position_min,
-    double gripper_position_max,
-    const std::string& tty_port,
-    int baudrate,
-    char parity,
-    int data_bits,
-    int stop_bit,
-    int slave_id) {
+    double gripper_position_min, double gripper_position_max, const CommunicationConfig& cfg) {
     gripper_position_min_ = gripper_position_min;
     gripper_position_max_ = gripper_position_max;
     gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
-    protocol_logic_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
+    protocol_logic_.initialize(cfg);
 }
 
 int HandeGripper::configure() {
@@ -109,7 +102,6 @@ double HandeGripper::get_current() const {
 void HandeGripper::read() {
     protocol_logic_.read_input_bytes();
 
-    // TODO consider extracting status to one level below (protocol_logic)
     status_.is_reset = protocol_logic_.is_reset();
     status_.is_ready = protocol_logic_.is_ready();
     status_.is_moving = protocol_logic_.is_moving();
@@ -126,7 +118,7 @@ void HandeGripper::read() {
 }
 
 void HandeGripper::write() {
-    // Do nothing?
+    protocol_logic_.write_output_bytes();
 }
 
 }  // namespace robotiq_hande_driver

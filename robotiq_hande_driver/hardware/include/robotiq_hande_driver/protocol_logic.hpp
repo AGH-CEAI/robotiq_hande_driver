@@ -77,21 +77,10 @@ class ProtocolLogic {
     /**
      * @brief Initializes driver parameters.
      *
-     * @param tty_port Modbus virtual port.
-     * @param baudrate Modbus serial baudrate.
-     * @param parity Modbus serial parity.
-     * @param data_bits Modbus serial data bits.
-     * @param stop_bit Modbus serial stopbit.
-     * @param slave_id Modbus slave id.
+     * @param cfg Modbus communication config.
      * @return None.
      */
-    void initialize(
-        const std::string& tty_port,
-        int baudrate,
-        char parity,
-        int data_bits,
-        int stop_bit,
-        int slave_id);
+    void initialize(const CommunicationConfig& cfg);
 
     /**
      * @brief Configures protocol layer.
@@ -259,10 +248,10 @@ class ProtocolLogic {
     ObjectDetectionStatus object_detection_status_;
 
     /* Auxiary array for storing read value*/
-    std::array<uint8_t, NUM_OF_INPUT_BYTES> input_bytes_;
+    InputBuffer input_bytes_;
 
     /* Auxiary array for preparing all registers before sending them*/
-    std::array<uint8_t, NUM_OF_OUTPUT_BYTES> output_bytes_;
+    OutputBuffer output_bytes_;
 
     /* Fault */
     uint8_t fault_status_;

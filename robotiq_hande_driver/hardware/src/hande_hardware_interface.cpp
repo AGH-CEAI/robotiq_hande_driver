@@ -25,7 +25,39 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     logger_ = std::make_shared<rclcpp::Logger>(
         rclcpp::get_logger("controller_manager.resource_manager.hardware_component.system."
                            "RobotiqHandeHardwareInterface"));
+    log_parsed_urdf_config();
 
+    state_velocity_ = 0.0;
+    cmd_force_ = 1.0;
+    gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
+    gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
+
+    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
+    auto cfg = CommunicationConfig{
+        info_.hardware_parameters["tty"],  // TODO change name to tty_port
+        std::stoi(info_.hardware_parameters["baudrate"])(
+            info_.hardware_parameters["parity"].c_str())[0],
+        std::stoi(info_.hardware_parameters["data_bits"]),
+        std::stoi(info_.hardware_parameters["stop_bit"]),
+        std::stoi(info_.hardware_parameters["slave_id"]),
+        std::chrono::milliseconds(1000 / frequency_hz),  // th_sleep_rate
+    };
+
+    cmd_position_ = gripper_position_max_;
+    state_position_ = gripper_position_max_;
+    gripper_driver_.initialize(cfg);
+
+    RCLCPP_INFO(
+        get_logger(),
+        "Initialized ModbusRTU for %s, %d, %c, %d, %d",
+        cfg.tty_port.c_str(),
+        cfg.baudrate,
+        cfg.parity,
+        cfg.data_bits,
+        cfg.stop_bit);
+    return HWI::CallbackReturn::SUCCESS;
+}
+void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
     RCLCPP_DEBUG(
         get_logger(), "grip_pos_min: %s", info_.hardware_parameters["grip_pos_min"].c_str());
     RCLCPP_DEBUG(
@@ -36,40 +68,8 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     RCLCPP_DEBUG(get_logger(), "data_bits: %s", info_.hardware_parameters["data_bits"].c_str());
     RCLCPP_DEBUG(get_logger(), "stop_bit:  %s", info_.hardware_parameters["stop_bit"].c_str());
     RCLCPP_DEBUG(get_logger(), "slave_id: %s", info_.hardware_parameters["slave_id"].c_str());
-
-    state_velocity_ = 0.0;
-    cmd_force_ = 1.0;
-    gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
-    gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
-    tty_port_ = info_.hardware_parameters["tty"];
-    baudrate_ = std::stoi(info_.hardware_parameters["baudrate"]);
-    parity_ = (info_.hardware_parameters["parity"].c_str())[0];
-    data_bits_ = std::stoi(info_.hardware_parameters["data_bits"]);
-    stop_bit_ = std::stoi(info_.hardware_parameters["stop_bit"]);
-    slave_id_ = std::stoi(info_.hardware_parameters["slave_id"]);
-
-    cmd_position_ = gripper_position_max_;
-    state_position_ = gripper_position_max_;
-
-    gripper_driver_.initialize(
-        gripper_position_min_,
-        gripper_position_max_,
-        tty_port_,
-        baudrate_,
-        parity_,
-        data_bits_,
-        stop_bit_,
-        slave_id_);
-
-    RCLCPP_INFO(
-        get_logger(),
-        "Initialized ModbusRTU for %s, %d, %c, %d, %d",
-        tty_port_.c_str(),
-        baudrate_,
-        parity_,
-        data_bits_,
-        stop_bit_);
-    return HWI::CallbackReturn::SUCCESS;
+    RCLCPP_DEBUG(
+        get_logger(), "frequency_hz: %s", info_.hardware_parameters["frequency_hz"].c_str());
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
@@ -77,14 +77,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     int result = FAILURE_MODBUS;
 
     RCLCPP_INFO(get_logger(), "Connecting to ModbusRTU");
-    RCLCPP_DEBUG(
-        get_logger(),
-        "Connecting to tty:%s, baudrate:%d, parity:%c, data_bits:%d, stop_bit:%d",
-        tty_port_.c_str(),
-        baudrate_,
-        parity_,
-        data_bits_,
-        stop_bit_);
 
     result = gripper_driver_.configure();
 
@@ -211,6 +203,7 @@ HWI::return_type RobotiqHandeHardwareInterface::read(
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
     gripper_driver_.set_position(cmd_position_, cmd_force_);
+    gripper_driver_.write();
     return hardware_interface::return_type::OK;
 }
 

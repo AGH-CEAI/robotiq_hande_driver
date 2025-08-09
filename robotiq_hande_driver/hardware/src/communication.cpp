@@ -6,39 +6,23 @@
 namespace robotiq_hande_driver {
 
 Communication::Communication()
-    : tty_port_{},
-      baudrate_{},
-      parity_{},
-      data_bits_{},
-      stop_bit_{},
-      slave_id_{},
+    : cfg_{},
       mb_{nullptr},
       input_bytes_{},  // TODO setup proper initial values
       output_bytes_{},
-      bg_comm_enabled_{false} {}
+      th_comm_enabled_{false} {}
 
 Communication::~Communication() {
     cleanup();
 }
 
-void Communication::initialize(
-    const std::string& tty_port,
-    int baudrate,
-    char parity,
-    int data_bits,
-    int stop_bit,
-    int slave_id) {
-    tty_port_ = tty_port;
-    baudrate_ = baudrate;
-    parity_ = parity;
-    data_bits_ = data_bits;
-    stop_bit_ = stop_bit;
-    slave_id_ = slave_id;
+void Communication::initialize(const CommunicationConfig& cfg) {
+    cfg_ = cfg;
 }
 
 void Communication::read_write_registers() {
     int result = 0;
-    while(bg_comm_enabled_) {
+    while(th_comm_enabled_) {
         {
             std::lock_guard<std::mutex> lock(mtx_);
             result = modbus_write_and_read_registers(
@@ -53,15 +37,15 @@ void Communication::read_write_registers() {
         if(result == FAILURE_MODBUS)
             std::cout << "[WARNING] Failed to read & write Hand-e registers via modbus\n";
 
-        // TODO parametrize the sleep time
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(cfg_.th_sleep_rate);
     }
 }
 
 int Communication::configure() {
     if(mb_ == nullptr) {
-        mb_ = modbus_new_rtu(tty_port_.c_str(), baudrate_, parity_, data_bits_, stop_bit_);
-        modbus_set_slave(mb_, slave_id_);
+        mb_ = modbus_new_rtu(
+            cfg_.tty_port.c_str(), cfg_.baudrate, cfg_.parity, cfg_.data_bits, cfg_.stop_bit);
+        modbus_set_slave(mb_, cfg_.slave_id);
         modbus_set_debug(mb_, DEBUG_MODBUS);
     }
     // TODO: asynchronously connect to the modbus TCP (wait for a virtual serial port creation from
@@ -72,9 +56,9 @@ int Communication::configure() {
         return FAILURE_MODBUS;
     }
 
-    if(!bg_comm_enabled_) {
-        bg_comm_enabled_.store(true, std::memory_order_relaxed);
-        bg_comm_.emplace(&Communication::read_write_registers, this);
+    if(!th_comm_enabled_) {
+        th_comm_enabled_.store(true, std::memory_order_relaxed);
+        th_comm_.emplace(&Communication::read_write_registers, this);
     }
 
     // TODO do we really need the result?
@@ -83,9 +67,9 @@ int Communication::configure() {
 }
 
 void Communication::cleanup() {
-    bg_comm_enabled_.store(false, std::memory_order_relaxed);
-    if(bg_comm_ && bg_comm_->joinable()) {
-        bg_comm_->join();
+    th_comm_enabled_.store(false, std::memory_order_relaxed);
+    if(th_comm_ && th_comm_->joinable()) {
+        th_comm_->join();
     }
 
     if(mb_ == nullptr) return;
@@ -103,12 +87,12 @@ void Communication::disconnect() {
     modbus_close(mb_);
 }
 
-std::array<uint8_t, NUM_OF_INPUT_BYTES> Communication::get_input_bytes() const {
+InputBuffer Communication::get_input_bytes() const {
     std::lock_guard<std::mutex> lock(mtx_);
     return input_bytes_;
 }
 
-void Communication::set_output_bytes(const std::array<uint8_t, NUM_OF_OUTPUT_BYTES>& vals) {
+void Communication::set_output_bytes(const OutputBuffer& vals) {
     std::lock_guard<std::mutex> lock(mtx_);
     output_bytes_ = vals;
 }

@@ -5,24 +5,18 @@
 namespace robotiq_hande_driver {
 
 ProtocolLogic::ProtocolLogic()
-    : status_(),
-      activation_status_(ActivationStatus::GRIPPER_RESET),
-      action_status_(ActionStatus::STOPPED),
-      gripper_status_(GripperStatus::NOT_USED),
-      object_detection_status_(ObjectDetectionStatus::REQ_POS_NO_OBJECT),
-      fault_status_(),
-      position_request_echo_(),
-      position_(),
-      current_() {}
+    : status_{},
+      activation_status_{ActivationStatus::GRIPPER_RESET},
+      action_status_{ActionStatus::STOPPED},
+      gripper_status_{GripperStatus::NOT_USED},
+      object_detection_status_{ObjectDetectionStatus::REQ_POS_NO_OBJECT},
+      fault_status_{},
+      position_request_echo_{},
+      position_{},
+      current_{} {}
 
-void ProtocolLogic::initialize(
-    const std::string& tty_port,
-    int baudrate,
-    char parity,
-    int data_bits,
-    int stop_bit,
-    int slave_id) {
-    communication_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
+void ProtocolLogic::initialize(const CommunicationConfig& cfg) {
+    communication_.initialize(cfg);
 }
 
 int ProtocolLogic::configure() {
@@ -144,7 +138,6 @@ uint8_t ProtocolLogic::get_current() const {
 void ProtocolLogic::read_input_bytes() {
     input_bytes_ = communication_.get_input_bytes();
 
-    // TODO extract this logic into a new struct
     status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
 
     activation_status_ =

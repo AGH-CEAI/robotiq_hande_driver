@@ -12,6 +12,7 @@ namespace robotiq_hande_driver {
 namespace HWI = hardware_interface;
 namespace rlccp_lc = rclcpp_lifecycle;
 
+constexpr double EPSILON = 1e-6f;
 constexpr int LEFT_FINGER_JOINT_ID = 0;
 
 class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
@@ -37,7 +38,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     rclcpp::Clock::SharedPtr get_clock() const;
 
    private:
-    GripperApplication gripper_driver_;
+    HandeGripper gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;
     rclcpp::Clock::SharedPtr clock_;
 

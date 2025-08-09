@@ -15,34 +15,6 @@ ProtocolLogic::ProtocolLogic()
       position_(),
       current_() {}
 
-void ProtocolLogic::refresh_registers() {
-    // TODO get all input bytes at once
-    status_ = communication_.get_input_byte(InputBytes::GRIPPER_STATUS);
-
-    activation_status_ =
-        (ActivationStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTIVATION_STATUS))
-                           & ACTIVATION_STATUS_BITS);
-
-    action_status_ = (ActionStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTION_STATUS))
-                                    & ACTION_STATUS_BITS);
-
-    gripper_status_ =
-        (GripperStatus)((status_ >> static_cast<uint>(StatusPositionBit::GRIPPER_STATUS))
-                        & GRIPPER_STATUS_BITS);
-
-    object_detection_status_ =
-        (ObjectDetectionStatus)((status_
-                                 >> static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS))
-                                & OBJECT_DETECTION_STATUS_BITS);
-
-    // TODO(issue#9) Read Hand-E fault status flags
-    fault_status_ = communication_.get_input_byte(InputBytes::FAULT_STATUS);
-
-    position_request_echo_ = communication_.get_input_byte(InputBytes::POSITION_REQUEST_ECHO);
-    position_ = communication_.get_input_byte(InputBytes::POSITION);
-    current_ = communication_.get_input_byte(InputBytes::CURRENT);
-}
-
 void ProtocolLogic::initialize(
     const std::string& tty_port,
     int baudrate,
@@ -70,26 +42,31 @@ void ProtocolLogic::cleanup() {
 }
 
 void ProtocolLogic::reset() {
-    communication_.clear_output_bytes();
-    communication_.write_action_bit(
+    output_bytes_.fill(0);
+    write_output_bytes();
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
         static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
+    write_output_bytes();
 }
 
 void ProtocolLogic::set() {
-    communication_.clear_output_bytes();
-    communication_.write_action_bit(
+    output_bytes_.fill(0);
+    write_output_bytes();
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
         static_cast<bool>(Activate::ACTIVATE_GRIPPER));
+    write_output_bytes();
 }
 
 void ProtocolLogic::auto_release() {
-    communication_.write_action_bit(
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE),
         static_cast<bool>(AutomaticRelease::EMERGENCY_AUTO_RELEASE));
-    communication_.write_action_bit(
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::AUTOMATIC_RELEASE_DIRECTION),
         static_cast<bool>(AutoReleaseDirection::OPENING));
+    write_output_bytes();
 }
 
 void ProtocolLogic::activate() {
@@ -102,16 +79,18 @@ void ProtocolLogic::deactivate() {
 }
 
 void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force) {
-    communication_.write_action_bit(
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::GO_TO_REQ_POS));
-    communication_.set_output_byte(OutputBytes::POSITION_REQUEST, position);
-    communication_.set_output_byte(OutputBytes::SPEED, velocity);
-    communication_.set_output_byte(OutputBytes::FORCE, force);
+    set_output_byte(OutputBytes::POSITION_REQUEST, position);
+    set_output_byte(OutputBytes::SPEED, velocity);
+    set_output_byte(OutputBytes::FORCE, force);
+    write_output_bytes();
 }
 
 void ProtocolLogic::stop() {
-    communication_.write_action_bit(
+    write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::GO_TO), static_cast<bool>(GoTo::STOP));
+    write_output_bytes();
 }
 
 bool ProtocolLogic::is_reset() const {
@@ -160,6 +139,63 @@ uint8_t ProtocolLogic::get_pos() const {
 
 uint8_t ProtocolLogic::get_current() const {
     return current_;
+}
+
+void ProtocolLogic::read_input_bytes() {
+    input_bytes_ = communication_.get_input_bytes();
+
+    // TODO extract this logic into a new struct
+    status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
+
+    activation_status_ =
+        (ActivationStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTIVATION_STATUS))
+                           & ACTIVATION_STATUS_BITS);
+
+    action_status_ = (ActionStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTION_STATUS))
+                                    & ACTION_STATUS_BITS);
+
+    gripper_status_ =
+        (GripperStatus)((status_ >> static_cast<uint>(StatusPositionBit::GRIPPER_STATUS))
+                        & GRIPPER_STATUS_BITS);
+
+    object_detection_status_ =
+        (ObjectDetectionStatus)((status_
+                                 >> static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS))
+                                & OBJECT_DETECTION_STATUS_BITS);
+
+    // TODO(issue#9) Read Hand-E fault status flags
+    fault_status_ = get_input_byte(InputBytes::FAULT_STATUS);
+
+    position_request_echo_ = get_input_byte(InputBytes::POSITION_REQUEST_ECHO);
+    position_ = get_input_byte(InputBytes::POSITION);
+    current_ = get_input_byte(InputBytes::CURRENT);
+}
+
+void ProtocolLogic::write_output_bytes() {
+    communication_.set_output_bytes(output_bytes_);
+}
+
+uint ProtocolLogic::bit_set_to(uint value, uint n, bool x) const {
+    uint reset_n_bit = ~(1u << n);
+    uint set_n_bit = static_cast<uint>(x) << n;
+    return (value & reset_n_bit) | set_n_bit;
+}
+
+void ProtocolLogic::write_action_bit(uint8_t position_bit, bool value) {
+    auto idx = static_cast<uint>(OutputBytes::ACTION_REQUEST);
+    auto reg = output_bytes_[idx].load(std::memory_order_relaxed);
+    auto result = bit_set_to(reg, position_bit, value);
+    output_bytes_[idx] = result;
+}
+
+uint8_t ProtocolLogic::get_input_byte(InputBytes index) const {
+    auto idx = static_cast<uint>(index);
+    return input_bytes_[idx];
+}
+
+void ProtocolLogic::set_output_byte(OutputBytes index, uint8_t value) {
+    auto idx = static_cast<uint>(index);
+    output_bytes_[idx] = value;
 }
 
 }  // namespace robotiq_hande_driver

@@ -240,20 +240,29 @@ class ProtocolLogic {
      */
     uint8_t get_current() const;
 
-    /**
-     * @brief Decodes Modbus registers and refreshes appropriate data.
-     *
-     * @return None.
-     */
-    void refresh_registers();
+    // TODO docs
+    void read_input_bytes();
+    void write_output_bytes();
 
    private:
+    uint bit_set_to(uint value, uint n, bool x) const;
+    void write_action_bit(uint8_t position_bit, bool value);
+
+    uint8_t get_input_byte(InputBytes index) const;
+    void set_output_byte(OutputBytes index, uint8_t value);
+
     /* Gripper */
     uint8_t status_;
     ActivationStatus activation_status_;
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
+
+    /* Auxiary array for storing read value*/
+    std::array<uint8_t, NUM_OF_INPUT_BYTES> input_bytes_;
+
+    /* Auxiary array for preparing all registers before sending them*/
+    std::array<uint8_t, NUM_OF_OUTPUT_BYTES> output_bytes_;
 
     /* Fault */
     uint8_t fault_status_;

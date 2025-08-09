@@ -167,8 +167,9 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
         wait_100ms();
         gripper_driver_.read();
         if(iter++ > ACTIVATION_MAX_ITER) {
-            // const std::string red     = "\033[31m";
-            // const std::string reset   = "\033[0m";
+            // TODO ADD COLOURS TO HIGH LEVEL LOGGING
+            //  const std::string red     = "\033[31m";
+            //  const std::string reset   = "\033[0m";
             RCLCPP_ERROR(get_logger(), "\033[31mFailed to activate Hand-E (Timeout)\033[0m");
             return HWI::CallbackReturn::FAILURE;
         }
@@ -209,12 +210,7 @@ HWI::return_type RobotiqHandeHardwareInterface::read(
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    // TODO Investigate better approach
-
-    // TODO stabilize connection (maybe its too fast?)
     gripper_driver_.set_position(cmd_position_, cmd_force_);
-    gripper_driver_.write();
-
     return hardware_interface::return_type::OK;
 }
 

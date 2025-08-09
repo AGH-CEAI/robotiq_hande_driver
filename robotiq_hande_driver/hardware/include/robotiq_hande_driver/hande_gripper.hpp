@@ -1,5 +1,5 @@
-#ifndef ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_
-#define ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_
+#ifndef ROBOTIQ_HANDE_DRIVER__HANDE_GRIPPER_HPP_
+#define ROBOTIQ_HANDE_DRIVER__HANDE_GRIPPER_HPP_
 
 #include <stdint.h>
 #include <unistd.h>
@@ -15,7 +15,7 @@ static constexpr auto MAX_FORCE = 255;
 /**
  * @brief This class contains high-level gripper commands and status.
  */
-class GripperApplication {
+class HandeGripper {
    public:
     struct Status {
         bool is_reset;
@@ -31,9 +31,9 @@ class GripperApplication {
         bool is_error;
     };
 
-    GripperApplication();
+    HandeGripper();
 
-    ~GripperApplication() = default;
+    ~HandeGripper() = default;
 
     /**
      * @brief Initializes driver parameters.
@@ -261,4 +261,4 @@ class GripperApplication {
     double gripper_postion_step_;
 };
 }  // namespace robotiq_hande_driver
-#endif  // ROBOTIQ_HANDE_DRIVER__APPLICATION_HPP_
+#endif  // ROBOTIQ_HANDE_DRIVER__HANDE_GRIPPER_HPP_

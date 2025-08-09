@@ -2,9 +2,11 @@
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
 #include <atomic>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <modbus/modbus.h>
 
@@ -39,6 +41,44 @@ enum class InputBytes : uint8_t {
 };
 static constexpr auto NUM_OF_INPUT_BYTES = static_cast<size_t>(OutputBytes::BYTES_MAX);
 static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
+
+/**
+ * @brief An auxialry struct to hold and interpret the registers data.
+ */
+struct OutputRegisters {
+    // TODO add if for checking the reg range
+    uint8_t get(OutputBytes reg) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        return regs_[reg];
+    }
+
+    void set(OutputBytes reg, uint8_t val) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        regs_[reg] = val;
+    }
+
+    uint8_t regs_[NUM_OF_OUTPUT_BYTES];
+
+   private:
+    mutable std::mutex mtx_;
+};
+struct InputRegisters {
+    // TODO add if for checking the reg range
+    uint8_t get(InputBytes reg) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        return regs_[reg];
+    }
+
+    void set(InputBytes reg, uint8_t val) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        regs_[reg] = val;
+    }
+
+    uint8_t regs_[NUM_OF_INPUT_BYTES];
+
+   private:
+    mutable std::mutex mtx_;
+};
 
 /**
  * @brief This class contains low level gripper commands and status
@@ -115,48 +155,20 @@ class Communication {
     void disconnect();
 
     /**
-     * @brief Sets output bytes to zeros.
+     * @brief Retrieves all of the input bytes values.
      *
      * @param none
-     * @return None.
+     * @return Copy of the input bytes.
      */
-    void clear_output_bytes();
+    std::array<uint8_t, NUM_OF_INPUT_BYTES> get_input_bytes() const;
 
     /**
-     * @brief Retrieves the input byte value at the specified index.
+     * @brief Sets all of the output bytes values.
      *
-     * @param index The InputBytes byte index.
-     * @return Requested byte value.
-     */
-    uint8_t get_input_byte(InputBytes index);
-
-    /**
-     * @brief Sets the output byte value at the specified index.
-     *
-     * @param index OutputBytes byte index
-     * @param value The value to be set.
+     * @param vals The values to be set.
      * @return none
      */
-    void set_output_byte(OutputBytes index, uint8_t value);
-
-    /**
-     * @brief Sets the n-th bit of the action request byte.
-     *
-     * @param position_bit n-th bit in byte
-     * @param value The boolean value to set for the bit.
-     * @return None.
-     */
-    void write_action_bit(uint8_t position_bit, bool value);
-
-    /**
-     * @brief Sets the n-th bit of a number to the specified boolean value.
-     *
-     * @param number
-     * @param n The n-th bit position to set.
-     * @param x The boolean value to set the bit to.
-     * @return The modified number with the n-th bit set to the specified value.
-     */
-    uint bit_set_to(uint value, uint n, bool x);
+    void set_output_bytes(const std::array<uint8_t, NUM_OF_OUTPUT_BYTES>& vals);
 
    private:
     std::string tty_port_;
@@ -168,12 +180,10 @@ class Communication {
 
     modbus_t* mb_;
 
-    uint8_t input_bytes_modbus_[NUM_OF_INPUT_BYTES];
-    uint8_t output_bytes_modbus_[NUM_OF_OUTPUT_BYTES];
+    std::array<uint8_t, NUM_OF_INPUT_BYTES> input_bytes_;
+    std::array<uint8_t, NUM_OF_OUTPUT_BYTES> output_bytes_;
 
-    std::atomic<uint8_t> input_bytes_[NUM_OF_INPUT_BYTES];
-    std::atomic<uint8_t> output_bytes_[NUM_OF_OUTPUT_BYTES];
-
+    mutable std::mutex mtx_;
     std::atomic<bool> bg_comm_enabled_;
     std::optional<std::thread> bg_comm_;
 };

@@ -4,7 +4,7 @@
 
 namespace robotiq_hande_driver {
 
-GripperApplication::GripperApplication()
+HandeGripper::HandeGripper()
     : protocol_logic_{},
       status_{},
       fault_status_{},
@@ -15,7 +15,7 @@ GripperApplication::GripperApplication()
       gripper_position_max_{},
       gripper_postion_step_{} {}
 
-void GripperApplication::initialize(
+void HandeGripper::initialize(
     double gripper_position_min,
     double gripper_position_max,
     const std::string& tty_port,
@@ -23,71 +23,77 @@ void GripperApplication::initialize(
     char parity,
     int data_bits,
     int stop_bit,
-    int slave_id) {
+    protocol_logic_ int slave_id) {
     gripper_position_min_ = gripper_position_min;
     gripper_position_max_ = gripper_position_max;
     gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
     protocol_logic_.initialize(tty_port, baudrate, parity, data_bits, stop_bit, slave_id);
 }
 
-int GripperApplication::configure() {
+int HandeGripper::configure() {
     return protocol_logic_.configure();
 }
 
-void GripperApplication::cleanup() {
+void HandeGripper::cleanup() {
     protocol_logic_.cleanup();
 }
 
-void GripperApplication::stop() {
+void HandeGripper::stop() {
     protocol_logic_.stop();
 }
 
-void GripperApplication::reset() {
+void HandeGripper::reset() {
     protocol_logic_.reset();
 }
 
-void GripperApplication::auto_release() {
+void HandeGripper::auto_release() {
     protocol_logic_.auto_release();
 }
 
-void GripperApplication::activate() {
+void HandeGripper::activate() {
     protocol_logic_.activate();
 }
 
-void GripperApplication::deactivate() {
+void HandeGripper::deactivate() {
     protocol_logic_.reset();
 }
 
-void GripperApplication::shutdown() {
+void HandeGripper::shutdown() {
     deactivate();
     cleanup();
 }
 
-void GripperApplication::open() {
+void HandeGripper::open() {
     set_position(gripper_position_max_);
 }
 
-void GripperApplication::close() {
+void HandeGripper::close() {
     set_position(gripper_position_min_);
 }
 
-GripperApplication::Status GripperApplication::get_status() const {
+HandeGripper::Status HandeGripper::get_status() const {
     return status_;
 }
 
-GripperApplication::FaultStatus GripperApplication::get_fault_status() const {
+HandeGripper::FaultStatus HandeGripper::get_fault_status() const {
     return fault_status_;
 }
 
-double GripperApplication::get_requested_position() const {
+double HandeGripper::get_requested_position() const {
     return requested_position_;
 }
 
-double GripperApplication::get_position() const {
+double HandeGripper::get_position() const {
     return position_;
 }
 
-void GripperApplication::set_position(double position, double force) {
+void HandeGripper::set_position(double position, double force) {
+    static double prev_position = std::numeric_limits<double>::quiet_NaN();
+    static double prev_force = std::numeric_limits<double>::quiet_NaN();
+
+    if(!std::isnan(prev_position) && std::fabs(position - prev_position) < EPSILON) return;
+    if(!std::isnan(prev_force) && std::fabs(force - prev_force) < EPSILON) return;
+
     uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
     protocol_logic_.go_to(
         (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),
@@ -95,13 +101,14 @@ void GripperApplication::set_position(double position, double force) {
         scaled_force);
 }
 
-double GripperApplication::get_current() const {
+double HandeGripper::get_current() const {
     return current_;
 }
 
-void GripperApplication::read() {
-    protocol_logic_.refresh_registers();
+void HandeGripper::read() {
+    protocol_logic_.read_input_bytes();
 
+    // TODO consider extracting status to one level below (protocol_logic)
     status_.is_reset = protocol_logic_.is_reset();
     status_.is_ready = protocol_logic_.is_ready();
     status_.is_moving = protocol_logic_.is_moving();
@@ -117,12 +124,8 @@ void GripperApplication::read() {
     current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
 }
 
-void GripperApplication::write() {
-    // TODO investigate: we shouldn't read statue during the write phase
-    protocol_logic_.refresh_registers();
-
-    // Here we should take internal registers and send them to the gripper
-    //  I.e. call set_position()
+void HandeGripper::write() {
+    // Do nothing?
 }
 
 }  // namespace robotiq_hande_driver

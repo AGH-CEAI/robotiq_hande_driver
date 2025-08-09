@@ -31,32 +31,14 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     cmd_force_ = 1.0;
     gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
     gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
-
-    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
-    auto cfg = CommunicationConfig{
-        info_.hardware_parameters["tty"],  // TODO change name to tty_port
-        std::stoi(info_.hardware_parameters["baudrate"]),
-        (info_.hardware_parameters["parity"].c_str())[0],
-        std::stoi(info_.hardware_parameters["data_bits"]),
-        std::stoi(info_.hardware_parameters["stop_bit"]),
-        std::stoi(info_.hardware_parameters["slave_id"]),
-        std::chrono::milliseconds(1000 / frequency_hz),  // th_sleep_rate
-    };
+    initalize_gripper_driver();
 
     cmd_position_ = gripper_position_max_;
     state_position_ = gripper_position_max_;
-    gripper_driver_.initialize(gripper_position_min_, gripper_position_max_, cfg);
 
-    RCLCPP_INFO(
-        get_logger(),
-        "Initialized ModbusRTU for %s, %d, %c, %d, %d",
-        cfg.tty_port.c_str(),
-        cfg.baudrate,
-        cfg.parity,
-        cfg.data_bits,
-        cfg.stop_bit);
     return HWI::CallbackReturn::SUCCESS;
 }
+
 void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
     RCLCPP_DEBUG(
         get_logger(), "grip_pos_min: %s", info_.hardware_parameters["grip_pos_min"].c_str());
@@ -70,6 +52,29 @@ void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
     RCLCPP_DEBUG(get_logger(), "slave_id: %s", info_.hardware_parameters["slave_id"].c_str());
     RCLCPP_DEBUG(
         get_logger(), "frequency_hz: %s", info_.hardware_parameters["frequency_hz"].c_str());
+}
+
+void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
+    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
+    auto cfg = CommunicationConfig{
+        info_.hardware_parameters["tty"],  // TODO change name to tty_port
+        std::stoi(info_.hardware_parameters["baudrate"]),
+        (info_.hardware_parameters["parity"].c_str())[0],
+        std::stoi(info_.hardware_parameters["data_bits"]),
+        std::stoi(info_.hardware_parameters["stop_bit"]),
+        std::stoi(info_.hardware_parameters["slave_id"]),
+        std::chrono::milliseconds(1000 / frequency_hz),  // th_sleep_rate
+    };
+    gripper_driver_.initialize(gripper_position_min_, gripper_position_max_, cfg);
+
+    RCLCPP_INFO(
+        get_logger(),
+        "Initialized ModbusRTU for %s, %d, %c, %d, %d",
+        cfg.tty_port.c_str(),
+        cfg.baudrate,
+        cfg.parity,
+        cfg.data_bits,
+        cfg.stop_bit);
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
@@ -91,6 +96,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
         result = gripper_driver_.configure();
     }
 
+    // TODO change passing result value to std::throw mechanism
     if(result == FAILURE_MODBUS) {
         RCLCPP_ERROR(get_logger(), "Failed to configure Hand-E Gripper");
         return HWI::CallbackReturn::FAILURE;

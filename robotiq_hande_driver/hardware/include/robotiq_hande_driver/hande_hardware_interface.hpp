@@ -38,6 +38,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
 
    private:
     void log_parsed_urdf_config();
+    void initalize_gripper_driver();
 
     HandeGripper gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;

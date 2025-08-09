@@ -48,8 +48,7 @@ int Communication::configure() {
         modbus_set_slave(mb_, cfg_.slave_id);
         modbus_set_debug(mb_, DEBUG_MODBUS);
     }
-    // TODO: asynchronously connect to the modbus TCP (wait for a virtual serial port creation from
-    // socat)
+
     auto result = connect();
     if(result == FAILURE_MODBUS) {
         std::cout << "[WARNING] [robotiq_hande_driver] Failed to establish Modbus connection.\n";
@@ -61,8 +60,6 @@ int Communication::configure() {
         th_comm_.emplace(&Communication::read_write_registers, this);
     }
 
-    // TODO do we really need the result?
-    // Can we switch to more roboust throw & catch?
     return result;
 }
 

@@ -5,14 +5,13 @@
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 
-#include "application.hpp"
+#include "robotiq_hande_driver/hande_gripper.hpp"
 
 namespace robotiq_hande_driver {
 
 namespace HWI = hardware_interface;
 namespace rlccp_lc = rclcpp_lifecycle;
 
-constexpr double EPSILON = 1e-6f;
 constexpr int LEFT_FINGER_JOINT_ID = 0;
 
 class RobotiqHandeHardwareInterface : public HWI::SystemInterface {

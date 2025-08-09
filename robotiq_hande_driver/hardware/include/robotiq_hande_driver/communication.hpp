@@ -45,40 +45,40 @@ static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes:
 /**
  * @brief An auxialry struct to hold and interpret the registers data.
  */
-struct OutputRegisters {
-    // TODO add if for checking the reg range
-    uint8_t get(OutputBytes reg) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        return regs_[reg];
-    }
+// struct OutputRegisters {
+//     // TODO add if for checking the reg range
+//     uint8_t get(OutputBytes reg) {
+//         std::lock_guard<std::mutex> lock(mtx_);
+//         return regs_[reg];
+//     }
 
-    void set(OutputBytes reg, uint8_t val) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        regs_[reg] = val;
-    }
+//     void set(OutputBytes reg, uint8_t val) {
+//         std::lock_guard<std::mutex> lock(mtx_);
+//         regs_[reg] = val;
+//     }
 
-    uint8_t regs_[NUM_OF_OUTPUT_BYTES];
+//     uint8_t regs_[NUM_OF_OUTPUT_BYTES];
 
-   private:
-    mutable std::mutex mtx_;
-};
-struct InputRegisters {
-    // TODO add if for checking the reg range
-    uint8_t get(InputBytes reg) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        return regs_[reg];
-    }
+//    private:
+//     mutable std::mutex mtx_;
+// };
+// struct InputRegisters {
+//     // TODO add if for checking the reg range
+//     uint8_t get(InputBytes reg) {
+//         std::lock_guard<std::mutex> lock(mtx_);
+//         return regs_[reg];
+//     }
 
-    void set(InputBytes reg, uint8_t val) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        regs_[reg] = val;
-    }
+//     void set(InputBytes reg, uint8_t val) {
+//         std::lock_guard<std::mutex> lock(mtx_);
+//         regs_[reg] = val;
+//     }
 
-    uint8_t regs_[NUM_OF_INPUT_BYTES];
+//     uint8_t regs_[NUM_OF_INPUT_BYTES];
 
-   private:
-    mutable std::mutex mtx_;
-};
+//    private:
+//     mutable std::mutex mtx_;
+// };
 
 /**
  * @brief This class contains low level gripper commands and status

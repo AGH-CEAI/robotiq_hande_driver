@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "communication.hpp"
+#include "robotiq_hande_driver/communication.hpp"
 
 namespace robotiq_hande_driver {
 

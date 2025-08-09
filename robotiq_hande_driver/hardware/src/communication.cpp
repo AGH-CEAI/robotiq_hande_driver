@@ -13,8 +13,6 @@ Communication::Communication()
       stop_bit_{},
       slave_id_{},
       mb_{nullptr},
-      input_bytes_modbus_{},
-      output_bytes_modbus_{},
       input_bytes_{},  // TODO setup proper initial values
       output_bytes_{},
       bg_comm_enabled_{false} {}

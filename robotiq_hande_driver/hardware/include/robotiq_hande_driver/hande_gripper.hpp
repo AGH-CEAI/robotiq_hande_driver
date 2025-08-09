@@ -12,6 +12,7 @@ static constexpr auto GRIPPER_CURRENT_SCALE = 0.01;
 static constexpr auto MAX_SPEED = 255;
 static constexpr auto MAX_FORCE = 255;
 
+static constexpr auto EPSILON = 1e-6f;
 /**
  * @brief This class contains high-level gripper commands and status.
  */

@@ -1,5 +1,6 @@
-#include "robotiq_hande_driver/application.hpp"
+#include "robotiq_hande_driver/hande_gripper.hpp"
 
+#include <cmath>
 #include <cstdio>
 
 namespace robotiq_hande_driver {
@@ -23,7 +24,7 @@ void HandeGripper::initialize(
     char parity,
     int data_bits,
     int stop_bit,
-    protocol_logic_ int slave_id) {
+    int slave_id) {
     gripper_position_min_ = gripper_position_min;
     gripper_position_max_ = gripper_position_max;
     gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;

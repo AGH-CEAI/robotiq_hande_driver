@@ -183,7 +183,7 @@ uint ProtocolLogic::bit_set_to(uint value, uint n, bool x) const {
 
 void ProtocolLogic::write_action_bit(uint8_t position_bit, bool value) {
     auto idx = static_cast<uint>(OutputBytes::ACTION_REQUEST);
-    auto reg = output_bytes_[idx].load(std::memory_order_relaxed);
+    auto reg = output_bytes_[idx];
     auto result = bit_set_to(reg, position_bit, value);
     output_bytes_[idx] = result;
 }

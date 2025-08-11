@@ -87,10 +87,8 @@ class ProtocolLogic {
      *
      * @param none
      * @return int Connection status code.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    int configure();
+    void configure();
 
     /**
      * @brief Deinitializes protocol layer.

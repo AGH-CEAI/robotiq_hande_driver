@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <chrono>
+#include <exception>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -12,9 +13,6 @@
 #include <modbus/modbus.h>
 
 namespace robotiq_hande_driver {
-
-static constexpr auto DEBUG_MODBUS = false;
-static constexpr auto FAILURE_MODBUS = -1;
 
 static constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
 static constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
@@ -45,6 +43,19 @@ static constexpr auto NUM_OF_INPUT_BYTES = static_cast<size_t>(OutputBytes::BYTE
 static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 using InputBuffer = std::array<uint8_t, NUM_OF_INPUT_BYTES>;
 
+// Define a custom exception by inheriting from std::exception
+class CommunicationError : public std::exception {
+   private:
+    std::string message_;
+
+   public:
+    CommunicationError(const std::string& msg) : message_(msg) {}
+
+    const char* what() const noexcept override {
+        return message_.c_str();
+    }
+};
+
 /**
  * @brief Struct to hold all Modbus Communication class config
  * @param tty_port Modbus virtual port.
@@ -69,6 +80,9 @@ struct CommunicationConfig {
  * @brief This class contains low level gripper commands and status
  */
 class Communication {
+    static constexpr auto DEBUG_MODBUS = false;
+    static constexpr auto FAILURE_MODBUS = -1;
+
    public:
     Communication();
 
@@ -96,10 +110,8 @@ class Communication {
      *
      * @param none
      * @return int Connection status code.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
-    int configure();
+    void configure();
 
     /**
      * @brief Deinitializes communication layer.
@@ -116,7 +128,7 @@ class Communication {
      * @return connection status code.
      * @note The status should be checked to verify successful execution.
      */
-    int connect();
+    void connect();
 
     /**
      * @brief Disconnects from the gripper using Modbus RTU and a virtual socket.

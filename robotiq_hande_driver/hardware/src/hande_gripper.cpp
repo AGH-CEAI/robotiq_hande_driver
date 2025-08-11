@@ -24,8 +24,8 @@ void HandeGripper::initialize(
     protocol_logic_.initialize(cfg);
 }
 
-int HandeGripper::configure() {
-    return protocol_logic_.configure();
+void HandeGripper::configure() {
+    protocol_logic_.configure();
 }
 
 void HandeGripper::cleanup() {

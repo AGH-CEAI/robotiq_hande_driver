@@ -41,7 +41,7 @@ void Communication::read_write_registers() {
     }
 }
 
-int Communication::configure() {
+void Communication::configure() {
     if(mb_ == nullptr) {
         mb_ = modbus_new_rtu(
             cfg_.tty_port.c_str(), cfg_.baudrate, cfg_.parity, cfg_.data_bits, cfg_.stop_bit);
@@ -49,18 +49,12 @@ int Communication::configure() {
         modbus_set_debug(mb_, DEBUG_MODBUS);
     }
 
-    auto result = connect();
-    if(result == FAILURE_MODBUS) {
-        std::cout << "[WARNING] [robotiq_hande_driver] Failed to establish Modbus connection.\n";
-        return FAILURE_MODBUS;
-    }
+    connect();
 
     if(!th_comm_enabled_) {
         th_comm_enabled_.store(true, std::memory_order_relaxed);
         th_comm_.emplace(&Communication::read_write_registers, this);
     }
-
-    return result;
 }
 
 void Communication::cleanup() {
@@ -75,9 +69,10 @@ void Communication::cleanup() {
     mb_ = nullptr;
 }
 
-int Communication::connect() {
+void Communication::connect() {
     auto result = modbus_connect(mb_);
-    return result;
+    if(result == FAILURE_MODBUS)
+        throw CommunicationError("[robotiq_hande_driver] Failed to establish Modbus connection.");
 }
 
 void Communication::disconnect() {

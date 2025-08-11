@@ -19,7 +19,7 @@ void ProtocolLogic::initialize(const CommunicationConfig& cfg) {
     communication_.initialize(cfg);
 }
 
-int ProtocolLogic::configure() {
+void ProtocolLogic::configure() {
     activation_status_ = ActivationStatus::GRIPPER_RESET;
     action_status_ = ActionStatus::STOPPED;
     gripper_status_ = GripperStatus::NOT_USED;
@@ -28,7 +28,8 @@ int ProtocolLogic::configure() {
     position_request_echo_ = 0;
     position_ = 0;
     current_ = 0;
-    return communication_.configure();
+
+    communication_.configure();
 }
 
 void ProtocolLogic::cleanup() {

@@ -1,7 +1,9 @@
 #include "robotiq_hande_driver/hande_gripper.hpp"
 
+#include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <thread>
 
 namespace robotiq_hande_driver {
 
@@ -46,6 +48,8 @@ void HandeGripper::auto_release() {
 
 void HandeGripper::activate() {
     protocol_logic_.activate();
+    // TODO set it by an experiment
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }
 
 void HandeGripper::deactivate() {

@@ -34,6 +34,7 @@ class TestHWInterface : public ::testing::Test {
                     <param name="data_bits">8</param>
                     <param name="stop_bit">1</param>
                     <param name="slave_id">9</param>
+                    <param name="frequency_hz">10</param>
                 </hardware>
                 <joint name="joint1">
                     <command_interface name="position"/>

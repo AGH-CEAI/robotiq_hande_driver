@@ -43,7 +43,6 @@ static constexpr auto NUM_OF_INPUT_BYTES = static_cast<size_t>(OutputBytes::BYTE
 static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 using InputBuffer = std::array<uint8_t, NUM_OF_INPUT_BYTES>;
 
-// Define a custom exception by inheriting from std::exception
 class CommunicationError : public std::exception {
    private:
     std::string message_;
@@ -57,14 +56,14 @@ class CommunicationError : public std::exception {
 };
 
 /**
- * @brief Struct to hold all Modbus Communication class config
+ * @brief Struct to hold all modbus communication class config
  * @param tty_port Modbus virtual port.
  * @param baudrate Modbus serial baudrate.
  * @param parity Modbus serial parity.
  * @param data_bits Modbus serial data bits.
  * @param stop_bit Modbus serial stopbit.
  * @param slave_id Modbus slave id.
- * @param th_sleep_rate The Modbus communication sleep rate.
+ * @param th_sleep_rate Sleep rate for modbus communication.
  */
 struct CommunicationConfig {
     std::string tty_port;
@@ -77,7 +76,7 @@ struct CommunicationConfig {
 };
 
 /**
- * @brief This class contains low level gripper commands and status
+ * @brief This class wrappers the low level serial modubus communication with the gripper
  */
 class Communication {
     static constexpr auto DEBUG_MODBUS = false;
@@ -92,56 +91,39 @@ class Communication {
      * @brief Initializes driver parameters.
      *
      * @param cfg Communication config
-     * @return None.
      */
     void initialize(const CommunicationConfig& cfg);
 
     /**
      * @brief Reads and writes input/output registers at once.
      *
-     * @param none
-     * @return None.
      * @note Used in external thread.
      */
     void read_write_registers();
 
     /**
      * @brief Initializes communication layer.
-     *
-     * @param none
-     * @return int Connection status code.
      */
     void configure();
 
     /**
      * @brief Deinitializes communication layer.
-     *
-     * @param none
-     * @return None.
      */
     void cleanup();
 
     /**
      * @brief Connects to the gripper using Modbus RTU and a virtual socket.
-     *
-     * @param none
-     * @return connection status code.
-     * @note The status should be checked to verify successful execution.
      */
     void connect();
 
     /**
      * @brief Disconnects from the gripper using Modbus RTU and a virtual socket.
-     *
-     * @param none
-     * @return None.
      */
     void disconnect();
 
     /**
      * @brief Retrieves all of the input bytes values.
      *
-     * @param none
      * @return Copy of the input bytes.
      */
     InputBuffer get_input_bytes() const;
@@ -150,7 +132,6 @@ class Communication {
      * @brief Sets all of the output bytes values.
      *
      * @param vals The values to be set.
-     * @return none
      */
     void set_output_bytes(const OutputBuffer& vals);
 

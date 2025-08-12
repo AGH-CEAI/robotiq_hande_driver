@@ -66,7 +66,7 @@ static constexpr auto GRIPPER_POSITION_OPENED_THRESHOLD = 230;
 static constexpr auto GRIPPER_POSITION_CLOSED_THRESHOLD = 13;
 
 /**
- * @brief This class contains protocol oriented functions and definitions.
+ * @brief Contains Robotiq's protocol oriented functions and definitions.
  */
 class ProtocolLogic {
    public:
@@ -78,65 +78,41 @@ class ProtocolLogic {
      * @brief Initializes driver parameters.
      *
      * @param cfg Modbus communication config.
-     * @return None.
      */
     void initialize(const CommunicationConfig& cfg);
 
     /**
      * @brief Configures protocol layer.
-     *
-     * @param none
-     * @return int Connection status code.
      */
     void configure();
 
     /**
      * @brief Deinitializes protocol layer.
-     *
-     * @param none
-     * @return None.
      */
     void cleanup();
 
     /**
      *  @brief Resets the gripper.
-     *
-     * @param none
-     * @return None.
      */
     void reset();
 
     /**
      *  @brief Sets the gripper.
-     *
-     * @param none
-     * @return None.
      */
     void set();
 
     /**
      * @brief Performs an emergency auto-release. The fingers slowly open, requiring reactivation.
-     *
-     * @param none
-     * @return None.
      */
     void auto_release();
 
     /**
      * @brief Activates the gripper, making it ready for use.
-     *
-     * @param none
-     * @return None.
      */
     void activate();
 
     /**
      * @brief Deactivates the gripper.
-     *
-     * @param none
-     * @return None.
-     * @note The status should be checked to verify successful execution. An exception is thrown if
-     * communication issues occur.
      */
     void deactivate();
 
@@ -146,14 +122,11 @@ class ProtocolLogic {
      * @param position The requested position.
      * @param velocity The requested velocity.
      * @param force The requested force.
-     * @return None.
      */
     void go_to(uint8_t position, uint8_t velocity, uint8_t force);
 
     /**
      * @brief Stops the gripper.
-     *
-     * @return None.
      */
     void stop();
 
@@ -227,46 +200,47 @@ class ProtocolLogic {
      */
     uint8_t get_current() const;
 
-    // TODO docs
+    /**
+     * @brief Copies the the communication input registers into the working memory.
+     */
     void read_input_bytes();
+
+    /**
+     * @brief Copies the modified output bytes to the communication output registers.
+     */
     void write_output_bytes();
 
    private:
+    // Methods for accessing and manipulating auxiary arrays
     uint bit_set_to(uint value, uint n, bool x) const;
     void write_action_bit(uint8_t position_bit, bool value);
 
     uint8_t get_input_byte(InputBytes index) const;
     void set_output_byte(OutputBytes index, uint8_t value);
 
-    /* Gripper */
+    // Auxiary array for storing read values
+    InputBuffer input_bytes_;
+
+    // Auxiary array for preparing all registers before sending them
+    OutputBuffer output_bytes_;
+
+    // Gripper
     uint8_t status_;
     ActivationStatus activation_status_;
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
 
-    /* Auxiary array for storing read value*/
-    InputBuffer input_bytes_;
-
-    /* Auxiary array for preparing all registers before sending them*/
-    OutputBuffer output_bytes_;
-
-    /* Fault */
+    // Fault
     uint8_t fault_status_;
 
-    /**
-     * @brief Stores the requested position in normalized 0–255 value.
-     */
+    // Stores the requested position in normalized 0–255 value.
     uint8_t position_request_echo_;
 
-    /**
-     * @brief Stores the actual position in normalized 0–255 value.
-     */
+    // Stores the actual position in normalized 0–255 value.
     uint8_t position_;
 
-    /**
-     * @brief Stores the electric current drawn by the gripper in 10 mA.
-     */
+    // Stores the electric current drawn by the gripper in 10 mA.
     uint8_t current_;
 
     Communication communication_;

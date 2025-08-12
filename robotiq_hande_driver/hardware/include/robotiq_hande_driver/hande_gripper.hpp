@@ -150,22 +150,22 @@ class HandeGripper {
     void write();
 
    private:
-    // Handles protocol logic for mid-level abstraction.
-    ProtocolLogic protocol_logic_;
+    // Handles protocol logic for mid-level abstraction
+    ProtocolLogic prot_;
 
-    // Stores the gripper status bits.
+    // Stores the gripper status bits
     Status status_;
 
-    // Stores the fault status bits.
+    // Stores the fault status bits
     FaultStatus fault_status_;
 
-    // Stores the requested position of the gripper in meters.
+    // Stores the requested position of the gripper in meters
     double requested_position_;
 
-    // Stores the actual position of the gripper in meters.
+    // Stores the actual position of the gripper in meters
     double position_;
 
-    // Stores the electric current drawn by the gripper in amperes.
+    // Stores the electric current drawn by the gripper in amperes
     double current_;
 
     double gripper_position_min_;

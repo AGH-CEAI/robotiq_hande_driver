@@ -8,7 +8,7 @@
 namespace robotiq_hande_driver {
 
 HandeGripper::HandeGripper()
-    : protocol_logic_{},
+    : prot_{},
       status_{},
       fault_status_{},
       requested_position_{},
@@ -23,37 +23,37 @@ void HandeGripper::initialize(
     gripper_position_min_ = gripper_position_min;
     gripper_position_max_ = gripper_position_max;
     gripper_postion_step_ = (gripper_position_max_ - gripper_position_min_) / 255.0;
-    protocol_logic_.initialize(cfg);
+    prot_.initialize(cfg);
 }
 
 void HandeGripper::configure() {
-    protocol_logic_.configure();
+    prot_.configure();
 }
 
 void HandeGripper::cleanup() {
-    protocol_logic_.cleanup();
+    prot_.cleanup();
 }
 
 void HandeGripper::stop() {
-    protocol_logic_.stop();
+    prot_.stop();
 }
 
 void HandeGripper::reset() {
-    protocol_logic_.reset();
+    prot_.reset();
 }
 
 void HandeGripper::auto_release() {
-    protocol_logic_.auto_release();
+    prot_.auto_release();
 }
 
 void HandeGripper::activate() {
-    protocol_logic_.activate();
+    prot_.activate();
     // TODO set it by an experiment
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }
 
 void HandeGripper::deactivate() {
-    protocol_logic_.reset();
+    prot_.reset();
 }
 
 void HandeGripper::shutdown() {
@@ -93,7 +93,7 @@ void HandeGripper::set_position(double position, double force) {
     if(!std::isnan(prev_force) && std::fabs(force - prev_force) < EPSILON) return;
 
     uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
-    protocol_logic_.go_to(
+    prot_.go_to(
         (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),
         MAX_SPEED,
         scaled_force);
@@ -104,25 +104,25 @@ double HandeGripper::get_current() const {
 }
 
 void HandeGripper::read() {
-    protocol_logic_.read_input_bytes();
+    prot_.read_input_bytes();
 
-    status_.is_reset = protocol_logic_.is_reset();
-    status_.is_ready = protocol_logic_.is_ready();
-    status_.is_moving = protocol_logic_.is_moving();
-    status_.is_stopped = protocol_logic_.is_stopped();
-    status_.is_opened = protocol_logic_.is_opened();
-    status_.is_closed = protocol_logic_.is_closed();
-    status_.object_detected = protocol_logic_.obj_detected();
+    status_.is_reset = prot_.is_reset();
+    status_.is_ready = prot_.is_ready();
+    status_.is_moving = prot_.is_moving();
+    status_.is_stopped = prot_.is_stopped();
+    status_.is_opened = prot_.is_opened();
+    status_.is_closed = prot_.is_closed();
+    status_.object_detected = prot_.obj_detected();
 
     // fault_status
     requested_position_ = gripper_position_max_
-                          - (double)protocol_logic_.get_reg_pos() * gripper_postion_step_;
-    position_ = gripper_position_max_ - (double)protocol_logic_.get_pos() * gripper_postion_step_;
-    current_ = (double)protocol_logic_.get_current() * GRIPPER_CURRENT_SCALE;
+                          - (double)prot_.get_raw_requested_pos() * gripper_postion_step_;
+    position_ = gripper_position_max_ - (double)prot_.get_raw_pos() * gripper_postion_step_;
+    current_ = (double)prot_.get_raw_current() * GRIPPER_CURRENT_SCALE;
 }
 
 void HandeGripper::write() {
-    protocol_logic_.write_output_bytes();
+    prot_.write_output_bytes();
 }
 
 }  // namespace robotiq_hande_driver

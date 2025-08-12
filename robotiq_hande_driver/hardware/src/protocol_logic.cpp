@@ -5,15 +5,15 @@
 namespace robotiq_hande_driver {
 
 ProtocolLogic::ProtocolLogic()
-    : status_{},
+    : raw_status_{},
       activation_status_{ActivationStatus::GRIPPER_RESET},
       action_status_{ActionStatus::STOPPED},
       gripper_status_{GripperStatus::NOT_USED},
       object_detection_status_{ObjectDetectionStatus::REQ_POS_NO_OBJECT},
-      fault_status_{},
-      position_request_echo_{},
-      position_{},
-      current_{} {}
+      raw_fault_status_{},
+      raw_position_request_{},
+      raw_position_{},
+      raw_current_{} {}
 
 void ProtocolLogic::initialize(const CommunicationConfig& cfg) {
     communication_.initialize(cfg);
@@ -24,10 +24,10 @@ void ProtocolLogic::configure() {
     action_status_ = ActionStatus::STOPPED;
     gripper_status_ = GripperStatus::NOT_USED;
     object_detection_status_ = ObjectDetectionStatus::REQ_POS_NO_OBJECT;
-    fault_status_ = 0;
-    position_request_echo_ = 0;
-    position_ = 0;
-    current_ = 0;
+    raw_fault_status_ = 0;
+    raw_position_request_ = 0;
+    raw_position_ = 0;
+    raw_current_ = 0;
 
     communication_.configure();
 }
@@ -111,11 +111,11 @@ bool ProtocolLogic::is_stopped() const {
 }
 
 bool ProtocolLogic::is_closed() const {
-    return position_ >= GRIPPER_POSITION_OPENED_THRESHOLD;
+    return raw_position_ >= GRIPPER_POSITION_OPENED_THRESHOLD;
 }
 
 bool ProtocolLogic::is_opened() const {
-    return position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
+    return raw_position_ <= GRIPPER_POSITION_CLOSED_THRESHOLD;
 }
 
 bool ProtocolLogic::obj_detected() const {
@@ -124,45 +124,46 @@ bool ProtocolLogic::obj_detected() const {
         || object_detection_status_ == ObjectDetectionStatus::STOPPED_CLOSING_DETECTED);
 }
 
-uint8_t ProtocolLogic::get_reg_pos() const {
-    return position_request_echo_;
+uint8_t ProtocolLogic::get_raw_requested_pos() const {
+    return raw_position_request_;
 }
 
-uint8_t ProtocolLogic::get_pos() const {
-    return position_;
+uint8_t ProtocolLogic::get_raw_pos() const {
+    return raw_position_;
 }
 
-uint8_t ProtocolLogic::get_current() const {
-    return current_;
+uint8_t ProtocolLogic::get_raw_current() const {
+    return raw_current_;
 }
 
 void ProtocolLogic::read_input_bytes() {
     input_bytes_ = communication_.get_input_bytes();
 
-    status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
+    raw_status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
 
     activation_status_ =
-        (ActivationStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTIVATION_STATUS))
+        (ActivationStatus)((raw_status_ >> static_cast<uint>(StatusPositionBit::ACTIVATION_STATUS))
                            & ACTIVATION_STATUS_BITS);
 
-    action_status_ = (ActionStatus)((status_ >> static_cast<uint>(StatusPositionBit::ACTION_STATUS))
-                                    & ACTION_STATUS_BITS);
+    action_status_ =
+        (ActionStatus)((raw_status_ >> static_cast<uint>(StatusPositionBit::ACTION_STATUS))
+                       & ACTION_STATUS_BITS);
 
     gripper_status_ =
-        (GripperStatus)((status_ >> static_cast<uint>(StatusPositionBit::GRIPPER_STATUS))
+        (GripperStatus)((raw_status_ >> static_cast<uint>(StatusPositionBit::GRIPPER_STATUS))
                         & GRIPPER_STATUS_BITS);
 
     object_detection_status_ =
-        (ObjectDetectionStatus)((status_
+        (ObjectDetectionStatus)((raw_status_
                                  >> static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS))
                                 & OBJECT_DETECTION_STATUS_BITS);
 
     // TODO(issue#9) Read Hand-E fault status flags
-    fault_status_ = get_input_byte(InputBytes::FAULT_STATUS);
+    raw_fault_status_ = get_input_byte(InputBytes::FAULT_STATUS);
 
-    position_request_echo_ = get_input_byte(InputBytes::POSITION_REQUEST_ECHO);
-    position_ = get_input_byte(InputBytes::POSITION);
-    current_ = get_input_byte(InputBytes::CURRENT);
+    raw_position_request_ = get_input_byte(InputBytes::POSITION_REQUEST_ECHO);
+    raw_position_ = get_input_byte(InputBytes::POSITION);
+    raw_current_ = get_input_byte(InputBytes::CURRENT);
 }
 
 void ProtocolLogic::write_output_bytes() {

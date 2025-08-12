@@ -182,23 +182,23 @@ class ProtocolLogic {
     /**
      * @brief Retrieves the requested position of the gripper.
      *
-     * @return Requested gripper position.
+     * @return Requested gripper position in raw value.
      */
-    uint8_t get_reg_pos() const;
+    uint8_t get_raw_requested_pos() const;
 
     /**
      * @brief Retrieves the actual position of the gripper.
      *
-     * @return The actual gripper position.
+     * @return The actual gripper position in raw value.
      */
-    uint8_t get_pos() const;
+    uint8_t get_raw_pos() const;
 
     /**
      * @brief Retrieves the electric current drawn by the gripper.
      *
-     * @return The electric current.
+     * @return The raw value of the electric current
      */
-    uint8_t get_current() const;
+    uint8_t get_raw_current() const;
 
     /**
      * @brief Copies the the communication input registers into the working memory.
@@ -218,6 +218,9 @@ class ProtocolLogic {
     uint8_t get_input_byte(InputBytes index) const;
     void set_output_byte(OutputBytes index, uint8_t value);
 
+    // Handles low-level communication in a separate thread
+    Communication communication_;
+
     // Auxiary array for storing read values
     InputBuffer input_bytes_;
 
@@ -225,25 +228,23 @@ class ProtocolLogic {
     OutputBuffer output_bytes_;
 
     // Gripper
-    uint8_t status_;
+    uint8_t raw_status_;
     ActivationStatus activation_status_;
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
 
     // Fault
-    uint8_t fault_status_;
+    uint8_t raw_fault_status_;
 
-    // Stores the requested position in normalized 0–255 value.
-    uint8_t position_request_echo_;
+    // Stores the requested position in normalized 0–255 value
+    uint8_t raw_position_request_;
 
-    // Stores the actual position in normalized 0–255 value.
-    uint8_t position_;
+    // Stores the actual position in normalized 0–255 value
+    uint8_t raw_position_;
 
-    // Stores the electric current drawn by the gripper in 10 mA.
-    uint8_t current_;
-
-    Communication communication_;
+    // Stores the electric current drawn by the gripper in 10 mA value
+    uint8_t raw_current_;
 };
 }  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_

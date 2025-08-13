@@ -135,7 +135,7 @@ uint8_t ProtocolLogic::get_raw_current() const {
 }
 
 void ProtocolLogic::read_input_bytes() {
-    input_bytes_ = communication_.read();
+    communication_.read(input_bytes_);
 
     raw_status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
 

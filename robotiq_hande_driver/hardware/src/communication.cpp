@@ -15,10 +15,7 @@ void Communication::initialize(const CommunicationConfig& cfg) {
     cfg_ = cfg;
 }
 
-InputBuffer Communication::read() const {
-    // TODO consider allocation of the buffer just once
-    InputBuffer regs{};
-
+void Communication::read(InputBuffer& regs) const {
     auto result = modbus_read_registers(
         mb_,
         GRIPPER_INPUT_FIRST_REG,
@@ -29,13 +26,14 @@ InputBuffer Communication::read() const {
         throw CommunicationError("Failed to read registers (Modbus failure)");
     if(result != INPUT_REGISTER_WORD_LENGTH)
         throw CommunicationError("Failed to read all requested registers");
-
-    return regs;
 }
 
-void Communication::write(const OutputBuffer& regs) const {
+void Communication::write(OutputBuffer& regs) const {
     auto result = modbus_write_registers(
-        mb_, GRIPPER_OUTPUT_FIRST_REG, OUTPUT_REGISTER_WORD_LENGTH, regs.data());
+        mb_,
+        GRIPPER_OUTPUT_FIRST_REG,
+        OUTPUT_REGISTER_WORD_LENGTH,
+        reinterpret_cast<uint16_t*>(regs.data()));
 
     if(result == FAILURE_MODBUS)
         throw CommunicationError("Failed to read registers (Modbus failure)");

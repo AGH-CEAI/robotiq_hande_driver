@@ -90,16 +90,16 @@ class Communication {
     /**
      * @brief Reads all of the input bytes values.
      *
-     * @return Copy of the input bytes.
+     * @param regs Place to read the input bytes.
      */
-    InputBuffer read() const;
+    void read(InputBuffer& regs) const;
 
     /**
      * @brief Writes all of the output bytes values.
      *
      * @param regs The values to be set.
      */
-    void write(const OutputBuffer& regs) const;
+    void write(OutputBuffer& regs) const;
 
     /**
      * @brief Initializes communication layer.

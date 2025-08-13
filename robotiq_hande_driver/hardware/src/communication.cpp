@@ -5,12 +5,7 @@
 
 namespace robotiq_hande_driver {
 
-Communication::Communication()
-    : cfg_{},
-      mb_{nullptr},
-      input_bytes_{},  // TODO setup proper initial values
-      output_bytes_{},
-      th_comm_enabled_{false} {}
+Communication::Communication() : cfg_{}, mb_{nullptr} {}
 
 Communication::~Communication() {
     cleanup();
@@ -20,25 +15,32 @@ void Communication::initialize(const CommunicationConfig& cfg) {
     cfg_ = cfg;
 }
 
-void Communication::read_write_registers() {
-    int result = 0;
-    while(th_comm_enabled_) {
-        {
-            std::lock_guard<std::mutex> lock(mtx_);
-            result = modbus_write_and_read_registers(
-                mb_,
-                GRIPPER_INPUT_FIRST_REG,
-                OUTPUT_REGISTER_WORD_LENGTH,
-                reinterpret_cast<uint16_t*>(output_bytes_.data()),
-                GRIPPER_OUTPUT_FIRST_REG,
-                INPUT_REGISTER_WORD_LENGTH,
-                reinterpret_cast<uint16_t*>(input_bytes_.data()));
-        }
-        if(result == FAILURE_MODBUS)
-            std::cout << "[WARNING] Failed to read & write Hand-e registers via modbus\n";
+InputBuffer Communication::read() const {
+    // TODO consider allocation of the buffer just once
+    InputBuffer regs{};
 
-        std::this_thread::sleep_for(cfg_.th_sleep_rate);
-    }
+    auto result = modbus_read_registers(
+        mb_,
+        GRIPPER_INPUT_FIRST_REG,
+        INPUT_REGISTER_WORD_LENGTH,
+        reinterpret_cast<uint16_t*>(regs.data()));
+
+    if(result == FAILURE_MODBUS)
+        throw CommunicationError("Failed to read registers (Modbus failure)");
+    if(result != INPUT_REGISTER_WORD_LENGTH)
+        throw CommunicationError("Failed to read all requested registers");
+
+    return regs;
+}
+
+void Communication::write(const OutputBuffer& regs) const {
+    auto result = modbus_write_registers(
+        mb_, GRIPPER_OUTPUT_FIRST_REG, OUTPUT_REGISTER_WORD_LENGTH, regs.data());
+
+    if(result == FAILURE_MODBUS)
+        throw CommunicationError("Failed to read registers (Modbus failure)");
+    if(result != OUTPUT_REGISTER_WORD_LENGTH)
+        throw CommunicationError("Failed to read all requested registers");
 }
 
 void Communication::configure() {
@@ -50,20 +52,11 @@ void Communication::configure() {
     }
 
     connect();
-
-    if(!th_comm_enabled_) {
-        th_comm_enabled_.store(true, std::memory_order_relaxed);
-        th_comm_.emplace(&Communication::read_write_registers, this);
-    }
 }
 
 void Communication::cleanup() {
-    th_comm_enabled_.store(false, std::memory_order_relaxed);
-    if(th_comm_ && th_comm_->joinable()) {
-        th_comm_->join();
-    }
-
     if(mb_ == nullptr) return;
+
     disconnect();
     modbus_free(mb_);
     mb_ = nullptr;
@@ -71,22 +64,11 @@ void Communication::cleanup() {
 
 void Communication::connect() {
     auto result = modbus_connect(mb_);
-    if(result == FAILURE_MODBUS)
-        throw CommunicationError("[robotiq_hande_driver] Failed to establish Modbus connection.");
+    if(result == FAILURE_MODBUS) throw CommunicationError("Failed to establish Modbus connection");
 }
 
 void Communication::disconnect() {
     modbus_close(mb_);
-}
-
-InputBuffer Communication::get_input_bytes() const {
-    std::lock_guard<std::mutex> lock(mtx_);
-    return input_bytes_;
-}
-
-void Communication::set_output_bytes(const OutputBuffer& vals) {
-    std::lock_guard<std::mutex> lock(mtx_);
-    output_bytes_ = vals;
 }
 
 }  // namespace robotiq_hande_driver

@@ -135,7 +135,7 @@ uint8_t ProtocolLogic::get_raw_current() const {
 }
 
 void ProtocolLogic::read_input_bytes() {
-    input_bytes_ = communication_.get_input_bytes();
+    input_bytes_ = communication_.read();
 
     raw_status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
 
@@ -165,7 +165,7 @@ void ProtocolLogic::read_input_bytes() {
 }
 
 void ProtocolLogic::write_output_bytes() {
-    communication_.set_output_bytes(output_bytes_);
+    communication_.write(output_bytes_);
 }
 
 uint ProtocolLogic::bit_set_to(uint value, uint n, bool x) const {

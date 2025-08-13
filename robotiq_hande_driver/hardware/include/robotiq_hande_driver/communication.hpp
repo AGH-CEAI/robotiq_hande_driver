@@ -2,20 +2,15 @@
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 
 #include <array>
-#include <atomic>
-#include <chrono>
 #include <exception>
-#include <mutex>
-#include <optional>
 #include <string>
-#include <thread>
 
 #include <modbus/modbus.h>
 
 namespace robotiq_hande_driver {
 
-static constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x07D0;
-static constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x03E8;
+static constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x03E8;
+static constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x07D0;
 
 enum class OutputBytes : uint8_t {
     RESERVED_1 = 0u,
@@ -63,7 +58,6 @@ class CommunicationError : public std::exception {
  * @param data_bits Modbus serial data bits.
  * @param stop_bit Modbus serial stopbit.
  * @param slave_id Modbus slave id.
- * @param th_sleep_rate Sleep rate for modbus communication.
  */
 struct CommunicationConfig {
     std::string tty_port;
@@ -72,7 +66,6 @@ struct CommunicationConfig {
     int data_bits;
     int stop_bit;
     int slave_id;
-    std::chrono::milliseconds th_sleep_rate;
 };
 
 /**
@@ -95,11 +88,18 @@ class Communication {
     void initialize(const CommunicationConfig& cfg);
 
     /**
-     * @brief Reads and writes input/output registers at once.
+     * @brief Reads all of the input bytes values.
      *
-     * @note Used in external thread.
+     * @return Copy of the input bytes.
      */
-    void read_write_registers();
+    InputBuffer read() const;
+
+    /**
+     * @brief Writes all of the output bytes values.
+     *
+     * @param regs The values to be set.
+     */
+    void write(const OutputBuffer& regs) const;
 
     /**
      * @brief Initializes communication layer.
@@ -121,30 +121,9 @@ class Communication {
      */
     void disconnect();
 
-    /**
-     * @brief Retrieves all of the input bytes values.
-     *
-     * @return Copy of the input bytes.
-     */
-    InputBuffer get_input_bytes() const;
-
-    /**
-     * @brief Sets all of the output bytes values.
-     *
-     * @param vals The values to be set.
-     */
-    void set_output_bytes(const OutputBuffer& vals);
-
    private:
     CommunicationConfig cfg_;
     modbus_t* mb_;
-
-    InputBuffer input_bytes_;
-    OutputBuffer output_bytes_;
-
-    mutable std::mutex mtx_;
-    std::atomic<bool> th_comm_enabled_;
-    std::optional<std::thread> th_comm_;
 };
 }  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_

@@ -27,6 +27,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
                            "RobotiqHandeHardwareInterface"));
     log_parsed_urdf_config();
 
+    th_comm_enabled_.store(false);
     state_velocity_ = 0.0;
     cmd_force_ = 1.0;
     gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
@@ -55,7 +56,6 @@ void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
 }
 
 void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
-    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
     auto cfg = CommunicationConfig{
         info_.hardware_parameters["tty_port"],
         std::stoi(info_.hardware_parameters["baudrate"]),
@@ -63,8 +63,10 @@ void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
         std::stoi(info_.hardware_parameters["data_bits"]),
         std::stoi(info_.hardware_parameters["stop_bit"]),
         std::stoi(info_.hardware_parameters["slave_id"]),
-        std::chrono::milliseconds(1000 / frequency_hz),  // th_sleep_rate
     };
+    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
+    th_sleep_rate_ = std::chrono::milliseconds(1000 / frequency_hz);
+
     gripper_driver_.initialize(gripper_position_min_, gripper_position_max_, cfg);
 
     RCLCPP_INFO(
@@ -95,7 +97,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
             gripper_driver_.configure();
             RCLCPP_INFO(get_logger(), "%sConnected%s", color::BGREEN, color::RESET);
             return HWI::CallbackReturn::SUCCESS;
-        } catch(const CommunicationError& e) {
+        } catch(const std::exception& e) {
             // TODO check if RCLCPP_WARN_STREAM exists
             RCLCPP_WARN(get_logger(), "%s%s%s", color::BYELLOW, e.what(), color::RESET);
         }
@@ -146,43 +148,70 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     const rlccp_lc::State& /*previous_state*/) {
-    gripper_driver_.read();
+    try {
+        gripper_driver_.deactivate();
+        gripper_driver_.activate();
 
-    if(gripper_driver_.get_status().is_ready) {
-        RCLCPP_INFO(get_logger(), "%sHand-E already activated%s", color::BGREEN, color::RESET);
-        return HWI::CallbackReturn::SUCCESS;
+        if(!th_comm_enabled_) {
+            th_comm_enabled_.store(true, std::memory_order_relaxed);
+            th_comm_.emplace(&RobotiqHandeHardwareInterface::gripper_communication, this);
+        }
+    } catch(const std::exception& e) {
+        RCLCPP_ERROR(
+            get_logger(),
+            "%sException during Hand-E activation: %s%s",
+            color::BRED,
+            e.what(),
+            color::RESET);
+        return HWI::CallbackReturn::ERROR;
     }
 
-    RCLCPP_INFO(get_logger(), "%sHand-E activation in progress%s", color::BCYAN, color::RESET);
-    gripper_driver_.activate();
+    RCLCPP_INFO(get_logger(), "%sHand-E successfully activated%s", color::BGREEN, color::RESET);
+    return HWI::CallbackReturn::SUCCESS;
+}
 
-    for(int iter = 0; iter < ACTIVATION_MAX_ITER; iter++) {
-        if(gripper_driver_.get_status().is_ready) {
-            RCLCPP_INFO(
-                get_logger(), "%sHand-E successfully activated%s", color::BGREEN, color::RESET);
-            return HWI::CallbackReturn::SUCCESS;
+void RobotiqHandeHardwareInterface::gripper_communication() {
+    while(th_comm_enabled_) {
+        try {
+            // Write to gripper driver
+            gripper_driver_.read();
+            read_position_.store(gripper_driver_.get_position());
+
+            // Read from gripper driver
+            gripper_driver_.set_position(write_position_.load(), write_force_.load());
+            gripper_driver_.write();
+
+        } catch(const std::exception& e) {
+            RCLCPP_WARN(
+                get_logger(),
+                "%sException during Hand-E background communication: %s%s",
+                color::BYELLOW,
+                e.what(),
+                color::RESET);
         }
 
-        RCLCPP_DEBUG_SKIPFIRST_THROTTLE(
-            get_logger(),
-            *get_clock(),
-            THROTTLE_1000_MS,
-            "Waiting for activation to be finished, attempt %d of %d",
-            iter,
-            ACTIVATION_MAX_ITER);
-
-        wait_100ms();
-        gripper_driver_.read();
+        std::this_thread::sleep_for(th_sleep_rate_);
     }
-
-    RCLCPP_ERROR(
-        get_logger(), "%sFailed to activate Hand-E (Timeout)%s", color::BRED, color::RESET);
-    return HWI::CallbackReturn::FAILURE;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(
     const rlccp_lc::State& /*previous_state*/) {
-    gripper_driver_.deactivate();
+    th_comm_enabled_.store(false, std::memory_order_relaxed);
+    if(th_comm_ && th_comm_->joinable()) {
+        th_comm_->join();
+    }
+
+    try {
+        gripper_driver_.deactivate();
+    } catch(const std::exception& e) {
+        RCLCPP_ERROR(
+            get_logger(),
+            "%sException during Hand-E deactivation: %s%s",
+            color::BRED,
+            e.what(),
+            color::RESET);
+        return HWI::CallbackReturn::ERROR;
+    }
 
     RCLCPP_INFO(get_logger(), "%sHand-E successfully deactivated%s", color::BCYAN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
@@ -201,22 +230,24 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_error(
     RCLCPP_INFO(
         get_logger(),
         "%sHandled error with FAILURE on purpose - check previous logs%s",
-        color::BYELLOW,
+        color::BRED,
         color::RESET);
     return HWI::CallbackReturn::FAILURE;
 }
 
 HWI::return_type RobotiqHandeHardwareInterface::read(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    gripper_driver_.read();
-    state_position_ = gripper_driver_.get_position();
+    // TODO should we use mutexes?
+    state_position_ = read_position_.load();
+    state_velocity_ = read_velocity_.load();
 
     return hardware_interface::return_type::OK;
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    gripper_driver_.set_position(cmd_position_, cmd_force_);
-    gripper_driver_.write();
+    write_position_.store(cmd_position_);
+    write_force_.store(cmd_force_);
+
     return hardware_interface::return_type::OK;
 }
 

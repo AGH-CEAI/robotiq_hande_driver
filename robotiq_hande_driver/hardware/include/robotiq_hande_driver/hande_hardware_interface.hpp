@@ -1,9 +1,13 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__HANDE_HARDWARE_INTERFACE_HPP_
 #define ROBOTIQ_HANDE_DRIVER__HANDE_HARDWARE_INTERFACE_HPP_
 
+#include <atomic>
+#include <chrono>
 #include <hardware_interface/system_interface.hpp>
+#include <optional>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
+#include <thread>
 
 #include "robotiq_hande_driver/hande_gripper.hpp"
 
@@ -39,18 +43,28 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
    private:
     void log_parsed_urdf_config();
     void initalize_gripper_driver();
+    void gripper_communication();
 
     HandeGripper gripper_driver_;
     std::shared_ptr<rclcpp::Logger> logger_;
     rclcpp::Clock::SharedPtr clock_;
+
+    std::chrono::milliseconds th_sleep_rate_;
+    std::atomic<bool> th_comm_enabled_;
+    std::optional<std::thread> th_comm_;
 
     double gripper_position_min_;
     double gripper_position_max_;
 
     double state_position_;
     double state_velocity_;
+    std::atomic<double> read_position_;
+    std::atomic<double> read_velocity_;
+
     double cmd_position_;
     double cmd_force_;
+    std::atomic<double> write_position_;
+    std::atomic<double> write_force_;
 };
 
 }  // namespace robotiq_hande_driver

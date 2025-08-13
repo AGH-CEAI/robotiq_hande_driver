@@ -36,9 +36,9 @@ void Communication::write(OutputBuffer& regs) const {
         reinterpret_cast<uint16_t*>(regs.data()));
 
     if(result == FAILURE_MODBUS)
-        throw CommunicationError("Failed to read registers (Modbus failure)");
+        throw CommunicationError("Failed to write registers (Modbus failure)");
     if(result != OUTPUT_REGISTER_WORD_LENGTH)
-        throw CommunicationError("Failed to read all requested registers");
+        throw CommunicationError("Failed to write all requested registers");
 }
 
 void Communication::configure() {

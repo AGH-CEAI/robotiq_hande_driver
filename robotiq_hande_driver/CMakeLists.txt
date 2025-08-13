@@ -24,8 +24,12 @@ foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
 endforeach()
 
 add_library(
-  ${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp hardware/src/hande_gripper.cpp
-                         hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
+  ${PROJECT_NAME} SHARED
+  hardware/src/hande_hardware_interface.cpp
+  hardware/src/hande_gripper.cpp
+  hardware/src/communication.cpp
+  hardware/src/protocol_logic.cpp
+  hardware/src/socat_manager.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEPENDS})
 

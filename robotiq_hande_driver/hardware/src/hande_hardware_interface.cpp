@@ -17,6 +17,10 @@ inline void wait_100ms() {
 
 RobotiqHandeHardwareInterface::RobotiqHandeHardwareInterface() {}
 
+RobotiqHandeHardwareInterface::~RobotiqHandeHardwareInterface() {
+    if(socat_ && socat_->is_alive()) socat_->stop();
+}
+
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareInfo& info) {
     if(HWI::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
         return HWI::CallbackReturn::ERROR;
@@ -32,6 +36,19 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     cmd_force_ = 1.0;
     gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
     gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
+
+    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
+    th_sleep_rate_ = std::chrono::milliseconds(1000 / frequency_hz);
+
+    bool manage_virutal_serial = info_.hardware_parameters["virtual_tty"] == "true";
+    if(manage_virutal_serial) {
+        socat_.emplace(SocatManager(
+            info_.hardware_parameters["ip_adress"],
+            std::stoi(info_.hardware_parameters["port"]),
+            info_.hardware_parameters["tty_port"], ));
+        socat_->start();
+    }
+
     initalize_gripper_driver();
 
     cmd_position_ = gripper_position_max_;
@@ -64,9 +81,6 @@ void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
         std::stoi(info_.hardware_parameters["stop_bit"]),
         std::stoi(info_.hardware_parameters["slave_id"]),
     };
-    auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
-    th_sleep_rate_ = std::chrono::milliseconds(1000 / frequency_hz);
-
     gripper_driver_.initialize(gripper_position_min_, gripper_position_max_, cfg);
 
     RCLCPP_INFO(

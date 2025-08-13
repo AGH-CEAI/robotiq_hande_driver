@@ -10,6 +10,7 @@
 #include <thread>
 
 #include "robotiq_hande_driver/hande_gripper.hpp"
+#include "robotiq_hande_driver/socat_manager.hpp"
 
 namespace robotiq_hande_driver {
 
@@ -21,6 +22,8 @@ constexpr int LEFT_FINGER_JOINT_ID = 0;
 class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
    public:
     RobotiqHandeHardwareInterface();
+
+    ~RobotiqHandeHardwareInterface();
 
     HWI::CallbackReturn on_init(const HWI::HardwareInfo& info) override;
     HWI::CallbackReturn on_configure(const rlccp_lc::State& previous_state) override;
@@ -46,6 +49,8 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     void gripper_communication();
 
     HandeGripper gripper_driver_;
+    std::optional<SocatManager> socat_;
+
     std::shared_ptr<rclcpp::Logger> logger_;
     rclcpp::Clock::SharedPtr clock_;
 

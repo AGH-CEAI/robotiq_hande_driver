@@ -13,7 +13,7 @@
 
 namespace robotiq_hande_driver {
 
-static constexpr auto WAIT_FOR_SOCAT = std::chrono::milliseconds(100);
+static constexpr auto WAIT_FOR_SOCAT = std::chrono::milliseconds(1000);
 
 class SocatManager {
    public:

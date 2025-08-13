@@ -79,10 +79,15 @@ void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
     const rlccp_lc::State& /*previous_state*/) {
-    RCLCPP_INFO(get_logger(), "Connecting to ModbusRTU");
+    RCLCPP_INFO(get_logger(), "%sConnecting to ModbusRTU%s", color::BCYAN, color::RESET);
 
     for(int iter = 0; iter < RECONNECT_MAX_ITER; iter++) {
-        RCLCPP_DEBUG(get_logger(), "Reconfiguring Hand-E Gripper attempt: %d", iter);
+        RCLCPP_DEBUG(
+            get_logger(),
+            "%sReconfiguring Hand-E Gripper attempt: %d%s",
+            color::BCYAN,
+            iter,
+            color::RESET);
 
         try {
             gripper_driver_.configure();
@@ -90,7 +95,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
             return HWI::CallbackReturn::SUCCESS;
         } catch(const CommunicationError& e) {
             // TODO check if RCLCPP_WARN_STREAM exists
-            RCLCPP_WARN(get_logger(), "%s%s%s", color::YELLOW, e.what(), color::RESET);
+            RCLCPP_WARN(get_logger(), "%s%s%s", color::BYELLOW, e.what(), color::RESET);
         }
         wait_100ms();
         wait_100ms();
@@ -105,7 +110,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(
     const rlccp_lc::State& /*previous_state*/) {
     gripper_driver_.cleanup();
 
-    RCLCPP_INFO(get_logger(), "Cleaned up Hand-E connection");
+    RCLCPP_INFO(get_logger(), "%sCleaned up Hand-E connection%s", color::BCYAN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
 }
 
@@ -142,16 +147,17 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
     gripper_driver_.read();
 
     if(gripper_driver_.get_status().is_ready) {
-        RCLCPP_INFO(get_logger(), "Hand-E already activated");
+        RCLCPP_INFO(get_logger(), "%sHand-E already activated%s", color::BGREEN, color::RESET);
         return HWI::CallbackReturn::SUCCESS;
     }
 
-    RCLCPP_INFO(get_logger(), "Hand-E activation in progress");
+    RCLCPP_INFO(get_logger(), "%sHand-E activation in progress%s", color::BCYAN, color::RESET);
     gripper_driver_.activate();
 
     for(int iter = 0; iter < ACTIVATION_MAX_ITER; iter++) {
         if(gripper_driver_.get_status().is_ready) {
-            RCLCPP_INFO(get_logger(), "Hand-E successfully activated");
+            RCLCPP_INFO(
+                get_logger(), "%sHand-E successfully activated%s", color::BGREEN, color::RESET);
             return HWI::CallbackReturn::SUCCESS;
         }
 
@@ -176,7 +182,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_deactivate(
     const rlccp_lc::State& /*previous_state*/) {
     gripper_driver_.deactivate();
 
-    RCLCPP_INFO(get_logger(), "Hand-E successfully deactivated");
+    RCLCPP_INFO(get_logger(), "%sHand-E successfully deactivated%s", color::BCYAN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
 }
 
@@ -184,13 +190,17 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_shutdown(
     const rlccp_lc::State& /*previous_state*/) {
     gripper_driver_.shutdown();
 
-    RCLCPP_INFO(get_logger(), "Hand-E shutdown");
+    RCLCPP_INFO(get_logger(), "%sHand-E shutdown%s", color::BCYAN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_error(
     const rlccp_lc::State& /*previous_state*/) {
-    RCLCPP_INFO(get_logger(), "Handled error with FAILURE on purpose - check previous logs");
+    RCLCPP_INFO(
+        get_logger(),
+        "%sHandled error with FAILURE on purpose - check previous logs%s",
+        color::BYELLOW,
+        color::RESET);
     return HWI::CallbackReturn::FAILURE;
 }
 

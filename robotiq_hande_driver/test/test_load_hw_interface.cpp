@@ -28,7 +28,7 @@ class TestHWInterface : public ::testing::Test {
                     <plugin>robotiq_hande_driver/RobotiqHandeHardwareInterface</plugin>
                     <param name="grip_pos_min">0.0</param>
                     <param name="grip_pos_max" default="0.025</param>
-                    <param name="tty">/tmp/ttyUR</param>
+                    <param name="tty_port">/tmp/ttyUR</param>
                     <param name="baudrate" >115200</param>
                     <param name="parity">N</param>
                     <param name="data_bits">8</param>

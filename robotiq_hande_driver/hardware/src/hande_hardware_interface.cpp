@@ -44,7 +44,7 @@ void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
         get_logger(), "grip_pos_min: %s", info_.hardware_parameters["grip_pos_min"].c_str());
     RCLCPP_DEBUG(
         get_logger(), "grip_pos_max: %s", info_.hardware_parameters["grip_pos_max"].c_str());
-    RCLCPP_DEBUG(get_logger(), "tty: %s", info_.hardware_parameters["tty"].c_str());
+    RCLCPP_DEBUG(get_logger(), "tty_port: %s", info_.hardware_parameters["tty_port"].c_str());
     RCLCPP_DEBUG(get_logger(), "baudrate: %s", info_.hardware_parameters["baudrate"].c_str());
     RCLCPP_DEBUG(get_logger(), "parity: %s", info_.hardware_parameters["parity"].c_str());
     RCLCPP_DEBUG(get_logger(), "data_bits: %s", info_.hardware_parameters["data_bits"].c_str());
@@ -57,7 +57,7 @@ void RobotiqHandeHardwareInterface::log_parsed_urdf_config() {
 void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
     auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
     auto cfg = CommunicationConfig{
-        info_.hardware_parameters["tty"],  // TODO change name to tty_port
+        info_.hardware_parameters["tty_port"],
         std::stoi(info_.hardware_parameters["baudrate"]),
         (info_.hardware_parameters["parity"].c_str())[0],
         std::stoi(info_.hardware_parameters["data_bits"]),
@@ -69,12 +69,14 @@ void RobotiqHandeHardwareInterface::initalize_gripper_driver() {
 
     RCLCPP_INFO(
         get_logger(),
-        "Initialized ModbusRTU for %s, %d, %c, %d, %d",
+        "%sInitialized ModbusRTU for %s, %d, %c, %d, %d%s",
+        color::BCYAN,
         cfg.tty_port.c_str(),
         cfg.baudrate,
         cfg.parity,
         cfg.data_bits,
-        cfg.stop_bit);
+        cfg.stop_bit,
+        color::RESET);
 }
 
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
@@ -91,7 +93,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
 
         try {
             gripper_driver_.configure();
-            RCLCPP_INFO(get_logger(), "Connected");
+            RCLCPP_INFO(get_logger(), "%sConnected%s", color::BGREEN, color::RESET);
             return HWI::CallbackReturn::SUCCESS;
         } catch(const CommunicationError& e) {
             // TODO check if RCLCPP_WARN_STREAM exists

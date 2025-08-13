@@ -173,16 +173,18 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
 void RobotiqHandeHardwareInterface::gripper_communication() {
     while(th_comm_enabled_) {
         try {
-            // Write to gripper driver
             gripper_driver_.read();
+
+            // TODO introduce mutex for manipulating all read values
             read_position_.store(gripper_driver_.get_position());
 
-            // Read from gripper driver
+            // TODO introduce mutex for manipulating all write values
             gripper_driver_.set_position(write_position_.load(), write_force_.load());
+
             gripper_driver_.write();
 
         } catch(const std::exception& e) {
-            RCLCPP_WARN(
+            RCLCPP_DEBUG(
                 get_logger(),
                 "%sException during Hand-E background communication: %s%s",
                 color::BYELLOW,

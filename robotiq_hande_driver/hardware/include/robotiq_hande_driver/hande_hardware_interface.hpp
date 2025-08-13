@@ -63,13 +63,15 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
 
     double state_position_;
     double state_velocity_;
-    std::atomic<double> read_position_;
-    std::atomic<double> read_velocity_;
+    std::mutex mtx_read_;
+    double read_position_;
+    double read_velocity_;
 
     double cmd_position_;
     double cmd_force_;
-    std::atomic<double> write_position_;
-    std::atomic<double> write_force_;
+    std::mutex mtx_write_;
+    double write_position_;
+    double write_force_;
 };
 
 }  // namespace robotiq_hande_driver

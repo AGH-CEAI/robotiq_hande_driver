@@ -69,13 +69,13 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
     state_position_ = gripper_position_max_;
     state_velocity_ = 0.0;
-    read_position_.store(state_position_);
-    read_velocity_.store(state_velocity_);
+    read_position_ = state_position_;
+    read_velocity_ = state_velocity_;
 
     cmd_force_ = 1.0;
     cmd_position_ = gripper_position_max_;
-    write_position_.store(cmd_position_);
-    write_force_.store(cmd_force_);
+    write_position_ = cmd_position_;
+    write_force_ = cmd_force_;
 
     return HWI::CallbackReturn::SUCCESS;
 }
@@ -210,13 +210,15 @@ void RobotiqHandeHardwareInterface::gripper_communication() {
     while(th_comm_enabled_) {
         try {
             gripper_driver_.read();
+            {
+                std::lock_guard<std::mutex> lock(mtx_read_);
+                read_position_ = gripper_driver_.get_position();
+            }
 
-            // TODO introduce mutex for manipulating all read values
-            read_position_.store(gripper_driver_.get_position());
-
-            // TODO introduce mutex for manipulating all write values
-            gripper_driver_.set_position(write_position_.load(), write_force_.load());
-
+            {
+                std::lock_guard<std::mutex> lock(mtx_write_);
+                gripper_driver_.set_position(write_position_, write_force_);
+            }
             gripper_driver_.write();
 
         } catch(const std::exception& e) {
@@ -275,16 +277,19 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_error(
 
 HWI::return_type RobotiqHandeHardwareInterface::read(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    // TODO should we use mutexes?
-    state_position_ = read_position_.load();
-    state_velocity_ = read_velocity_.load();
+    std::lock_guard<std::mutex> lock(mtx_read_);
+
+    state_position_ = read_position_;
+    state_velocity_ = read_velocity_;
 
     return hardware_interface::return_type::OK;
 }
 HWI::return_type RobotiqHandeHardwareInterface::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
-    write_position_.store(cmd_position_);
-    write_force_.store(cmd_force_);
+    std::lock_guard<std::mutex> lock(mtx_write_);
+
+    write_position_ = cmd_position_;
+    write_force_ = cmd_force_;
 
     return hardware_interface::return_type::OK;
 }

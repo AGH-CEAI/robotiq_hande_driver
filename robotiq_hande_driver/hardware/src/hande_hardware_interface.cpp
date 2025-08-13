@@ -42,11 +42,26 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
     bool manage_virutal_serial = info_.hardware_parameters["virtual_tty"] == "true";
     if(manage_virutal_serial) {
-        socat_.emplace(SocatManager(
-            info_.hardware_parameters["ip_adress"],
-            std::stoi(info_.hardware_parameters["port"]),
-            info_.hardware_parameters["tty_port"], ));
+        auto ip_addr = info_.hardware_parameters["ip_adress"];
+        auto port = info_.hardware_parameters["port"];
+        auto tty_port = info_.hardware_parameters["tty_port"];
+
+        RCLCPP_INFO(
+            get_logger(),
+            "%sCreating a virtual serial port from ip:%s port:%s with socat%s",
+            color::BCYAN,
+            ip_addr.c_str(),
+            port.c_str(),
+            color::RESET);
+        socat_.emplace(SocatManager(ip_addr, std::stoi(port), tty_port));
         socat_->start();
+
+        RCLCPP_INFO(
+            get_logger(),
+            "%sVirtual serial port created at %s%s",
+            color::BGREEN,
+            tty_port.c_str(),
+            color::RESET);
     }
 
     initalize_gripper_driver();

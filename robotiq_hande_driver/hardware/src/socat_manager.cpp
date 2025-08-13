@@ -1,5 +1,7 @@
 #include "robotiq_hande_driver/socat_manager.hpp"
 
+#include <stdexcept>
+
 namespace robotiq_hande_driver {
 
 SocatManager::SocatManager(const std::string& host, int port, const std::string& tty_path)
@@ -16,8 +18,8 @@ void SocatManager::start() {
     // Child process code
     if(socat_pid_ == 0) {
         // Child process - execute socat
-        std::string tcp_endpoint = "tcp:" + host_ + ":" + std::to_string(port_);
         std::string pty_endpoint = "pty,link=" + tty_path_ + ",raw,ignoreeof,waitslave";
+        std::string tcp_endpoint = "tcp:" + host_ + ":" + std::to_string(port_);
 
         char* args[] = {
             const_cast<char*>("socat"),
@@ -38,7 +40,7 @@ void SocatManager::start() {
     int status;
     if(waitpid(socat_pid_, &status, WNOHANG) == 0) return;
 
-    throw RuntimeError("Failed to start the forked process for virtual serial port (socat).");
+    throw std::runtime_error("Failed to start the forked process for virtual serial port (socat).");
 }
 
 void SocatManager::stop() {

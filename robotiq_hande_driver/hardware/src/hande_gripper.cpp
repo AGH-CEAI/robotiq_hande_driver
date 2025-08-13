@@ -48,8 +48,6 @@ void HandeGripper::auto_release() {
 
 void HandeGripper::activate() {
     prot_.activate();
-    // TODO set it by an experiment
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 }
 
 void HandeGripper::deactivate() {

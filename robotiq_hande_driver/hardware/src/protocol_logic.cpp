@@ -38,7 +38,6 @@ void ProtocolLogic::cleanup() {
 
 void ProtocolLogic::reset() {
     output_bytes_.fill(0);
-    write_output_bytes();
     write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
         static_cast<bool>(Activate::DEACTIVATE_GRIPPER));
@@ -47,7 +46,6 @@ void ProtocolLogic::reset() {
 
 void ProtocolLogic::set() {
     output_bytes_.fill(0);
-    write_output_bytes();
     write_action_bit(
         static_cast<uint>(ActionRequestPositionBit::ACTIVATE),
         static_cast<bool>(Activate::ACTIVATE_GRIPPER));

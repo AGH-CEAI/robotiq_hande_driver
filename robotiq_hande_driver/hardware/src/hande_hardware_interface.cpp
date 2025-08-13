@@ -39,7 +39,8 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
     th_sleep_rate_ = std::chrono::milliseconds(1000 / frequency_hz);
 
-    bool manage_virutal_serial = info_.hardware_parameters["virtual_tty"] == "true";
+    bool manage_virutal_serial = str_to_lower(info_.hardware_parameters["create_socat_tty"])
+                                 == "true";
     if(manage_virutal_serial) {
         auto ip_addr = info_.hardware_parameters["ip_adress"];
         auto port = info_.hardware_parameters["port"];

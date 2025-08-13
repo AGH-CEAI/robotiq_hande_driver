@@ -35,6 +35,9 @@ class TestHWInterface : public ::testing::Test {
                     <param name="stop_bit">1</param>
                     <param name="slave_id">9</param>
                     <param name="frequency_hz">10</param>
+                    <param name="create_socat_tty">false</param>
+                    <param name="ip_adress">127.0.0.1</param>
+                    <param name="port">8888</param>
                 </hardware>
                 <joint name="joint1">
                     <command_interface name="position"/>

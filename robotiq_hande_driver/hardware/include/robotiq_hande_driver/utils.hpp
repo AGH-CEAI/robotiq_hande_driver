@@ -1,6 +1,10 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__UTILS_HPP_
 #define ROBOTIQ_HANDE_DRIVER__UTILS_HPP_
 
+#include <algorithm>
+#include <cctype>
+#include <string>
+
 namespace robotiq_hande_driver {
 
 // Symbols for formatting the CLI output.
@@ -22,6 +26,12 @@ constexpr const char* BYELLOW = "\033[1;33m";
 constexpr const char* BCYAN = "\033[1;36m";
 
 }  // namespace color
+
+std::string str_to_lower(const std::string& str) {
+    std::string s(str);
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    return s;
+}
 
 }  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__UTILS_HPP_

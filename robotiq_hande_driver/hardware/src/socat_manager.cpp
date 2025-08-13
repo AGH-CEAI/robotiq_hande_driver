@@ -1,5 +1,6 @@
 #include "robotiq_hande_driver/socat_manager.hpp"
 
+#include <iostream>
 #include <stdexcept>
 
 namespace robotiq_hande_driver {
@@ -34,7 +35,6 @@ void SocatManager::start() {
 
     // Parent process code
     started_ = true;
-    std::this_thread::sleep_for(WAIT_FOR_SOCAT);
 
     // Check if process is still alive
     int status;

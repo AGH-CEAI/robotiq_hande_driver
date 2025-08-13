@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
+#include <stdexcept>
 #include <thread>
 
 namespace robotiq_hande_driver {
@@ -32,8 +33,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     log_parsed_urdf_config();
 
     th_comm_enabled_.store(false);
-    state_velocity_ = 0.0;
-    cmd_force_ = 1.0;
     gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
     gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
 
@@ -55,6 +54,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
             color::RESET);
         socat_.emplace(SocatManager(ip_addr, std::stoi(port), tty_port));
         socat_->start();
+        std::this_thread::sleep_for(WAIT_FOR_SOCAT_CONNECTION);
 
         RCLCPP_INFO(
             get_logger(),
@@ -66,8 +66,15 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
 
     initalize_gripper_driver();
 
-    cmd_position_ = gripper_position_max_;
     state_position_ = gripper_position_max_;
+    state_velocity_ = 0.0;
+    read_position_.store(state_position_);
+    read_velocity_.store(state_velocity_);
+
+    cmd_force_ = 1.0;
+    cmd_position_ = gripper_position_max_;
+    write_position_.store(cmd_position_);
+    write_force_.store(cmd_force_);
 
     return HWI::CallbackReturn::SUCCESS;
 }
@@ -127,7 +134,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
             RCLCPP_INFO(get_logger(), "%sConnected%s", color::BGREEN, color::RESET);
             return HWI::CallbackReturn::SUCCESS;
         } catch(const std::exception& e) {
-            // TODO check if RCLCPP_WARN_STREAM exists
             RCLCPP_WARN(get_logger(), "%s%s%s", color::BYELLOW, e.what(), color::RESET);
         }
         wait_100ms();

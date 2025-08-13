@@ -2,9 +2,9 @@
 #include "robotiq_hande_driver/utils.hpp"
 
 #include <chrono>
-#include <hardware_interface/types/hardware_interface_type_values.hpp>
-#include <stdexcept>
 #include <thread>
+
+#include <hardware_interface/types/hardware_interface_type_values.hpp>
 
 namespace robotiq_hande_driver {
 

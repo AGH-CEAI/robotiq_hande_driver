@@ -28,12 +28,16 @@ class TestHWInterface : public ::testing::Test {
                     <plugin>robotiq_hande_driver/RobotiqHandeHardwareInterface</plugin>
                     <param name="grip_pos_min">0.0</param>
                     <param name="grip_pos_max" default="0.025</param>
-                    <param name="tty">/tmp/ttyUR</param>
+                    <param name="tty_port">/tmp/ttyUR</param>
                     <param name="baudrate" >115200</param>
                     <param name="parity">N</param>
                     <param name="data_bits">8</param>
                     <param name="stop_bit">1</param>
                     <param name="slave_id">9</param>
+                    <param name="frequency_hz">10</param>
+                    <param name="create_socat_tty">false</param>
+                    <param name="ip_adress">127.0.0.1</param>
+                    <param name="port">8888</param>
                 </hardware>
                 <joint name="joint1">
                     <command_interface name="position"/>

@@ -73,7 +73,7 @@ Before build, change the hardcoded parameters in the beginning of the `robotiq_h
 
 To run test:
 ```bash
-cd cd ~/ceai_ws/src/robotiq_hande_driver/build/robotiq_hande_driver/
+cd ~/ceai/ros_ws/build/robotiq_hande_driver
 ./communication_test
 ```
 

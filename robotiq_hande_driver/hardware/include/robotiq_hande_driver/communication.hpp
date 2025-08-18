@@ -72,9 +72,6 @@ struct CommunicationConfig {
  * @brief This class wrappers the low level serial modubus communication with the gripper
  */
 class Communication {
-    static constexpr auto DEBUG_MODBUS = false;
-    static constexpr auto FAILURE_MODBUS = -1;
-
    public:
     Communication();
 
@@ -124,6 +121,9 @@ class Communication {
    private:
     CommunicationConfig cfg_;
     modbus_t* mb_;
+
+    static constexpr auto DEBUG_MODBUS = false;
+    static constexpr auto FAILURE_MODBUS = -1;
 };
 }  // namespace robotiq_hande_driver
 #endif  // ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_

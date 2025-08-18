@@ -15,7 +15,7 @@ void Communication::initialize(const CommunicationConfig& cfg) {
 void Communication::read(InputBuffer& regs) const {
     auto result = modbus_read_registers(
         mb_,
-        GRIPPER_INPUT_FIRST_REG,
+        SERIAL_INPUT_FIRST_REG,
         INPUT_REGISTER_WORD_LENGTH,
         reinterpret_cast<uint16_t*>(regs.data()));
 
@@ -28,7 +28,7 @@ void Communication::read(InputBuffer& regs) const {
 void Communication::write(OutputBuffer& regs) const {
     auto result = modbus_write_registers(
         mb_,
-        GRIPPER_OUTPUT_FIRST_REG,
+        SERIAL_OUTPUT_FIRST_REG,
         OUTPUT_REGISTER_WORD_LENGTH,
         reinterpret_cast<uint16_t*>(regs.data()));
 

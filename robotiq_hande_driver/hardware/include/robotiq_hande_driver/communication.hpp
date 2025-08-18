@@ -9,8 +9,8 @@
 
 namespace robotiq_hande_driver {
 
-static constexpr uint16_t GRIPPER_OUTPUT_FIRST_REG = 0x03E8;
-static constexpr uint16_t GRIPPER_INPUT_FIRST_REG = 0x07D0;
+static constexpr uint16_t SERIAL_OUTPUT_FIRST_REG = 0x03E8;
+static constexpr uint16_t SERIAL_INPUT_FIRST_REG = 0x07D0;
 
 enum class OutputBytes : uint8_t {
     RESERVED_1 = 0u,

@@ -2,7 +2,6 @@
 #define ROBOTIQ_HANDE_DRIVER__HANDE_GRIPPER_HPP_
 
 #include <stdint.h>
-#include <unistd.h>
 
 #include "robotiq_hande_driver/protocol_logic.hpp"
 

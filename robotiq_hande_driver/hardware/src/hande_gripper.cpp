@@ -1,9 +1,6 @@
 #include "robotiq_hande_driver/hande_gripper.hpp"
 
-#include <chrono>
 #include <cmath>
-#include <cstdio>
-#include <thread>
 
 namespace robotiq_hande_driver {
 

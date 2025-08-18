@@ -3,11 +3,11 @@
 
 #include <atomic>
 #include <chrono>
-#include <hardware_interface/system_interface.hpp>
 #include <optional>
-#include <rclcpp/rclcpp.hpp>
-#include <string>
 #include <thread>
+
+#include <hardware_interface/system_interface.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include "robotiq_hande_driver/hande_gripper.hpp"
 #include "robotiq_hande_driver/socat_manager.hpp"

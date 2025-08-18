@@ -1,7 +1,5 @@
 #include "robotiq_hande_driver/protocol_logic.hpp"
 
-#include <cstdio>
-
 namespace robotiq_hande_driver {
 
 ProtocolLogic::ProtocolLogic()

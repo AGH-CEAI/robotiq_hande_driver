@@ -1,8 +1,5 @@
 #include "robotiq_hande_driver/communication.hpp"
 
-#include <cstring>
-#include <iostream>
-
 namespace robotiq_hande_driver {
 
 Communication::Communication() : cfg_{}, mb_{nullptr} {}

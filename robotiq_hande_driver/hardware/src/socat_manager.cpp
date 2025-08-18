@@ -1,6 +1,5 @@
 #include "robotiq_hande_driver/socat_manager.hpp"
 
-#include <iostream>
 #include <stdexcept>
 
 namespace robotiq_hande_driver {

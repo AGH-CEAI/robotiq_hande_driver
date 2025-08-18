@@ -2,10 +2,7 @@
 #define ROBOTIQ_HANDE_DRIVER__SOCAT_MANAGER_HPP_
 
 #include <chrono>
-#include <cstdlib>
-#include <exception>
 #include <string>
-#include <thread>
 
 #include <signal.h>
 #include <sys/wait.h>

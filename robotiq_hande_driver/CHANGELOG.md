@@ -8,10 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+* [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Added:
+  * `SocatManager` for managing the external `socat` process.
+  * Added colored logging.
+  * Introduced 4 new params for URDFs:
+    * `frequency_hz` (int) to control the amount of sleep rate in new thread
+    * `create_socat_tty` (bool) to create a virtual serial port,
+    * `ip_adress` and `port` to configure the creation of virtual serial port with `socat`,
+
 ### Changed
+
+* [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Refactored the modbus communication to use multithreads:
+  * Renamed `application.hpp/cpp` to `hande_gripper.hpp/cpp`.
+  * Changed plain arrays `uint8_t bytes_[]` into `std::array<uint8_t, *>`.
+  * Moved all logic from the `communication.cpp/hpp` to `protocol_logic.cpp/hpp`.
+  * Moved all non-trivial definitions from `*.hpp`s to `*.cpp`s.
+  * Moved from C-like functions to C++ ones (e.g. to `chrono` and `thread` instead of `usleep()`).
+  * Encapsulated whole `Communication` config into `CommunicationConfig` struct.
+  *  renamed `tty` param to `tty_port` for better clarity.
+
 ### Deprecated
+
 ### Removed
 ### Fixed
+
+* [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Fixed:
+  * Fixed integration with - UR's RTDE communication protocol ([aegis_ros#38](https://github.com/AGH-CEAI/aegis_ros/issues/38)).
+  * Re-enabled the `-Werror` flag #5.
+  * Fixed typos with wrong values in  `GRIPPER_OUTPUT_FIRST_REG`  and `GRIPPER_INPUT_FIRST_REG`.
+
 ### Security
 
 ## [0.1.0] - 2025-03-13

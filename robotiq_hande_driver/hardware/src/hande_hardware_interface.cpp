@@ -5,8 +5,6 @@
 
 namespace robotiq_hande_driver {
 
-static constexpr auto THROTTLE_1000_MS = 1000;
-static constexpr auto ACTIVATION_MAX_ITER = 20;
 static constexpr auto RECONNECT_MAX_ITER = 10;
 
 inline void wait_100ms() {

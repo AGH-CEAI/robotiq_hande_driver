@@ -12,12 +12,6 @@
 #include "ros2_control_test_assets/components_urdfs.hpp"
 #include "ros2_control_test_assets/descriptions.hpp"
 
-namespace {
-const auto TIME = rclcpp::Time(0);
-const auto PERIOD = rclcpp::Duration::from_seconds(0.1);  // 0.1 seconds for easier math
-const auto COMPARE_DELTA = 0.0001;
-}  // namespace
-
 class TestHWInterface : public ::testing::Test {
    protected:
     void SetUp() override {

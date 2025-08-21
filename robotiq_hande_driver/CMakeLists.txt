@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+  # Flag `-Wno-deprecated-copy` is related to the ROS Humble's bundled gmock version.
+  add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+    -Wno-deprecated-copy)
 endif()
 
 include(FindPkgConfig)

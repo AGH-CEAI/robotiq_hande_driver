@@ -12,11 +12,11 @@
 #include "ros2_control_test_assets/components_urdfs.hpp"
 #include "ros2_control_test_assets/descriptions.hpp"
 
-namespace {
-const auto TIME = rclcpp::Time(0);
-const auto PERIOD = rclcpp::Duration::from_seconds(0.1);  // 0.1 seconds for easier math
-const auto COMPARE_DELTA = 0.0001;
-}  // namespace
+// Based on tutorial
+// https://control.ros.org/rolling/doc/ros2_controllers/doc/writing_new_controller.html
+
+// TODO(issue#23) write more HW Interface tests
+// https://github.com/ros-controls/ros2_control/blob/humble/hardware_interface/test/mock_components/test_generic_system.cpp
 
 class TestHWInterface : public ::testing::Test {
    protected:
@@ -28,7 +28,7 @@ class TestHWInterface : public ::testing::Test {
                     <plugin>robotiq_hande_driver/RobotiqHandeHardwareInterface</plugin>
                     <param name="grip_pos_min">0.0</param>
                     <param name="grip_pos_max">0.025</param>
-                    <param name="tty">/tmp/ttyUR</param>
+                    <param name="tty_port">/tmp/ttyUR</param>
                     <param name="baudrate">115200</param>
                     <param name="parity">N</param>
                     <param name="data_bits">8</param>

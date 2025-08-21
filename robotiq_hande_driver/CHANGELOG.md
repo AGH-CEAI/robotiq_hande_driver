@@ -31,12 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Removed
+
+* [PR-24](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/24) - Cleanup of unused variables.
+
 ### Fixed
 
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Fixed:
   * Fixed integration with - UR's RTDE communication protocol ([aegis_ros#38](https://github.com/AGH-CEAI/aegis_ros/issues/38)).
   * Re-enabled the `-Werror` flag #5.
   * Fixed typos with wrong values in  `GRIPPER_OUTPUT_FIRST_REG`  and `GRIPPER_INPUT_FIRST_REG`.
+* [PR-16](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/16) - Fixed URDF typos in the `test_load_hw_interface.cpp` file.
 
 ### Security
 

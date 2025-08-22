@@ -2,14 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-  # If you got problems with ROS Humble's bundled gmock version:
-  # a) change the compiler to clang >= 14.0.0
-  # b) add flag `-Wno-deprecated-copy`
-  add_compile_options(
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Werror)
+  # If you got problems with ROS Humble's bundled gmock version: a) change the compiler to clang >=
+  # 14.0.0 b) add flag `-Wno-deprecated-copy`
+  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 include(FindPkgConfig)

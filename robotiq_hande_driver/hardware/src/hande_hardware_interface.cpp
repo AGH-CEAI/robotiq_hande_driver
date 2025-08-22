@@ -17,7 +17,8 @@ RobotiqHandeHardwareInterface::~RobotiqHandeHardwareInterface() {
     if(socat_ && socat_->is_alive()) socat_->stop();
 }
 
-HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareInfo& info) {
+HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(
+    const HWI::HardwareComponentInterfaceParams& info) {
     if(HWI::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
         return HWI::CallbackReturn::ERROR;
     }

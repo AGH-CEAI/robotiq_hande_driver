@@ -47,10 +47,19 @@ source ./install/local_setup.sh
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
 # In other terminal
-ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action/GripperCommand \
+ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action/ParallelGripperCommand "command:
 "command:
+  header:
   position: 0.0
+    stamp:
   max_effort: 0.0
+      sec: 0
+      nanosec: 0
+    frame_id: ''
+  name: []
+  position: [0.0]
+  velocity: []
+  effort: []
 "
 ```
 

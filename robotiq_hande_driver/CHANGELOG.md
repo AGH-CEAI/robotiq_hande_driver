@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+* [PR-26](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/26) - Migration from ROS 2 Humble to ROS 2 Jazzy.
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Refactored the modbus communication to use multithreads:
   * Renamed `application.hpp/cpp` to `hande_gripper.hpp/cpp`.
   * Changed plain arrays `uint8_t bytes_[]` into `std::array<uint8_t, *>`.

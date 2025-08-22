@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* [PR-25](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/25) - Fixed wrong type for the force command interface (from `HW_IF_POSITION` to `HW_IF_EFFORT`).
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Fixed:
   * Fixed integration with - UR's RTDE communication protocol ([aegis_ros#38](https://github.com/AGH-CEAI/aegis_ros/issues/38)).
   * Re-enabled the `-Werror` flag #5.

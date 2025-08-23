@@ -172,7 +172,7 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
         hardware_interface::HW_IF_POSITION,
         &cmd_position_));
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
-        info_.joints[LEFT_FINGER_JOINT_ID].name, hardware_interface::HW_IF_POSITION, &cmd_force_));
+        info_.joints[LEFT_FINGER_JOINT_ID].name, hardware_interface::HW_IF_EFFORT, &cmd_force_));
 
     return command_interfaces;
 }

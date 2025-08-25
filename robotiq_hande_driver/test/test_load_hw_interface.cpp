@@ -14,6 +14,7 @@
 #include "lifecycle_msgs/msg/state.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp_lifecycle/state.hpp"
+#include "ros2_control_test_assets/descriptions.hpp"
 
 // Based on tutorial
 // https://control.ros.org/rolling/doc/ros2_controllers/doc/writing_new_controller.html

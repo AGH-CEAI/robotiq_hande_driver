@@ -106,7 +106,11 @@ ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py \
 You can also start `socat` manually, for example:
 ```bash
 socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321
-```
+> [!WARNING]  
+> Do not use both the `use_tool_communication:=true` flag for the **ur_driver** and the `create_socat_tty:=true` flag for the **robotiq_hande_driver**!  
+> Both options will invoke the `socat` command to create the `/tmp/ttyUR` virtual serial port.  
+> However, the initialization of the Hand-E driver may suffer from a race condition: **the tty link must exist before initialization**.  
+> It is recommended to use the provided `create_socat_tty` option.
 
 ## Integration
 

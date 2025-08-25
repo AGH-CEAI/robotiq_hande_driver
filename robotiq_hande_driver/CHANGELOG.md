@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Added additional launch arguments and provided better instructions in README.
+
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Added:
   * `SocatManager` for managing the external `socat` process.
   * Added colored logging.
@@ -18,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * `ip_adress` and `port` to configure the creation of virtual serial port with `socat`,
 
 ### Changed
+
+* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Renamed `ip_adress` to `ip_address`.
 
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Refactored the modbus communication to use multithreads:
   * Renamed `application.hpp/cpp` to `hande_gripper.hpp/cpp`.

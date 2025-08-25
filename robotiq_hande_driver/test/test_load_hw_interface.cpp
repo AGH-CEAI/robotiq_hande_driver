@@ -14,12 +14,13 @@
 #include "lifecycle_msgs/msg/state.hpp"
 #include "rclcpp/node.hpp"
 #include "rclcpp_lifecycle/state.hpp"
+#include "ros2_control_test_assets/descriptions.hpp"
 
 // Based on tutorial
 // https://control.ros.org/rolling/doc/ros2_controllers/doc/writing_new_controller.html
 
 // TODO(issue#23) write more HW Interface tests
-// https://github.com/ros-controls/ros2_control/blob/humble/hardware_interface/test/mock_components/test_generic_system.cpp
+// https://github.com/ros-controls/ros2_control/blob/jazzy/hardware_interface/test/mock_components/test_generic_system.cpp
 
 class TestHWInterface : public ::testing::Test {
    protected:

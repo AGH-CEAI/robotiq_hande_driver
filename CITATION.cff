@@ -7,7 +7,11 @@ authors:
   - family-names: Klimek
     given-names: Krzysztof
     orcid: https://orcid.org/0009-0004-6749-1833
+  - family-names: Płachno
+    given-names: Jakub
 title: "Robotiq Hand-E ROS 2 Driver"
-version: 0.1.0
+version: 0.2.0
 identifiers:
-date-released: 2025-03-18
+  - type: doi
+    value: 10.5281/zenodo.15047950
+date-released: 2025-08-25

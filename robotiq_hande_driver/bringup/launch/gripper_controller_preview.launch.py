@@ -38,7 +38,42 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "tf_prefix",
             default_value="",
-            description="transforms prefix",
+            description="Add prefix to the all robot's links & joints.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "frequency_hz",
+            default_value="10",
+            description="Set update rate for controller.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "tty_port",
+            default_value="/tmp/ttyUR",
+            description="Set serial port for RTU communication.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "create_socat_tty",
+            default_value="false",
+            description="Create virtual serial port in Linux for RTU simulation.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "socat_ip_address",
+            default_value="192.168.100.10",
+            description="Set IP address for TCP connection.",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "socat_port",
+            default_value="54321",
+            description="Set TCP port for connection.",
         )
     )
 
@@ -108,6 +143,12 @@ def prepare_robot_state_publisher_node() -> Node:
     tf_prefix = LaunchConfiguration("tf_prefix", default="")  # noqa: F841
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
 
+    frequency_hz = LaunchConfiguration("frequency_hz")
+    tty_port = LaunchConfiguration("tty_port")
+    create_socat_tty = LaunchConfiguration("create_socat_tty")
+    socat_ip_address = LaunchConfiguration("socat_ip_address")
+    socat_port = LaunchConfiguration("socat_port")
+
     robot_description_str = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
@@ -122,6 +163,24 @@ def prepare_robot_state_publisher_node() -> Node:
             " ",
             "use_fake_hardware:=",
             use_fake_hardware,
+            " ",
+            "tf_prefix:=",
+            tf_prefix,
+            " ",
+            "frequency_hz:=",
+            frequency_hz,
+            " ",
+            "tty_port:=",
+            tty_port,
+            " ",
+            "create_socat_tty:=",
+            create_socat_tty,
+            " ",
+            "socat_ip_address:=",
+            socat_ip_address,
+            " ",
+            "socat_port:=",
+            socat_port,
         ]
     )
     return Node(

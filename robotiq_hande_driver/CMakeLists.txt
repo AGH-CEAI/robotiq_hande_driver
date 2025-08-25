@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 project(robotiq_hande_driver)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-  # TODO(issue#5) Fix warnings to enable the -Werror flag
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  # If you got problems with ROS Humble's bundled gmock version: a) change the compiler to clang >=
+  # 14.0.0 b) add flag `-Wno-deprecated-copy`
+  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 include(FindPkgConfig)
@@ -25,8 +26,12 @@ foreach(dependency IN ITEMS ${HW_IF_INCLUDE_DEPENDS})
 endforeach()
 
 add_library(
-  ${PROJECT_NAME} SHARED hardware/src/hande_hardware_interface.cpp hardware/src/application.cpp
-                         hardware/src/communication.cpp hardware/src/protocol_logic.cpp)
+  ${PROJECT_NAME} SHARED
+  hardware/src/hande_hardware_interface.cpp
+  hardware/src/hande_gripper.cpp
+  hardware/src/communication.cpp
+  hardware/src/protocol_logic.cpp
+  hardware/src/socat_manager.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEPENDS})
 

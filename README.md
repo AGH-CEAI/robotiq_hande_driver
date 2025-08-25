@@ -13,28 +13,14 @@ Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/product
 
 ## Quick Start
 
-### Connection Setup
+### Workspace setup
 
-#### Without Physical Hardware
-* You are ready to go - just remember to pass the `use_fake_hardware:=true` argument.
-
-#### Modbus RTU
-* Connect the serial port to your system and locate the TTY device (typically `/dev/ttyX`).
-* You will need to configure the serial connection in your `.xacro.urdf` file ([example](https://github.com/AGH-CEAI/robotiq_hande_description/blob/humble/urdf/robotiq_hande_gripper.urdf.xacro) in `robotiq_hande_description`).
-
-#### Modbus TCP
-* You can create a local `TCP` <-> `Virtual Serial Port` server with the `socat` command.
-  * An example usage (in the form of a Python ROS 2 wrapper) can be found in `ur_robot_driver`'s [scripts/tool_communication.py](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/204e215c8a7371f6357e6a09f7e106364e566931/ur_robot_driver/scripts/tool_communication.py#L64).
-  * Example: `socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321`
-* For the UR's `ur_robot_driver`, the default path to the virtual serial port is `/tmp/ttyUR`.
-
-
-### Package setup
 ```bash
-cd ~/ceai_ws/src
-git clone git@github.com:AGH-CEAI/robotiq_hande_driver.git ./src
-vcs import src < src/robotiq_hande_driver/robotiq_hande_driver.repos &&
-colcon build --symlink-install --packages-select robotiq_hande_driver
+mkdir -p ~/ceai_ws
+cd ~/ceai_ws
+git clone git@github.com:AGH-CEAI/robotiq_hande_driver.git src/robotiq_hande_driver
+vcs import src < src/robotiq_hande_driver/robotiq_hande_driver/robotiq_hande_driver.repos
+colcon build --symlink-install
 source ./install/local_setup.sh
 ```
 > [!NOTE]
@@ -44,6 +30,7 @@ source ./install/local_setup.sh
 
 
 ### Launch preview
+
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
 # In other terminal
@@ -54,8 +41,68 @@ ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action
 "
 ```
 
-### Examples
-**An example integration usage can be find** in the [AGH-CEAI/aegis_ros](https://github.com/AGH-CEAI/aegis_ros) repository.
+## Connection modes
+
+You can run the gripper in three ways:
+
+### Without the physical hardware
+
+If you only want to test the gripper behavior or visualize it in RViz without connecting to the actual device, you can use the fake hardware mode. In this case, simply pass the `use_fake_hardware:=true` argument.
+
+All other connection options will be ignored; this mode does not communicate with any physical port or network but simulates responses and allows the controller to run.
+
+### Modbus RTU
+
+If you want to work with the real gripper via direct serial communication, the computer connects to the gripper through a USB-to-RS485 adapter. The wiring is represented as:
+
+Computer → USB adapter ↔ RS485 ↔ Hand-E gripper
+
+In this case, you need to set `use_fake_hardware:=false` and provide serial port to establish connection using `tty_port`, for example: `"tty_port:=/dev/ttyUSB0"`.
+
+You can check available serial devices with:
+```bash
+dmesg | grep tty
+```
+
+or
+
+```bash
+ls -l /dev/tty*
+```
+
+Make sure your user has permissions to access the serial port:
+```bash
+sudo usermod -a -G dialout $USER
+```
+
+### Modbus RTU tunneled over TCP via UR Tool Communication
+
+If your setup involves a UR robot, its controller can expose the RS-485 tool port over TCP using the Tool Communication URCap. The wiring is represented as:
+
+UR controller RS-485 tool port ↔ URCap forwarder ↔ TCP socket ↔ Computer
+
+Although this is a TCP connection, the driver uses a pseudo-TTY to translate TCP packets into RTU frames. Typically, the virtual serial port is `/tmp/ttyUR`.
+
+To enable this mode, set `use_fake_hardware:=false`, `create_socat_tty:=true`, and specify the `ip_address` and `port` of the UR forwarder. The driver will then use `tty_port:=/tmp/ttyUR` as if it were a real serial port.
+
+You can also start `socat` manually, for example:
+```bash
+socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321
+```
+
+## Integration
+
+To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a Xacro file that includes the Hand-E macros and defines all necessary parameters.
+
+A working example of such a file can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/modules/robotiq_hande_gripper.xacro). You can use this file as a starting point for your own integration.
+
+Next, include this Xacro file in your main robot description tree at the appropriate tool link. 
+
+An example of including it in a robot Xacro can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/aegis.xacro).
+
+The included robotiq_hande_gripper macro automatically sets up the <ros2_control> block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces.
+
+The included `robotiq_hande_gripper` macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces, including the gripper action controller and joint state broadcaster, without additional manual plugin configuration.
 
 ---
 ## Development notes
@@ -79,4 +126,5 @@ cd ~/ceai/ros_ws/build/robotiq_hande_driver
 
 ---
 ## License
+
 This repository is licensed under the Apache 2.0, see LICENSE for details.

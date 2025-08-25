@@ -71,7 +71,9 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "socat_port", default_value="54321", description="Set TCP port for connection."
+            "socat_port",
+            default_value="54321",
+            description="Set TCP port for connection.",
         )
     )
 

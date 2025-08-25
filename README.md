@@ -83,7 +83,7 @@ sudo usermod -a -G dialout $USER
 
 ### Modbus RTU tunneled over TCP via UR Tool Communication
 
-If your setup involves a UR robot, its controller can expose the RS-485 tool port over TCP using the Tool Communication URCap. The wiring is represented as:
+If your setup involves a UR robot, its controller can expose the RS-485 tool port over TCP using the pTool Communication URCap](https://docs.universal-robots.com/Universal_Robots_ROS2_Documentation/doc/ur_robot_driver/ur_robot_driver/doc/setup_tool_communication.html). The wiring is represented as:
 
 UR controller RS-485 tool port ↔ URCap forwarder ↔ TCP socket ↔ Computer
 

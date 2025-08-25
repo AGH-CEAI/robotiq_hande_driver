@@ -4,7 +4,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![DOI](https://zenodo.org/badge/898628878.svg)](https://doi.org/10.5281/zenodo.15047949)
 
-Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) using the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/AGH-CEAI/robotiq_hande_description) package for URDF definitions. Originally developed for integration with Universal Robots e-Series (UR5e) and ROS 2 Humble, it is possible to modify this repository to fit your needs. **PRs are welcome!**
+Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) using the [ROS 2 Control](https://control.ros.org/jazzy/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/AGH-CEAI/robotiq_hande_description) package for URDF definitions. Originally developed for integration with Universal Robots e-Series (UR5e) and ROS 2 Humble, it is possible to modify this repository to fit your needs. **PRs are welcome!**
 
 
 ![Control preview](docs/gripper_control.webp)
@@ -25,7 +25,7 @@ source ./install/local_setup.sh
 ```
 > [!NOTE]
 > **Configuration is split between two packages:**
-> * `robotiq_hande_description`: Hardware connection parameters are set in the URDF file. [Example config file](https://github.com/AGH-CEAI/robotiq_hande_description/blob/humble/urdf/robotiq_hande_gripper.urdf.xacro).
+> * `robotiq_hande_description`: Hardware connection parameters are set in the URDF file. [Example config file](https://github.com/AGH-CEAI/robotiq_hande_description/blob/jazzy/urdf/robotiq_hande_gripper.urdf.xacro).
 > * `robotiq_hande_driver`: The controller configuration is set by launch parameters for the `controller_node`. [Example config file](robotiq_hande_driver/bringup/config/hande_controller.yaml).
 
 
@@ -129,17 +129,17 @@ socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.100.10:54321
 
 ## Integration with (other) robots
 
-To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a [Xacro (URDF) file](https://docs.ros.org/en/humble/Tutorials/Intermediate/URDF/URDF-Main.html) that includes the Hand-E macros and defines all necessary parameters.
+To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a [Xacro (URDF) file](https://docs.ros.org/en/jazzy/Tutorials/Intermediate/URDF/URDF-Main.html) that includes the Hand-E macros and defines all necessary parameters.
 
-A working example of such a file can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/modules/robotiq_hande_gripper.xacro). You can use this file as a starting point for your own integration.
+A working example of such a file can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/jazzy-devel/aegis_description/urdf/modules/robotiq_hande_gripper.xacro). You can use this file as a starting point for your own integration.
 
 Next, include this Xacro file in your main robot description tree at the appropriate tool link.
 
-An example of including it in a robot Xacro can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/aegis.xacro).
+An example of including it in a robot Xacro can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/jazzy-devel/aegis_description/urdf/aegis.xacro).
 
 The included robotiq_hande_gripper macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces.
 
-You can easliy dig into the `ros2_control` concepts with [its documentation](https://control.ros.org/rolling/doc/ros2_control/doc/index.html#concepts). There is also a [plenty of examples](https://control.ros.org/humble/doc/ros2_control_demos/doc/index.html#examples)
+You can easliy dig into the `ros2_control` concepts with [its documentation](https://control.ros.org/jazzy/doc/ros2_control/doc/index.html#concepts). There is also a [plenty of examples](https://control.ros.org/jazzy/doc/ros2_control_demos/doc/index.html#examples)
 
 > [!IMPORTANT]
 > The `robotiq_hande_driver` currently provides only a **hardware component** (i.e. _hardware interface_) to control the fingers' joints.

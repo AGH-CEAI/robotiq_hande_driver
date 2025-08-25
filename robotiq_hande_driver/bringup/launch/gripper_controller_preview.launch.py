@@ -64,14 +64,14 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "ip_address",
+            "socat_ip_address",
             default_value="192.168.100.10",
             description="Set IP address for TCP connection.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "port", default_value="54321", description="Set TCP port for connection."
+            "socat_port", default_value="54321", description="Set TCP port for connection."
         )
     )
 
@@ -143,8 +143,8 @@ def prepare_robot_state_publisher_node() -> Node:
     frequency_hz = LaunchConfiguration("frequence_hz")
     tty_port = LaunchConfiguration("tty_port")
     create_socat_tty = LaunchConfiguration("create_socat_tty")
-    ip_address = LaunchConfiguration("ip_address")
-    port = LaunchConfiguration("port")
+    socat_ip_address = LaunchConfiguration("socat_ip_address")
+    socat_port = LaunchConfiguration("socat_port")
 
     robot_description_str = Command(
         [
@@ -173,11 +173,11 @@ def prepare_robot_state_publisher_node() -> Node:
             "create_socat_tty:=",
             create_socat_tty,
             " ",
-            "ip_address:=",
-            ip_address,
+            "socat_ip_address:=",
+            socat_ip_address,
             " ",
-            "port:=",
-            port,
+            "socat_port:=",
+            socat_port,
         ]
     )
     return Node(

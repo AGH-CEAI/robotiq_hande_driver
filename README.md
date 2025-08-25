@@ -93,14 +93,14 @@ UR controller RS-485 tool port ↔ URCap forwarder ↔ TCP socket ↔ Computer
 
 Although this is a TCP connection, the driver uses a pseudo-TTY to translate TCP packets into RTU frames. Typically, the virtual serial port is `/tmp/ttyUR`.
 
-To enable this mode, set `use_fake_hardware:=false`, `create_socat_tty:=true`, and specify the `ip_address` and `port` of the UR forwarder:
+To enable this mode, set `use_fake_hardware:=false`, `create_socat_tty:=true`, and specify the `socat_ip_address` and `socat_port` of the UR forwarder:
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py \
   use_fake_hardware:=false \
   create_socat_tty:=true \
   tty_port:=/tmp/ttyUR \
-  ip_address:=192.168.1.2 \
-  port:=54321 \
+  socat_ip_address:=192.168.1.2 \
+  socat_port:=54321 \
   frequency_hz:=10 \
   launch_rviz:=true
 ```

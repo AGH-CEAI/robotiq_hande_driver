@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Renamed `ip_adress` to `ip_address`.
+* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Renamed `ip_adress` to `socat_ip_address` and `port` to `socat_port`.
 
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Refactored the modbus communication to use multithreads:
   * Renamed `application.hpp/cpp` to `hande_gripper.hpp/cpp`.

@@ -112,7 +112,7 @@ socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321
 > However, the initialization of the Hand-E driver may suffer from a race condition: **the tty link must exist before initialization**.  
 > It is recommended to use the provided `create_socat_tty` option.
 
-## Integration
+## Integration with (other) robots
 
 To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a Xacro file that includes the Hand-E macros and defines all necessary parameters.
 

@@ -43,11 +43,14 @@ ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action
 
 ## Connection modes
 
-You can run the gripper in three ways:
+You can run the gripper in three ways.
 
 ### Without the physical hardware
 
-If you only want to test the gripper behavior or visualize it in RViz without connecting to the actual device, you can use the fake hardware mode. In this case, simply pass the `use_fake_hardware:=true` argument.
+If you only want to test the gripper behavior or visualize it in RViz without connecting to the actual device, you can use the fake hardware mode. In this case, simply pass the `use_fake_hardware:=true` argument:
+```bash
+ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
+```
 
 All other connection options will be ignored; this mode does not communicate with any physical port or network but simulates responses and allows the controller to run.
 
@@ -57,7 +60,10 @@ If you want to work with the real gripper via direct serial communication, the c
 
 Computer → USB adapter ↔ RS485 ↔ Hand-E gripper
 
-In this case, you need to set `use_fake_hardware:=false` and provide serial port to establish connection using `tty_port`, for example: `"tty_port:=/dev/ttyUSB0"`.
+In this case, you need to set `use_fake_hardware:=false` and provide serial port to establish connection using `tty_port`:
+```bash
+ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=false tty_port:=/dev/ttyUSB0
+```
 
 You can check available serial devices with:
 ```bash
@@ -83,7 +89,19 @@ UR controller RS-485 tool port ↔ URCap forwarder ↔ TCP socket ↔ Computer
 
 Although this is a TCP connection, the driver uses a pseudo-TTY to translate TCP packets into RTU frames. Typically, the virtual serial port is `/tmp/ttyUR`.
 
-To enable this mode, set `use_fake_hardware:=false`, `create_socat_tty:=true`, and specify the `ip_address` and `port` of the UR forwarder. The driver will then use `tty_port:=/tmp/ttyUR` as if it were a real serial port.
+To enable this mode, set `use_fake_hardware:=false`, `create_socat_tty:=true`, and specify the `ip_address` and `port` of the UR forwarder:
+```bash
+ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py \
+  use_fake_hardware:=false \
+  create_socat_tty:=true \
+  tty_port:=/tmp/ttyUR \
+  ip_address:=192.168.1.2 \
+  port:=54321 \
+  frequency_hz:=10 \
+  launch_rviz:=true
+```
+
+ The driver will then use `tty_port:=/tmp/ttyUR` as if it were a real serial port.
 
 You can also start `socat` manually, for example:
 ```bash

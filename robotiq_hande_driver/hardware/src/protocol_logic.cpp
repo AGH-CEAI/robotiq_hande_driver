@@ -151,7 +151,7 @@ void ProtocolLogic::read_input_bytes() {
     object_detection_status_ =
         (ObjectDetectionStatus)((raw_status_
                                  >> static_cast<uint>(StatusPositionBit::OBJECT_DETECTION_STATUS))
-                                 & OBJECT_DETECTION_STATUS_BITS);
+                                & OBJECT_DETECTION_STATUS_BITS);
 
     // TODO(issue#9) Read Hand-E fault status flags
     raw_fault_status_ = get_input_byte(InputBytes::FAULT_STATUS);

@@ -25,7 +25,7 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
 
     ~RobotiqHandeHardwareInterface();
 
-    HWI::CallbackReturn on_init(const HWI::HardwareInfo& info) override;
+    HWI::CallbackReturn on_init(const HWI::HardwareComponentInterfaceParams& info) override;
     HWI::CallbackReturn on_configure(const rlccp_lc::State& previous_state) override;
     HWI::CallbackReturn on_cleanup(const rlccp_lc::State& previous_state) override;
     std::vector<HWI::StateInterface> export_state_interfaces() override;

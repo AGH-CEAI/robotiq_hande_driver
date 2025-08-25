@@ -3,14 +3,17 @@
 #include <cmath>
 #include <string>
 
-#include "hardware_interface/loaned_command_interface.hpp"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "hardware_interface/loaned_state_interface.hpp"
+#include "hardware_interface/types/lifecycle_state_names.hpp"
+#pragma GCC diagnostic pop
+
 #include "hardware_interface/resource_manager.hpp"
 #include "hardware_interface/types/lifecycle_state_names.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
+#include "rclcpp/node.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-#include "ros2_control_test_assets/components_urdfs.hpp"
-#include "ros2_control_test_assets/descriptions.hpp"
 
 // Based on tutorial
 // https://control.ros.org/rolling/doc/ros2_controllers/doc/writing_new_controller.html
@@ -20,6 +23,14 @@
 
 class TestHWInterface : public ::testing::Test {
    protected:
+    static void SetUpTestCase() {
+        rclcpp::init(0, nullptr);
+    }
+
+    static void TearDownTestCase() {
+        rclcpp::shutdown();
+    }
+
     void SetUp() override {
         hw_system_gripper_1dof_ =
             R"(
@@ -50,6 +61,7 @@ class TestHWInterface : public ::testing::Test {
     }
 
     std::string hw_system_gripper_1dof_;
+    rclcpp::Node node_ = rclcpp::Node("TestGenericSystem");
 };
 
 // Forward declaration
@@ -61,15 +73,25 @@ class TestableResourceManager : public hardware_interface::ResourceManager {
    public:
     friend TestHWInterface;
 
-    TestableResourceManager() : hardware_interface::ResourceManager() {}
+    explicit TestableResourceManager(rclcpp::Node& node)
+        : hardware_interface::ResourceManager(
+              node.get_node_clock_interface(), node.get_node_logging_interface()) {}
 
-    TestableResourceManager(
-        const std::string& urdf, bool validate_interfaces = true, bool activate_all = false)
-        : hardware_interface::ResourceManager(urdf, validate_interfaces, activate_all) {}
+    explicit TestableResourceManager(
+        rclcpp::Node& node,
+        const std::string& urdf,
+        bool activate_all = false,
+        unsigned int cm_update_rate = 100)
+        : hardware_interface::ResourceManager(
+              urdf,
+              node.get_node_clock_interface(),
+              node.get_node_logging_interface(),
+              activate_all,
+              cm_update_rate) {}
 };
 
 TEST_F(TestHWInterface, load_robotiq_hande_hardware_interface) {
     auto urdf = ros2_control_test_assets::urdf_head + hw_system_gripper_1dof_
                 + ros2_control_test_assets::urdf_tail;
-    ASSERT_NO_THROW(TestableResourceManager rm(urdf));
+    ASSERT_NO_THROW(TestableResourceManager rm(node_, urdf));
 }

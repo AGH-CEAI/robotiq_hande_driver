@@ -11,7 +11,6 @@ constexpr auto STOP_BIT = 1;
 constexpr auto DEBUG_MODBUS = true;
 
 constexpr uint8_t SERVER_ID = 0x09;
-
 constexpr uint16_t SERIAL_OUTPUT_FIRST_REG = 0x07D0;
 constexpr uint16_t SERIAL_INPUT_FIRST_REG = 0x03E8;
 constexpr uint8_t READ_WRITE_REG_LENGTH = 3;

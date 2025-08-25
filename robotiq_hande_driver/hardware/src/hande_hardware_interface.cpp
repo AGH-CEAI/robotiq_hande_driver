@@ -144,7 +144,6 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_configure(
 HWI::CallbackReturn RobotiqHandeHardwareInterface::on_cleanup(
     const rlccp_lc::State& /*previous_state*/) {
     gripper_driver_.cleanup();
-
     RCLCPP_INFO(get_logger(), "%sCleaned up Hand-E connection%s", color::BCYAN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
 }

@@ -1,6 +1,5 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__HANDE_HARDWARE_INTERFACE_HPP_
 #define ROBOTIQ_HANDE_DRIVER__HANDE_HARDWARE_INTERFACE_HPP_
-
 #include <atomic>
 #include <chrono>
 #include <optional>
@@ -39,7 +38,6 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
 
     HWI::return_type read(const rclcpp::Time& time, const rclcpp::Duration& period) override;
     HWI::return_type write(const rclcpp::Time& time, const rclcpp::Duration& period) override;
-
     rclcpp::Logger get_logger() const;
     rclcpp::Clock::SharedPtr get_clock() const;
 

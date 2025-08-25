@@ -23,7 +23,6 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>robotiq_hande_description</depend>
-
   <exec_depend>socat</exec_depend>
 
   <test_depend>ament_cmake_gmock</test_depend>

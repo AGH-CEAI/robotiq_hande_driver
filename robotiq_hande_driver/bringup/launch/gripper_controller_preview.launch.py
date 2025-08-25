@@ -142,7 +142,7 @@ def prepare_robot_state_publisher_node() -> Node:
     # tf_prefix is implicitly used in ParameterValue()
     tf_prefix = LaunchConfiguration("tf_prefix", default="")  # noqa: F841
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
-    frequency_hz = LaunchConfiguration("frequence_hz")
+    frequency_hz = LaunchConfiguration("frequency_hz")
     tty_port = LaunchConfiguration("tty_port")
     create_socat_tty = LaunchConfiguration("create_socat_tty")
     socat_ip_address = LaunchConfiguration("socat_ip_address")

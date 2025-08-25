@@ -231,7 +231,6 @@ class ProtocolLogic {
     ActionStatus action_status_;
     GripperStatus gripper_status_;
     ObjectDetectionStatus object_detection_status_;
-
     // Fault
     uint8_t raw_fault_status_;
 

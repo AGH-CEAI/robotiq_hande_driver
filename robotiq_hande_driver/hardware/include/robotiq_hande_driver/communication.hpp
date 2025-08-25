@@ -1,6 +1,5 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
 #define ROBOTIQ_HANDE_DRIVER__COMMUNICATION_HPP_
-
 #include <array>
 #include <exception>
 #include <string>
@@ -21,6 +20,7 @@ enum class OutputBytes : uint8_t {
     SPEED,
     BYTES_MAX
 };
+
 static constexpr auto NUM_OF_OUTPUT_BYTES = static_cast<size_t>(OutputBytes::BYTES_MAX);
 static constexpr auto OUTPUT_REGISTER_WORD_LENGTH = static_cast<uint>(OutputBytes::BYTES_MAX) / 2;
 using OutputBuffer = std::array<uint8_t, NUM_OF_OUTPUT_BYTES>;
@@ -34,6 +34,7 @@ enum class InputBytes : uint8_t {
     POSITION,
     BYTES_MAX
 };
+
 static constexpr auto NUM_OF_INPUT_BYTES = static_cast<size_t>(OutputBytes::BYTES_MAX);
 static constexpr auto INPUT_REGISTER_WORD_LENGTH = static_cast<uint>(InputBytes::BYTES_MAX) / 2;
 using InputBuffer = std::array<uint8_t, NUM_OF_INPUT_BYTES>;

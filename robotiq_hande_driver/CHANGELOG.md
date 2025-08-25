@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
+## [0.2.0] - 2025-08-25
+
+### Added
 
 * [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Added additional launch arguments and provided better instructions in README.
 
@@ -32,8 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Encapsulated whole `Communication` config into `CommunicationConfig` struct.
   *  renamed `tty` param to `tty_port` for better clarity.
 
-### Deprecated
-
 ### Removed
 
 * [PR-24](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/24) - Cleanup of unused variables.
@@ -46,8 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Re-enabled the `-Werror` flag #5.
   * Fixed typos with wrong values in  `GRIPPER_OUTPUT_FIRST_REG`  and `GRIPPER_INPUT_FIRST_REG`.
 * [PR-16](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/16) - Fixed URDF typos in the `test_load_hw_interface.cpp` file.
-
-### Security
 
 ## [0.1.0] - 2025-03-13
 

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Added additional launch arguments and provided better instructions in README.
+
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Added:
   * `SocatManager` for managing the external `socat` process.
   * Added colored logging.
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * [PR-26](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/26) - Migration from ROS 2 Humble to ROS 2 Jazzy.
+* [PR-27](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/27) - Renamed `ip_adress` to `socat_ip_address` and `port` to `socat_port`.
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Refactored the modbus communication to use multithreads:
   * Renamed `application.hpp/cpp` to `hande_gripper.hpp/cpp`.
   * Changed plain arrays `uint8_t bytes_[]` into `std::array<uint8_t, *>`.
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* [PR-25](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/25) - Fixed wrong type for the force command interface (from `HW_IF_POSITION` to `HW_IF_EFFORT`).
 * [PR-21](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/21) - Fixed:
   * Fixed integration with - UR's RTDE communication protocol ([aegis_ros#38](https://github.com/AGH-CEAI/aegis_ros/issues/38)).
   * Re-enabled the `-Werror` flag #5.

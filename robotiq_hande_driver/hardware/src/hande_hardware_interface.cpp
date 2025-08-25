@@ -38,8 +38,8 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(
     bool manage_virutal_serial = str_to_lower(info_.hardware_parameters["create_socat_tty"])
                                  == "true";
     if(manage_virutal_serial) {
-        auto ip_addr = info_.hardware_parameters["ip_adress"];
-        auto port = info_.hardware_parameters["port"];
+        auto ip_addr = info_.hardware_parameters["socat_ip_address"];
+        auto port = info_.hardware_parameters["socat_port"];
         auto tty_port = info_.hardware_parameters["tty_port"];
 
         RCLCPP_INFO(
@@ -173,7 +173,7 @@ std::vector<HWI::CommandInterface> RobotiqHandeHardwareInterface::export_command
         hardware_interface::HW_IF_POSITION,
         &cmd_position_));
     command_interfaces.emplace_back(hardware_interface::CommandInterface(
-        info_.joints[LEFT_FINGER_JOINT_ID].name, hardware_interface::HW_IF_POSITION, &cmd_force_));
+        info_.joints[LEFT_FINGER_JOINT_ID].name, hardware_interface::HW_IF_EFFORT, &cmd_force_));
 
     return command_interfaces;
 }

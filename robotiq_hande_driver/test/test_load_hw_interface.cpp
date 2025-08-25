@@ -47,8 +47,8 @@ class TestHWInterface : public ::testing::Test {
                     <param name="slave_id">9</param>
                     <param name="frequency_hz">10</param>
                     <param name="create_socat_tty">false</param>
-                    <param name="ip_adress">127.0.0.1</param>
-                    <param name="port">8888</param>
+                    <param name="socat_ip_address">127.0.0.1</param>
+                    <param name="socat_port">8888</param>
                 </hardware>
                 <joint name="joint1">
                     <command_interface name="position"/>

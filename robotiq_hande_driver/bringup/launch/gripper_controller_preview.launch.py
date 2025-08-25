@@ -45,35 +45,33 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "frequency_hz",
             default_value="10",
-            description="Set update rate for controller."
+            description="Set update rate for controller.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "tty_port",
             default_value="/tmp/ttyUR",
-            description="Set serial port for RTU communication."
+            description="Set serial port for RTU communication.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "create_socat_tty",
             default_value="false",
-            description="Create virtual serial port in Linux for RTU simulation."
+            description="Create virtual serial port in Linux for RTU simulation.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "ip_address",
             default_value="192.168.100.10",
-            description="Set IP address for TCP connection."
+            description="Set IP address for TCP connection.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            "port",
-            default_value="54321",
-            description="Set TCP port for connection."
+            "port", default_value="54321", description="Set TCP port for connection."
         )
     )
 

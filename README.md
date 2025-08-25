@@ -96,7 +96,7 @@ To integrate the Robotiq Hand-E gripper into your existing robot, you first need
 
 A working example of such a file can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/modules/robotiq_hande_gripper.xacro). You can use this file as a starting point for your own integration.
 
-Next, include this Xacro file in your main robot description tree at the appropriate tool link. 
+Next, include this Xacro file in your main robot description tree at the appropriate tool link.
 
 An example of including it in a robot Xacro can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/aegis.xacro).
 

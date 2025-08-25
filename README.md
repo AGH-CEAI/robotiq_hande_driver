@@ -114,7 +114,7 @@ socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321
 
 ## Integration with (other) robots
 
-To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a Xacro file that includes the Hand-E macros and defines all necessary parameters.
+To integrate the Robotiq Hand-E gripper into your existing robot, you first need to create a [Xacro (URDF) file](https://docs.ros.org/en/humble/Tutorials/Intermediate/URDF/URDF-Main.html) that includes the Hand-E macros and defines all necessary parameters.
 
 A working example of such a file can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/modules/robotiq_hande_gripper.xacro). You can use this file as a starting point for your own integration.
 

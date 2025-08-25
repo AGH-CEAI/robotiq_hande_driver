@@ -39,7 +39,7 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     bool manage_virutal_serial = str_to_lower(info_.hardware_parameters["create_socat_tty"])
                                  == "true";
     if(manage_virutal_serial) {
-        auto ip_addr = info_.hardware_parameters["ip_adress"];
+        auto ip_addr = info_.hardware_parameters["ip_address"];
         auto port = info_.hardware_parameters["port"];
         auto tty_port = info_.hardware_parameters["tty_port"];
 

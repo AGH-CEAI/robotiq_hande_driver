@@ -31,9 +31,13 @@ source ./install/local_setup.sh
 
 ### Launch preview
 
+Start the driver:
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=true
-# In other terminal
+```
+
+Send a command to the gripper in another terminal:
+```bash
 ros2 action send_goal /gripper_action_controller/gripper_cmd control_msgs/action/GripperCommand \
 "command:
   position: 0.0
@@ -106,10 +110,12 @@ ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py \
 You can also start `socat` manually, for example:
 ```bash
 socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.1.2:54321
-> [!WARNING]  
-> Do not use both the `use_tool_communication:=true` flag for the **ur_driver** and the `create_socat_tty:=true` flag for the **robotiq_hande_driver**!  
-> Both options will invoke the `socat` command to create the `/tmp/ttyUR` virtual serial port.  
-> However, the initialization of the Hand-E driver may suffer from a race condition: **the tty link must exist before initialization**.  
+```
+
+> [!WARNING]
+> Do not use both the `use_tool_communication:=true` flag for the **ur_driver** and the `create_socat_tty:=true` flag for the **robotiq_hande_driver**!
+> Both options will invoke the `socat` command to create the `/tmp/ttyUR` virtual serial port.
+> However, the initialization of the Hand-E driver may suffer from a race condition: **the tty link must exist before initialization**.
 > It is recommended to use the provided `create_socat_tty` option.
 
 ## Integration with (other) robots
@@ -122,11 +128,11 @@ Next, include this Xacro file in your main robot description tree at the appropr
 
 An example of including it in a robot Xacro can be found [here](https://github.com/AGH-CEAI/aegis_ros/blob/humble-devel/aegis_description/urdf/aegis.xacro).
 
-The included robotiq_hande_gripper macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces. 
+The included robotiq_hande_gripper macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces.
 
 You can easliy dig into the `ros2_control` concepts with [its documentation](https://control.ros.org/rolling/doc/ros2_control/doc/index.html#concepts). There is also a [plenty of examples](https://control.ros.org/humble/doc/ros2_control_demos/doc/index.html#examples)
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > The `robotiq_hande_driver` currently provides only a **hardware component** (i.e. _hardware interface_) to control the fingers' joints.
 
 The included `robotiq_hande_gripper` macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces, including the gripper action controller and joint state broadcaster, without additional manual plugin configuration.

@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 ### Removed
 ### Fixed
+* [PR-33](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/33) - Fixed missing ros2_control_test_assets dependency in CMakeLists.txt that causes build failures after ROS2 Humble package updates.
+
 ### Security
 
 ## [0.2.0] - 2025-08-25

@@ -204,6 +204,8 @@ void RobotiqHandeHardwareInterface::gripper_communication() {
     while(th_comm_enabled_) {
         try {
             gripper_driver_.read();
+            // TODO try to remove these mutexes by using second pair of variables
+            // Also, profiling the code also would be nice
             {
                 std::lock_guard<std::mutex> lock(mtx_read_);
                 read_position_ = gripper_driver_.get_position();

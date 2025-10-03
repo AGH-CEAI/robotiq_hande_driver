@@ -132,6 +132,8 @@ uint8_t ProtocolLogic::get_raw_current() const {
 }
 
 void ProtocolLogic::read_input_bytes() {
+    // TODO - this method should be much faster - just switch pointers to access data
+    // The duty of parsing should be moved to the 2nd thread
     communication_.read(input_bytes_);
 
     raw_status_ = get_input_byte(InputBytes::GRIPPER_STATUS);
@@ -162,6 +164,7 @@ void ProtocolLogic::read_input_bytes() {
 }
 
 void ProtocolLogic::write_output_bytes() {
+    // TODO: output_butes_ should be atomic - we need to prepare two copies of it
     communication_.write(output_bytes_);
 }
 

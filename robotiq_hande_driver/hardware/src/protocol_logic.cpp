@@ -74,7 +74,7 @@ void ProtocolLogic::go_to(uint8_t position, uint8_t velocity, uint8_t force) {
     set_output_byte(OutputBytes::POSITION_REQUEST, position);
     set_output_byte(OutputBytes::SPEED, velocity);
     set_output_byte(OutputBytes::FORCE, force);
-    write_output_bytes();
+    // write_output_bytes(); // TODO - check if this line was the problem
 }
 
 void ProtocolLogic::stop() {

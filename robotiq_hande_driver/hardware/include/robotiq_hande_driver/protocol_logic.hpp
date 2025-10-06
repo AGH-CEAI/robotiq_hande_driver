@@ -1,7 +1,6 @@
 #ifndef ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_
 #define ROBOTIQ_HANDE_DRIVER__PROTOCOL_LOGIC_HPP_
 
-#include <cstdint>
 #include "robotiq_hande_driver/communication.hpp"
 
 namespace robotiq_hande_driver {

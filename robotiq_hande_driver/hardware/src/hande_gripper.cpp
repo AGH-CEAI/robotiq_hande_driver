@@ -82,7 +82,7 @@ double HandeGripper::get_position() const {
 
 void HandeGripper::set_position(double position, double force) {
     static double prev_position = std::numeric_limits<double>::quiet_NaN();
-    // static double prev_force = std::numeric_limits<double>::quiet_NaN();
+    static double prev_force = std::numeric_limits<double>::quiet_NaN();
 
     // TODO: decide if this is the bottleneck
     if(!std::isnan(prev_position) && std::fabs(position - prev_position) < EPSILON) return;

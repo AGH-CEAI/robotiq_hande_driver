@@ -81,17 +81,17 @@ double HandeGripper::get_position() const {
 }
 
 void HandeGripper::set_position(double position, double force) {
-    static double prev_position = std::numeric_limits<double>::quiet_NaN();
-    static double prev_force = std::numeric_limits<double>::quiet_NaN();
+    // static double prev_position = std::numeric_limits<double>::quiet_NaN();
+    // static double prev_force = std::numeric_limits<double>::quiet_NaN();
 
-    if(!std::isnan(prev_position) && std::fabs(position - prev_position) < EPSILON) return;
-    if(!std::isnan(prev_force) && std::fabs(force - prev_force) < EPSILON) return;
+    // TODO: decide if this was the bottleneck
+    // if(!std::isnan(prev_position) && std::fabs(position - prev_position) < EPSILON) return;
+    // if(!std::isnan(prev_force) && std::fabs(force - prev_force) < EPSILON) return;
 
+    uint8_t scaled_position = (gripper_position_max_ - position) / gripper_postion_step_;
     uint8_t scaled_force = static_cast<uint8_t>(force * MAX_FORCE);
-    prot_.go_to(
-        (uint8_t)((gripper_position_max_ - position) / gripper_postion_step_),
-        MAX_SPEED,
-        scaled_force);
+
+    prot_.go_to(scaled_position, MAX_SPEED, scaled_force);
 }
 
 double HandeGripper::get_current() const {

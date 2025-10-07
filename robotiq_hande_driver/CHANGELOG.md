@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* [PR-34](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/34) - Fixed check for dropping request to set the same gripper position.
 * [PR-34](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/34) - Fixed non-deterministic control node's frequency hicups by removing call to the modbus write in time-critical code block.
 * [PR-33](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/33) - Fixed missing ros2_control_test_assets dependency in CMakeLists.txt that causes build failures after ROS2 Humble package updates.
 

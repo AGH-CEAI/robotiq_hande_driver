@@ -66,7 +66,7 @@ if(BUILD_TESTING)
   ament_add_gmock(test_load_hw_interface test/test_load_hw_interface.cpp)
   target_link_libraries(test_load_hw_interface ${PROJECT_NAME})
   ament_target_dependencies(test_load_hw_interface ros2_control_test_assets)
-  
+
   # TODO(issue#8) Build the communication_test only with BUILD_TESTING flag
   # ament_add_gmock(application_test test/application_test.cpp )
   # target_link_libraries(application_test ${PROJECT_NAME})

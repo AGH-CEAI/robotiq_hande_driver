@@ -10,8 +10,8 @@ authors:
   - family-names: Płachno
     given-names: Jakub
 title: "Robotiq Hand-E ROS 2 Driver"
-version: 0.2.0
+version: 0.2.1
 identifiers:
   - type: doi
     value: 10.5281/zenodo.15047950
-date-released: 2025-08-25
+date-released: 2025-11-24

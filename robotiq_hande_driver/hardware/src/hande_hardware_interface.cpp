@@ -187,7 +187,8 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
             th_comm_.emplace(&RobotiqHandeHardwareInterface::gripper_communication, this);
         }
 
-        RCLCPP_INFO(get_logger(), "%sWaiting for Hand-E complete activation%s", color::BCYAN, color::RESET);
+        RCLCPP_INFO(
+            get_logger(), "%sWaiting for Hand-E complete activation%s", color::BCYAN, color::RESET);
         while(!gripper_driver_.get_status().is_ready) {
             std::this_thread::sleep_for(th_sleep_rate_);
         }

@@ -5,6 +5,15 @@ All notable changes to the `robotiq_hande_driver` package will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-11-24
+
+### Fixed
+
+* [PR-37](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/37) - Fixed missing readiness check during activation.
+* [PR-34](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/34) - Fixed check for dropping request to set the same gripper position.
+* [PR-34](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/34) - Fixed non-deterministic control node's frequency hicups by removing call to the modbus write in time-critical code block.
+* [PR-33](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/33) - Fixed missing ros2_control_test_assets dependency in CMakeLists.txt that causes build failures after ROS2 Humble package updates.
+
 ## [0.2.0] - 2025-08-25
 
 ### Added

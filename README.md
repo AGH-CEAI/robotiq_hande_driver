@@ -3,7 +3,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![DOI](https://zenodo.org/badge/898628878.svg)](https://doi.org/10.5281/zenodo.15047949)
 
-Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) using the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/AGH-CEAI/robotiq_hande_description) package for URDF definitions. Originally developed for integration with Universal Robots e-Series (UR5e) and ROS 2 Humble, it is possible to modify this repository to fit your needs. **PRs are welcome!**
+Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) using the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/AGH-CEAI/robotiq_hande_description) package for URDF definitions. Originally developed for integration with Universal Robots e-Series (UR5e) and ROS 2 Humble, but can be modified to fit other setups. **PRs are welcome!**
 
 
 ![Control preview](docs/gripper_control.webp)
@@ -64,7 +64,7 @@ If you want to work with the real gripper via direct serial communication, the c
 
 Computer → USB adapter ↔ RS485 ↔ Hand-E gripper
 
-In this case, you need to set `use_fake_hardware:=false` and provide serial port to establish connection using `tty_port`:
+In this case, set `use_fake_hardware:=false` and provide serial port to establish connection using `tty_port`:
 ```bash
 ros2 launch robotiq_hande_driver gripper_controller_preview.launch.py use_fake_hardware:=false tty_port:=/dev/ttyUSB0
 ```
@@ -115,7 +115,8 @@ socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.100.10:54321
 > [!WARNING]
 > Do not use both the `use_tool_communication:=true` flag for the **ur_driver** and the `create_socat_tty:=true` flag for the **robotiq_hande_driver**!
 > Both options will invoke the `socat` command to create the `/tmp/ttyUR` virtual serial port.
-> However, the initialization of the Hand-E driver may suffer from a race condition: **the tty link must exist before initialization**.
+> However, the initialization of the Hand-E driver may suffer from a race condition.
+> The TTY link must exist **before** initialization.
 > It is recommended to use the provided `create_socat_tty` option.
 
 ## Integration with (other) robots
@@ -130,7 +131,7 @@ An example of including it in a robot Xacro can be found [here](https://github.c
 
 The included robotiq_hande_gripper macro automatically sets up the `<ros2_control>` block pointing to the Robotiq Hand-E driver plugin. This ensures that your robot can control the gripper via the standard ROS 2 control interfaces.
 
-You can easliy dig into the `ros2_control` concepts with [its documentation](https://control.ros.org/rolling/doc/ros2_control/doc/index.html#concepts). There is also a [plenty of examples](https://control.ros.org/humble/doc/ros2_control_demos/doc/index.html#examples)
+You can easliy explore the `ros2_control` concepts in the [documentation](https://control.ros.org/rolling/doc/ros2_control/doc/index.html#concepts). There are also [plenty of examples](https://control.ros.org/humble/doc/ros2_control_demos/doc/index.html#examples).
 
 > [!IMPORTANT]
 > The `robotiq_hande_driver` currently provides only a **hardware component** (i.e. _hardware interface_) to control the fingers' joints.
@@ -140,7 +141,7 @@ The included `robotiq_hande_gripper` macro automatically sets up the `<ros2_cont
 ---
 ## Development notes
 
-This project uses various tools for aiding the quality of the source code. Currently most of them are executed by the `pre-commit`. Please make sure to enable its hooks:
+This project uses various tools to aid code quality. Currently most of them are executed by `pre-commit`. Enable hooks with:
 
 ```bash
 pre-commit install
@@ -148,7 +149,7 @@ pre-commit install
 
 ### Test Serial Connection
 
-There is an additional test tool with hardcoded parameters to test the connection with the Hand-E without any ROS dependencies.
+There is an additional test tool with hardcoded parameters for testing the connection with the Hand-E without any ROS dependencies.
 Before build, change the hardcoded parameters in the beginning of the `robotiq_hande_driver/test/communication_test.cpp` file.
 
 To run test:

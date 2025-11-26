@@ -8,6 +8,15 @@ Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/product
 
 ![Control preview](docs/gripper_control.webp)
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![DOI](https://zenodo.org/badge/898628878.svg)](https://doi.org/10.5281/zenodo.15047949)
+
+Package for controlling the [Robotiq Hand-E gripper](https://robotiq.com/products/adaptive-grippers#Hand-E) using the [ROS 2 Control](https://control.ros.org/humble/doc/getting_started/getting_started.html) framework. It uses the [robotiq_hande_description](https://github.com/AGH-CEAI/robotiq_hande_description) package for URDF definitions. Originally developed for integration with Universal Robots e-Series (UR5e) and ROS 2 Humble, it is possible to modify this repository to fit your needs. **PRs are welcome!**
+
+
+![Control preview](docs/gripper_control.webp)
+
 ---
 
 ## Quick Start

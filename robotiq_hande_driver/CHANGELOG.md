@@ -12,10 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 ### Removed
 ### Fixed
+### Security
+
+## [0.2.2] - 2025-11-27
+
+### Fixed
 
 * [PR-40](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/40) - Fixed README.
-
-### Security
 
 ## [0.2.1] - 2025-11-24
 

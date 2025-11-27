@@ -5,17 +5,11 @@ All notable changes to the `robotiq_hande_driver` package will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.2] - 2025-11-27
 
-### Added
-### Changed
-### Deprecated
-### Removed
 ### Fixed
 
 * [PR-40](https://github.com/AGH-CEAI/robotiq_hande_driver/pull/40) - Fixed README.
-
-### Security
 
 ## [0.2.1] - 2025-11-24
 

@@ -10,6 +10,8 @@ constexpr auto DATA_BITS = 8;
 constexpr auto STOP_BIT = 1;
 constexpr auto DEBUG_MODBUS = true;
 
+constexpr useconds_t RESET_DELAY_US = 500 * 1000;  // 500 ms
+
 constexpr uint8_t SERVER_ID = 0x09;
 constexpr uint16_t SERIAL_OUTPUT_FIRST_REG = 0x07D0;
 constexpr uint16_t SERIAL_INPUT_FIRST_REG = 0x03E8;
@@ -47,17 +49,45 @@ void test_connection(modbus_t* ctx) {
         tab_reg[5]);
 }
 
-void activate(modbus_t* ctx) {
-    printf("Step: Activation Request (clear and set rACT)\n");
-    uint16_t activation_request_register_reset[READ_WRITE_REG_LENGTH] = {
-        GRIPPER_FLAGS_DEACTIVATE, 0x0000, 0x0000};
-    modbus_write_registers(
-        ctx, SERIAL_INPUT_FIRST_REG, READ_WRITE_REG_LENGTH, activation_request_register_reset);
+void reset(modbus_t* ctx) {
+    printf("Step: Reset/Deactivate the Gripper\n");
 
-    uint16_t activation_request_register_set[READ_WRITE_REG_LENGTH] = {
-        GRIPPER_FLAGS_ACTIVATE, 0x0000, 0x0000};
-    modbus_write_registers(
-        ctx, SERIAL_INPUT_FIRST_REG, READ_WRITE_REG_LENGTH, activation_request_register_set);
+    uint16_t reset_registers[READ_WRITE_REG_LENGTH] = {
+        GRIPPER_FLAGS_DEACTIVATE,  // rACT = 0
+        0x0000,                    // rGTO = 0
+        0x0000                     // rATR = 0
+    };
+
+    int rc = modbus_write_registers(
+        ctx, SERIAL_INPUT_FIRST_REG, READ_WRITE_REG_LENGTH, reset_registers);
+
+    if(rc != READ_WRITE_REG_LENGTH) {
+        fprintf(stderr, "Failed to reset/deactivate gripper\n");
+        return;
+    }
+
+    // Give the gripper time to process the deactivation.
+    usleep(RESET_DELAY_US);
+
+    printf("Gripper reset/deactivated\n");
+}
+
+void activate(modbus_t* ctx) {
+    printf("Step: Activation Request (set rACT)\n");
+
+    uint16_t activation_request_registers[READ_WRITE_REG_LENGTH] = {
+        GRIPPER_FLAGS_ACTIVATE,  // rACT = 1
+        0x0000,                  // rGTO = 0
+        0x0000                   // rATR = 0
+    };
+
+    int rc = modbus_write_registers(
+        ctx, SERIAL_INPUT_FIRST_REG, READ_WRITE_REG_LENGTH, activation_request_registers);
+
+    if(rc != READ_WRITE_REG_LENGTH) {
+        fprintf(stderr, "Failed to activate gripper\n");
+        return;
+    }
 }
 
 void wait_activation_complete(modbus_t* ctx) {
@@ -122,6 +152,7 @@ int main(void) {
 
     test_connection(mb);
 
+    reset(mb);
     activate(mb);
     wait_activation_complete(mb);
     printf("Gripper activated, press any key to continue\n");

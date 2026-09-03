@@ -45,6 +45,9 @@ class RobotiqHandeHardwareInterface : public HWI::SystemInterface {
     void log_parsed_urdf_config();
     void initalize_gripper_driver();
     void gripper_communication();
+    void stop_communication_thread();
+
+    std::chrono::milliseconds activation_timeout_{10000};
 
     HandeGripper gripper_driver_;
     std::optional<SocatManager> socat_;

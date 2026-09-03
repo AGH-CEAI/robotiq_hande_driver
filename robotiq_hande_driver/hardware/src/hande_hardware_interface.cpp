@@ -31,6 +31,11 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_init(const HWI::HardwareIn
     gripper_position_min_ = std::stod(info_.hardware_parameters["grip_pos_min"]);
     gripper_position_max_ = std::stod(info_.hardware_parameters["grip_pos_max"]);
 
+    if(auto it = info_.hardware_parameters.find("activation_timeout_ms");
+       it != info_.hardware_parameters.end()) {
+        activation_timeout_ = std::chrono::milliseconds(std::stoul(it->second));
+    }
+
     auto frequency_hz = std::stoi(info_.hardware_parameters["frequency_hz"]);
     th_sleep_rate_ = std::chrono::milliseconds(1000 / frequency_hz);
 
@@ -189,7 +194,30 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
 
         RCLCPP_INFO(
             get_logger(), "%sWaiting for Hand-E complete activation%s", color::BCYAN, color::RESET);
+        const auto deadline = std::chrono::steady_clock::now() + activation_timeout_;
+        auto next_log = std::chrono::steady_clock::now();
+
         while(!gripper_driver_.get_status().is_ready) {
+            const auto now = std::chrono::steady_clock::now();
+
+            // The comm thread died (e.g. modbus error) -> status will never update again.
+            if(!th_comm_enabled_.load(std::memory_order_acquire)) {
+                throw std::runtime_error(
+                    "Communication thread stopped before the gripper reported readiness.");
+            }
+
+            if(now >= deadline) {
+                throw std::runtime_error(
+                    "Timed out after " + std::to_string(activation_timeout_.count())
+                    + " ms waiting for activation. Last status: "
+                    + std::to_string(gripper_driver_.get_status().is_ready));
+            }
+
+            if(now >= next_log) {
+                next_log = now + std::chrono::seconds(1);
+                RCLCPP_INFO(get_logger(), "Still activating...");
+            }
+
             std::this_thread::sleep_for(th_sleep_rate_);
         }
     } catch(const std::exception& e) {
@@ -204,6 +232,14 @@ HWI::CallbackReturn RobotiqHandeHardwareInterface::on_activate(
 
     RCLCPP_INFO(get_logger(), "%sHand-E successfully activated%s", color::BGREEN, color::RESET);
     return HWI::CallbackReturn::SUCCESS;
+}
+
+void RobotiqHandeHardwareInterface::stop_communication_thread() {
+    th_comm_enabled_.store(false, std::memory_order_release);
+    if(th_comm_ && th_comm_->joinable()) {
+        th_comm_->join();
+    }
+    th_comm_.reset();
 }
 
 void RobotiqHandeHardwareInterface::gripper_communication() {

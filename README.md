@@ -158,6 +158,15 @@ cd ~/ceai/ros_ws/build/robotiq_hande_driver
 ./communication_test
 ```
 
+The manual `socat`s can be useful:
+```bash
+# UR side
+socat tcp-l:54321,reuseaddr,fork file:/dev/ttyTool,nonblock,raw,waitlock=/var/run/tty
+# PC side
+socat pty,link=/tmp/ttyUR,raw,ignoreeof,waitslave tcp:192.168.100.10:54321
+```
+
+
 ---
 ## License
 
